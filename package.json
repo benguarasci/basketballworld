@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "node dist/tests/sanity.js"
   },
   "dependencies": {
     "@types/body-parser": "^1.17.1",
