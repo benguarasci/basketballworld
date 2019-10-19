@@ -7,6 +7,12 @@ var logger = require('morgan');
 var indexRouter = require('./routes');
 var usersRouter = require('./routes/users');
 var app = express();
+// heroku setup
+var port = process.env.PORT;
+if (port == null || port == "") {
+    port = '8000';
+}
+app.listen(port);
 // view engine setup
 app.set('../views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
