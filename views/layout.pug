@@ -10,28 +10,10 @@ html
 
     //override with 'block banner' in a page
     block banner
-      div.header
-        div.header-banner
-          div.header-banner-inner
-            div(class='header-logo' href='/')
-      div.header-nav-container
-        div.header-nav-container-inner
-          nav.header-nav
-            a(class='header-nav-item-wrapper' href='/')
-              div.header-nav-item.mod-solo Home
-            a(class='header-nav-item-wrapper' href='/threads')
-              div.header-nav-item.mod-solo Categories
-            a(class='header-nav-item-wrapper' href='/threads')
-              div.header-nav-item.mod-solo Threads
-            a(class='header-nav-item-wrapper' href='/threads')
-              div.header-nav-item.mod-solo News
-            a(class='header-nav-item-wrapper' href='/account')
-              div.header-nav-item.mod-solo Account
-
-
-
-
-
+      div.header-container
+        div.header-nav
+          div.header-logo
+            div.header-nav-item Threads
     block head
       h1= site_name
       p Welcome to #{site_name}
