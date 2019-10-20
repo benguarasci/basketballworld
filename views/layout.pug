@@ -1,7 +1,12 @@
 doctype html
 html
+  -var site_name = 'Basketball World'
+
   head
-    title= title
+    title= site_name
     link(rel='stylesheet', href='/stylesheets/style.css')
+    h1= site_name
+    p Welcome to #{site_name}
+
   body
     block content

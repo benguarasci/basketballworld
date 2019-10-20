@@ -9,8 +9,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = __importStar(require("express"));
 var router = express.Router();
-/* GET home page. */
+/* GET account page. */
 router.get('/', function (req, res, next) {
-    res.render('index');
+    res.render('account');
 });
 module.exports = router;

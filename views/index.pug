@@ -1,5 +1,9 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+    p hi there!
+    button(onclick="move()") Sign Up!
+    script.
+        function move() {
+            window.location.href = '/account'
+        }
