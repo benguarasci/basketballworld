@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes');
 var accountRouter = require('./routes/account');
+var threadsRouter = require('./routes/threads');
 var app = express();
 // heroku setup
 var port = process.env.PORT;
@@ -23,6 +24,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/', indexRouter);
 app.use('/account', accountRouter);
+app.use('/threads', threadsRouter);
 // catch 404 and forward to error handler
 // @ts-ignore
 app.use(function (req, res, next) {

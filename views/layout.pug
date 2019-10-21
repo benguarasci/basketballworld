@@ -10,10 +10,16 @@ html
 
     //override with 'block banner' in a page
     block banner
-      div.header-container
-        div.header-nav
-          div.header-logo
-            div.header-nav-item Threads
+    block nav
+      ul
+        li
+          a(href='/') Home
+          a(href='/threads') Threads
+          a(href='/login') Login
+          a(href='/account') Account
+        li
+      ul
+
     block head
       h1= site_name
       p Welcome to #{site_name}
