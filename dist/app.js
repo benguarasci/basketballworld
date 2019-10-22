@@ -5,7 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes');
-var accountRouter = require('./routes/account');
+var profileRouter = require('./routes/profile');
 var threadsRouter = require('./routes/threads');
 var app = express();
 // heroku setup
@@ -22,9 +22,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
+// router setup
 app.use('/', indexRouter);
-app.use('/account', accountRouter);
+app.use('/profile', profileRouter);
 app.use('/threads', threadsRouter);
+// bodyparser setup
+var bodyparser = require('body-parser');
+app.use(bodyparser.urlencoded({
+    extended: true
+}));
+app.use(bodyparser.json());
 // catch 404 and forward to error handler
 // @ts-ignore
 app.use(function (req, res, next) {

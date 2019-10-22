@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 const indexRouter = require('./routes');
-const accountRouter = require('./routes/account');
+const profileRouter = require('./routes/profile');
 const threadsRouter = require('./routes/threads');
 
 
@@ -28,9 +28,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
+// router setup
 app.use('/', indexRouter);
-app.use('/account', accountRouter);
-app.use('/threads', threadsRouter)
+app.use('/profile', profileRouter);
+app.use('/threads', threadsRouter);
+
+// bodyparser setup
+const bodyparser = require('body-parser');
+app.use(bodyparser.urlencoded( {
+    extended: true
+}));
+app.use(bodyparser.json());
 
 // catch 404 and forward to error handler
 // @ts-ignore
