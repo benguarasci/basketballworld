@@ -15,10 +15,17 @@ router.get('/', function (req, res, next) {
 });
 /* POST for profile creation. */
 router.post('/', function (req, res) {
-    // const name = req.body.name;
-    // const email = req.body.email;
-    // const pw = req.body.pw;
-    // const pw2 = req.body.pw2;
-    console.log(req.body);
+    var name = req.body.name;
+    var email = req.body.email;
+    var pw = req.body.pw;
+    var pw2 = req.body.pw2;
+    // notice how the contents of the form will be shown in the log
+    insertProfile({ req: req, res: res });
+    //see https://www.youtube.com/watch?v=voDummz1gO0 for help
 });
+function insertProfile(_a) {
+    var req = _a.req, res = _a.res;
+    console.log(name);
+    //insert into mongodb
+}
 module.exports = router;
