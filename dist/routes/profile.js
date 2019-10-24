@@ -28,4 +28,22 @@ function insertProfile(_a) {
     console.log(name);
     //insert into mongodb
 }
+// LOGIN
+// GET
+router.get('/login', function (req, res, next) {
+    res.render('profile/login');
+});
+// POST
+router.post('/login', function (req, res) {
+    // http://mongodb.github.io/node-mongodb-native/3.2/api/Cursor.html#each
+    // https://docs.mongodb.com/manual/reference/method/cursor.forEach/
+    req.app.locals.db.collection("account").find({ username: req.body.username }, {}, function (err, result) {
+        result.forEach(function (doc) {
+            if (doc.username) {
+                console.log("user exists!");
+                // TO DO: redirect to profile page
+            }
+        });
+    });
+});
 module.exports = router;

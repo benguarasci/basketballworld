@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+    .main.container
+        .row
+            .col-md-6.col-md-offset-3
+                h1.display-4.m-b-2 Login
+
+                // login form
+                form(method='POST' action='login')
+                    div.form-group
+                        label(for='username') Username:
+                        input#name.form-control(type='text' placeholder='Username' name='username')
+                    button.btn.btn-primary(type='submit') Login
