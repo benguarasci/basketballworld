@@ -9,15 +9,15 @@ block content
                 // register form
                 form(method='POST' action='/profile')
                     div.form-group
-                        label(for='name') Name:
-                        input#name.form-control(type='text' placeholder='first and last' name='name')
+                        p Name:
+                        input#name(type='text' placeholder='first and last' name='name')
                     div.form-group
-                        label(for='email') Email:
-                        input#email.form-control(type='email' placeholder='name@email.com' name='email')
+                        p Email:
+                        input#email(type='email' placeholder='name@email.com' name='email')
                     div.form-group
-                        label(for='pw') Password:
-                        input#pw.form-control(type='password' name='password')
+                        p Password:
+                        input#pw(type='password' name='password')
                     div.form-group
-                        label(for='pw2') Confirm Password:
-                        input#pw2.form-control(type='password' name='confirmPassword')
+                        p Confirm Password:
+                        input#pw2(type='password' name='confirmPassword')
                     button.btn.btn-primary(type='submit') Sign up

@@ -13,27 +13,19 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
     res.render('profile/create');
 });
-/* POST for profile creation. */
 router.post('/', function (req, res) {
     var name = req.body.name;
     var email = req.body.email;
-    var pw = req.body.pw;
-    var pw2 = req.body.pw2;
-    // notice how the contents of the form will be shown in the log
-    insertProfile({ req: req, res: res });
-    //see https://www.youtube.com/watch?v=voDummz1gO0 for help
+    var pw = req.body.password;
+    var pw2 = req.body.confirmPassword;
+    console.log(req.body);
+    if (pw === pw2) {
+    }
 });
-function insertProfile(_a) {
-    var req = _a.req, res = _a.res;
-    console.log(name);
-    //insert into mongodb
-}
 // LOGIN
-// GET
 router.get('/login', function (req, res, next) {
     res.render('profile/login');
 });
-// POST
 router.post('/login', function (req, res) {
     // http://mongodb.github.io/node-mongodb-native/3.2/api/Cursor.html#each
     // https://docs.mongodb.com/manual/reference/method/cursor.forEach/
@@ -41,7 +33,7 @@ router.post('/login', function (req, res) {
         result.forEach(function (doc) {
             if (doc.username) {
                 console.log("user exists!");
-                // TO DO: redirect to profile page
+                // TO DO: redirect to profile page and pass user model
             }
         });
     });
