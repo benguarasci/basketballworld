@@ -1,5 +1,8 @@
 import * as express from "express";
+import DbClient = require("../DbClient");
+
 let router = express.Router();
+
 
 /* GET profile page. */
 router.get('/', (req, res, next) => {
@@ -14,7 +17,22 @@ router.post('/', (req, res)=>{
     const pw2 = req.body.confirmPassword;
     console.log(req.body);
     if (pw === pw2) {
+        DbClient.connect()
+            .then((db: any) => {
+                db.collection("users").insertOne({name: name, email: email, pw: pw});
+            });
 
+        DbClient.connect()
+            .then((db: any) => {
+                return db!.collection("users").find().toArray();
+            })
+            .then((heroes:any) => {
+                console.log(heroes);
+                res.send(heroes);
+            })
+            .catch((err: any) => {
+                console.log("err.message");
+            });
     }
 });
 

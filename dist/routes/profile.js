@@ -8,6 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = __importStar(require("express"));
+var DbClient = require("../DbClient");
 var router = express.Router();
 /* GET profile page. */
 router.get('/', function (req, res, next) {
@@ -20,6 +21,21 @@ router.post('/', function (req, res) {
     var pw2 = req.body.confirmPassword;
     console.log(req.body);
     if (pw === pw2) {
+        DbClient.connect()
+            .then(function (db) {
+            db.collection("users").insertOne({ name: name, email: email, pw: pw });
+        });
+        DbClient.connect()
+            .then(function (db) {
+            return db.collection("users").find().toArray();
+        })
+            .then(function (heroes) {
+            console.log(heroes);
+            res.send(heroes);
+        })
+            .catch(function (err) {
+            console.log("err.message");
+        });
     }
 });
 // LOGIN

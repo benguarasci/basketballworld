@@ -59,11 +59,11 @@ app.use(function(err, req, res, next) {
 });
 
 // setup database
-const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true });
-client.connect((err: any) => {
-    app.locals.db = client.db("nba");
-});
+// const MongoClient = require('mongodb').MongoClient;
+// const uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useNewUrlParser: true });
+// client.connect((err: any) => {
+//     app.locals.db = client.db("nba");
+// });
 
 module.exports = app;
