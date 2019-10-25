@@ -1,23 +1,20 @@
 extends ../layout
 
 block content
-    .main.container
-        .row
-            .col-md-6.col-md-offset-3
-                h1.display-4.m-b-2 Sign Up
+                h1(style='padding-left: 15px; font-weight:bold') CREATE ACCOUNT
 
-                // register form
-                form(method='POST' action='/profile')
-                    div.form-group
-                        label(for='name') Name:
-                        input#name.form-control(type='text' placeholder='first and last' name='name')
-                    div.form-group
-                        label(for='email') Email:
-                        input#email.form-control(type='email' placeholder='name@email.com' name='email')
-                    div.form-group
-                        label(for='pw') Password:
-                        input#pw.form-control(type='password' name='password')
-                    div.form-group
-                        label(for='pw2') Confirm Password:
-                        input#pw2.form-control(type='password' name='confirmPassword')
-                    button.btn.btn-primary(type='submit') Sign up
+                form
+                    label(for='fname') Username
+                    input#fname(type='text' name='name' placeholder='Kawhi Leonard')
+                    label(for='email') Email
+                    input#email(type='email' name='email' placeholder='kawhi@gmail.com')
+                    label(for='pw') Password:
+                    input#pw(type='password' name='password')
+                    label(for='pw2') Confirm Password:
+                    input#pw2(type='password' name='confirmPassword')
+                    input(type='submit' value='REGISTER')
+
+                    p(style='text-align: center') already have an account?
+                    a(href='/profile/login') Login
+
+                    //input(type='submit' value = "LOGIN" href='/profile/login')

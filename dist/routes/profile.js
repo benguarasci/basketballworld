@@ -10,8 +10,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = __importStar(require("express"));
 var router = express.Router();
 /* GET profile page. */
-router.get('/', function (req, res, next) {
+router.get('/create', function (req, res, next) {
     res.render('profile/create');
+});
+/* GET login page. */
+router.get('/login', function (req, res, next) {
+    res.render('profile/login');
 });
 /* POST for profile creation. */
 router.post('/', function (req, res) {

@@ -2,8 +2,13 @@ import * as express from "express";
 let router = express.Router();
 
 /* GET profile page. */
-router.get('/', (req, res, next) => {
+router.get('/create', (req, res, next) => {
     res.render('profile/create');
+});
+
+/* GET login page. */
+router.get('/login', (req, res, next) => {
+    res.render('profile/login');
 });
 
 /* POST for profile creation. */

@@ -1,14 +1,70 @@
 body {
-  font: 14px Arial, Helvetica, sans-serif;
+  font: 14px Helvetica Neue,Arial Narrow,sans-serif;;
+  #NBABLUEbackground-color: #026bb6;
+  margin: 0;
+  padding-left: 0;
+  background-color: gainsboro;
 }
 
-ul {
+div.banner {
+  font-family: Helvetica Neue,Arial Narrow,sans-serif;
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
+
+ #NBAREDbackground-color: #f40837;
+  background-color: #0a3765;
 }
+div.display {
+
+  list-style-type: none;
+  font-family: Helvetica Neue,Arial Narrow,sans-serif;
+  font-weight: 400;
+  margin: 0;
+  overflow: hidden;
+  color: white;
+  padding: 0 0 0 75px;
+  position: relative;
+
+  background-color: #1d428a;
+}
+div.content{
+  max-width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  display: inline-block;
+  background: #f1f1f1;
+}
+
+div.form-group{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+/*button{
+  background-color: orangered;
+  margin: 5px 0 22px 0;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  transition-duration: 0.4s;
+  font-weight: bold;
+}
+
+button:hover{
+  background-color: white;
+  color: orangered;
+  border: 2px solid orangered;
+  padding: 13px 30px;
+  transition-duration: 0.4s;
+}*/
 
 li {
   float: left;
@@ -18,12 +74,104 @@ li a {
   display: block;
   color: white;
   text-align: center;
-  padding: 14px 16px;
+  padding: 5px 10px 5px 10px;
   text-decoration: none;
+  transition-duration: 0.4s;
+
 }
 
 /* Change the link color to #111 (black) on hover */
 li a:hover {
-  background-color: #111;
+  background-color: #026bb6;
 }
+
+input[type=text], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=email], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=password], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  width: 100%;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  cursor: pointer;
+  background-color: orangered;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border: 2px solid orangered;
+  font-size: 16px;
+  border-radius: 8px;
+  transition-duration: 0.4s;
+  font-weight: bold;
+}
+
+input[type=submit]:hover {
+  background-color: white;
+  color: orangered;
+  border: 2px solid orangered;
+  padding: 14px 20px;
+  transition-duration: 0.4s;
+}
+
+input[type=login] {
+  width: 100%;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  cursor: pointer;
+  background-color: orangered;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border: 2px solid orangered;
+  font-size: 16px;
+  border-radius: 8px;
+  transition-duration: 0.4s;
+  font-weight: bold;
+}
+
+input[type=login]:hover {
+  background-color: white;
+  color: orangered;
+  border: 2px solid orangered;
+  padding: 14px 20px;
+  transition-duration: 0.4s;
+}
+
+div {
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+div.newsfeed{
+
+}
+
 
