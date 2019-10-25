@@ -51,5 +51,7 @@ app.use(function (err, req, res, next) {
 var MongoClient = require('mongodb').MongoClient;
 var uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test?retryWrites=true&w=majority";
 var client = new MongoClient(uri, { useNewUrlParser: true });
-app.locals.db = client.db;
+client.connect(function (err) {
+    app.locals.db = client.db("nba");
+});
 module.exports = app;

@@ -10,26 +10,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = __importStar(require("express"));
 var router = express.Router();
 /* GET profile page. */
-router.get('/create', function (req, res, next) {
+router.get('/', function (req, res, next) {
     res.render('profile/create');
 });
-/* GET login page. */
-router.get('/login', function (req, res, next) {
-    res.render('profile/login');
-});
-/* POST for profile creation. */
 router.post('/', function (req, res) {
     var name = req.body.name;
     var email = req.body.email;
-    var pw = req.body.pw;
-    var pw2 = req.body.pw2;
-    // notice how the contents of the form will be shown in the log
-    insertProfile({ req: req, res: res });
-    //see https://www.youtube.com/watch?v=voDummz1gO0 for help
+    var pw = req.body.password;
+    var pw2 = req.body.confirmPassword;
+    console.log(req.body);
+    if (pw === pw2) {
+    }
 });
-function insertProfile(_a) {
-    var req = _a.req, res = _a.res;
-    console.log(name);
-    //insert into mongodb
-}
+// LOGIN
+router.get('/login', function (req, res, next) {
+    res.render('profile/login');
+});
+router.post('/login', function (req, res) {
+    // http://mongodb.github.io/node-mongodb-native/3.2/api/Cursor.html#each
+    // https://docs.mongodb.com/manual/reference/method/cursor.forEach/
+    req.app.locals.db.collection("account").find({ username: req.body.username }, {}, function (err, result) {
+        result.forEach(function (doc) {
+            if (doc.username) {
+                console.log("user exists!");
+                // TO DO: redirect to profile page and pass user model
+            }
+        });
+    });
+});
 module.exports = router;
