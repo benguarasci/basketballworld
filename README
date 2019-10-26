@@ -5,7 +5,7 @@ Cole Dodd
 
 BasketballWorld - a forum for basketball related discussion
 
-**M3**
+***M3***
 We satisfied the 'Create Thread' and 'Sign Up' user stories
 By navigating to the Threads button you can view created threads, and add to them with the 'make a post' button
 You can sign up and the login data will persist. The data entered is sanitized to be a correct email format,
