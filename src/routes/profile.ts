@@ -17,6 +17,7 @@ router.post('/', (req, res)=>{
     const pw2 = req.body.confirmPassword;
     console.log(req.body);
     if (pw === pw2) {
+        console.log("tree people");
         DbClient.connect()
             .then((db: any) => {
                 db.collection("users").insertOne({name: name, email: email, pw: pw});
