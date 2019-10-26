@@ -20,9 +20,10 @@ router.post('/create', (req, res)=>{
         .then((db: any) => {
             return db!.collection("users").find({name: name}).toArray();
         }).then((array : any)=> {
-
-            res.send("user name taken");
-            return;
+            if (array.length != 0) {
+                res.send("user name taken");
+                return;
+            }
         });
 
     //checking to see if passwords match

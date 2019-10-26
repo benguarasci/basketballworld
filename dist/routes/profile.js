@@ -25,8 +25,10 @@ router.post('/create', function (req, res) {
         .then(function (db) {
         return db.collection("users").find({ name: name }).toArray();
     }).then(function (array) {
-        res.send("user name taken");
-        return;
+        if (array.length != 0) {
+            res.send("user name taken");
+            return;
+        }
     });
     //checking to see if passwords match
     if (pw === pw2) {
