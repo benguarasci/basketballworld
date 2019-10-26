@@ -10,30 +10,33 @@ router.get('/create', (req, res, next) => {
 });
 
 
-router.post('/', (req, res)=>{
-    const name = req.body.name;
-    const email = req.body.email;
-    const pw = req.body.password;
-    const pw2 = req.body.confirmPassword;
+router.post('/create', (req, res)=>{
+    let name = req.body.name;
+    let email = req.body.email;
+    let pw = req.body.password;
+    let pw2 = req.body.confirmPassword;
     console.log(req.body);
     if (pw === pw2) {
-        console.log("tree people");
         DbClient.connect()
             .then((db: any) => {
-                db.collection("users").insertOne({name: name, email: email, pw: pw});
+                return db.collection("users").insertOne({name: name, email: email, pw: pw});
+            })
+            .catch((err: any) => {
+                console.log("err.message");
             });
 
         DbClient.connect()
             .then((db: any) => {
                 return db!.collection("users").find().toArray();
             })
-            .then((heroes:any) => {
-                console.log(heroes);
-                res.send(heroes);
+            .then((result:any) => {
+                console.log(result);
+                res.send(result);
             })
             .catch((err: any) => {
                 console.log("err.message");
             });
+        res.render('profile/create');
     }
 });
 
@@ -43,20 +46,35 @@ router.get('/login', function (req, res, next) {
     res.render('profile/login');
 });
 
-router.post('/login', function(req,res){
+router.post('/login', (req, res)=>{
+    let name = req.body.name;
+    let pw = req.body.password;
+    DbClient.connect()
+        .then((db: any)=>{
+            return db!.collection("users").findOne({name : name, pw: pw});
+        })
+        .then((item: any)=>{
+            if (item == undefined) res.send("sorry");
+            else res.send(item);
 
-    // http://mongodb.github.io/node-mongodb-native/3.2/api/Cursor.html#each
-    // https://docs.mongodb.com/manual/reference/method/cursor.forEach/
 
-    req.app.locals.db.collection("account").find({username: req.body.username}, {}, (err: any, result: any) =>  {
-        result.forEach( function(doc: any) {
-            if(doc.username) {
-                console.log("user exists!");
-                // TO DO: redirect to profile page and pass user model
-            }
+            DbClient.connect()
+                .then((db: any) => {
+                    return db!.collection("users").find().toArray();
+                })
+                .then((result:any) => {
+                    console.log(result);
+                    return res.send(result);
+                })
+                .catch((err: any) => {
+                    console.log("err.message");
+                });
+
+        })
+        .catch((err: any) => {
+            console.log("err.message");
+            res.send("death");
         });
-    });
-
 });
 
 module.exports = router;

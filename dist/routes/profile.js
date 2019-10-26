@@ -14,29 +14,32 @@ var router = express.Router();
 router.get('/create', function (req, res, next) {
     res.render('profile/create');
 });
-router.post('/', function (req, res) {
+router.post('/create', function (req, res) {
     var name = req.body.name;
     var email = req.body.email;
     var pw = req.body.password;
     var pw2 = req.body.confirmPassword;
     console.log(req.body);
     if (pw === pw2) {
-        console.log("tree people");
         DbClient.connect()
             .then(function (db) {
-            db.collection("users").insertOne({ name: name, email: email, pw: pw });
+            return db.collection("users").insertOne({ name: name, email: email, pw: pw });
+        })
+            .catch(function (err) {
+            console.log("err.message");
         });
         DbClient.connect()
             .then(function (db) {
             return db.collection("users").find().toArray();
         })
-            .then(function (heroes) {
-            console.log(heroes);
-            res.send(heroes);
+            .then(function (result) {
+            console.log(result);
+            res.send(result);
         })
             .catch(function (err) {
             console.log("err.message");
         });
+        res.render('profile/create');
     }
 });
 // LOGIN
@@ -44,15 +47,32 @@ router.get('/login', function (req, res, next) {
     res.render('profile/login');
 });
 router.post('/login', function (req, res) {
-    // http://mongodb.github.io/node-mongodb-native/3.2/api/Cursor.html#each
-    // https://docs.mongodb.com/manual/reference/method/cursor.forEach/
-    req.app.locals.db.collection("account").find({ username: req.body.username }, {}, function (err, result) {
-        result.forEach(function (doc) {
-            if (doc.username) {
-                console.log("user exists!");
-                // TO DO: redirect to profile page and pass user model
-            }
+    var name = req.body.name;
+    var pw = req.body.password;
+    DbClient.connect()
+        .then(function (db) {
+        return db.collection("users").findOne({ name: name, pw: pw });
+    })
+        .then(function (item) {
+        if (item == undefined)
+            res.send("sorry");
+        else
+            res.send(item);
+        DbClient.connect()
+            .then(function (db) {
+            return db.collection("users").find().toArray();
+        })
+            .then(function (result) {
+            console.log(result);
+            return res.send(result);
+        })
+            .catch(function (err) {
+            console.log("err.message");
         });
+    })
+        .catch(function (err) {
+        console.log("err.message");
+        res.send("death");
     });
 });
 module.exports = router;
