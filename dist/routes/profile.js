@@ -10,44 +10,46 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = __importStar(require("express"));
 var DbClient = require("../DbClient");
 var router = express.Router();
-//sending create profile page to client
-router.get('/create', function (req, res, next) {
-    res.render('profile/create');
+// sending create profile page to client
+router.get("/create", function (req, res, next) {
+    res.render("profile/create");
 });
-//create user account request
-router.post('/create', function (req, res) {
+// create user account request
+router.post("/create", function (req, res) {
     var name = req.body.name;
     var email = req.body.email;
     var pw = req.body.password;
     var pw2 = req.body.confirmPassword;
     var exit = false;
-    //if there are empty fields in form
-    if (name === '' || email === '' || pw === '' || pw2 === '') {
+    // if there are empty fields in form
+    if (name === "" || email === "" || pw === "" || pw2 === "") {
         res.send("missing credentials");
         return;
     }
-    //checking to see if username already exists
+    // checking to see if username already exists
     DbClient.connect()
         .then(function (db) {
         return db.collection("users").find({ name: name }).toArray();
     }).then(function (array) {
-        if (array.length != 0) {
+        if (array.length !== 0) {
             res.send("user name taken");
             exit = true;
             return;
         }
     });
-    if (exit)
+    if (exit) {
         return;
-    //checking to see if passwords match
+    }
+    // checking to see if passwords match
     if (pw === pw2) {
         DbClient.connect()
             .then(function (db) {
-            //adding new account to database
+            // adding new account to database
             return db.collection("users").insertOne({ name: name, email: email, pw: pw });
         })
             .then(function (db) {
-            res.send("account creation success"); //responding that account creation was success
+            // responding that account creation was success
+            res.send("account creation success");
         })
             .catch(function (err) {
             console.log(err.message);
@@ -57,26 +59,28 @@ router.post('/create', function (req, res) {
         res.send("password and password confirmation is not same");
     }
 });
-//sending login page to client
-router.get('/login', function (req, res, next) {
-    res.render('profile/login');
+// sending login page to client
+router.get("/login", function (req, res, next) {
+    res.render("profile/login");
 });
-//handling login request from client
-router.post('/login', function (req, res) {
+// handling login request from client
+router.post("/login", function (req, res) {
     var name = req.body.name;
     var pw = req.body.password;
     DbClient.connect()
         .then(function (db) {
-        //finding account in database that matches provided credentials
+        // finding account in database that matches provided credentials
         return db.collection("users").findOne({ name: name, pw: pw });
     })
         .then(function (item) {
-        //no account matching search was found
-        if (item == undefined)
+        // no account matching search was found
+        if (item === undefined) {
             res.send("sorry");
-        //sending account information if successful
-        else
+        }
+        else {
+            // sending account information if successful
             res.send(item);
+        }
     })
         .catch(function (err) {
         console.log(err.message);

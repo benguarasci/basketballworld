@@ -1,23 +1,19 @@
 import * as express from "express";
 import DbClient = require("../DbClient");
 
-let router = express.Router();
-
+const router = express.Router();
 
 /* GET view page. */
-router.get('/view', (req, res, next) => {
+router.get("/view", (req, res, next) => {
     DbClient.connect()
         .then((db: any) => {
             return db!.collection("threads").find().toArray();
-            //let myJSON = JSON.stringify(threads);
-
-            //res.render('threads/view' , {title: "hi", content: "hello"});
 
         })
-        .then((result:any) => {
+        .then((result: any) => {
             console.log(result);
-            let myJSON = JSON.stringify(result);
-            res.render('threads/view' , {title: myJSON, content: "hi"});
+            const myJSON = JSON.stringify(result);
+            res.render("threads/view" , {title: myJSON, content: "hi"});
 
         })
         .catch((err: any) => {
@@ -26,13 +22,13 @@ router.get('/view', (req, res, next) => {
 
 });
 
-router.get('/create', (req, res, next) => {
-    res.render('threads/create');
+router.get("/create", (req, res, next) => {
+    res.render("threads/create");
 });
 
-router.post('/create', (req, res)=>{
-    let title = req.body.title;
-    let content = req.body.content;
+router.post("/create", (req, res) => {
+    const title = req.body.title;
+    const content = req.body.content;
 
     DbClient.connect()
         .then((db: any) => {
@@ -46,7 +42,7 @@ router.post('/create', (req, res)=>{
         .then((db: any) => {
             return db!.collection("threads").find().toArray();
         })
-        .then((result:any) => {
+        .then((result: any) => {
             console.log(result);
             res.send(result);
         })
@@ -54,7 +50,7 @@ router.post('/create', (req, res)=>{
             console.log(err.message);
         });
 
-    res.render('threads/create');
+    res.render("threads/create");
 
 });
 
