@@ -20,6 +20,12 @@ router.post('/create', function (req, res) {
     var email = req.body.email;
     var pw = req.body.password;
     var pw2 = req.body.confirmPassword;
+    var exit = false;
+    //if there are empty fields in form
+    if (name === '' || email === '' || pw === '' || pw2 === '') {
+        res.send("missing credentials");
+        return;
+    }
     //checking to see if username already exists
     DbClient.connect()
         .then(function (db) {
@@ -27,9 +33,12 @@ router.post('/create', function (req, res) {
     }).then(function (array) {
         if (array.length != 0) {
             res.send("user name taken");
+            exit = true;
             return;
         }
     });
+    if (exit)
+        return;
     //checking to see if passwords match
     if (pw === pw2) {
         DbClient.connect()
@@ -47,7 +56,6 @@ router.post('/create', function (req, res) {
     else {
         res.send("password and password confirmation is not same");
     }
-    //res.render('profile/create');
 });
 //sending login page to client
 router.get('/login', function (req, res, next) {
