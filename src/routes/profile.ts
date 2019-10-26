@@ -3,77 +3,69 @@ import DbClient = require("../DbClient");
 
 let router = express.Router();
 
-
-/* GET profile page. */
+//sending create profile page to client
 router.get('/create', (req, res, next) => {
     res.render('profile/create');
 });
 
-
+//create user account request
 router.post('/create', (req, res)=>{
     let name = req.body.name;
     let email = req.body.email;
     let pw = req.body.password;
     let pw2 = req.body.confirmPassword;
-    console.log(req.body);
+
+    //checking to see if username already exists
+    DbClient.connect()
+        .then((db: any) => {
+            return db!.collection("users").find({name: name}).toArray();
+        }).then((array : any)=> {
+
+            res.send("user name taken");
+            return;
+        });
+
+    //checking to see if passwords match
     if (pw === pw2) {
         DbClient.connect()
             .then((db: any) => {
-                return db.collection("users").insertOne({name: name, email: email, pw: pw});
+                //adding new account to database
+                return db!.collection("users").insertOne({name: name, email: email, pw: pw});
+            })
+            .then((db: any)=>{
+                res.send("account creation success"); //responding that account creation was success
             })
             .catch((err: any) => {
-                console.log("err.message");
+                console.log(err.message);
             });
-
-        DbClient.connect()
-            .then((db: any) => {
-                return db!.collection("users").find().toArray();
-            })
-            .then((result:any) => {
-                console.log(result);
-                res.send(result);
-            })
-            .catch((err: any) => {
-                console.log("err.message");
-            });
-        res.render('profile/create');
+    } else {
+        res.send("password and password confirmation is not same");
     }
+    //res.render('profile/create');
 });
 
-// LOGIN
-
+//sending login page to client
 router.get('/login', function (req, res, next) {
     res.render('profile/login');
 });
 
+//handling login request from client
 router.post('/login', (req, res)=>{
     let name = req.body.name;
     let pw = req.body.password;
     DbClient.connect()
         .then((db: any)=>{
+            //finding account in database that matches provided credentials
             return db!.collection("users").findOne({name : name, pw: pw});
         })
         .then((item: any)=>{
+            //no account matching search was found
             if (item == undefined) res.send("sorry");
+            //sending account information if successful
             else res.send(item);
-
-
-            DbClient.connect()
-                .then((db: any) => {
-                    return db!.collection("users").find().toArray();
-                })
-                .then((result:any) => {
-                    console.log(result);
-                    return res.send(result);
-                })
-                .catch((err: any) => {
-                    console.log("err.message");
-                });
-
         })
         .catch((err: any) => {
-            console.log("err.message");
-            res.send("death");
+            console.log(err.message);
         });
 });
 
