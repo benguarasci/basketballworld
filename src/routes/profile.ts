@@ -5,7 +5,7 @@ let router = express.Router();
 
 
 /* GET profile page. */
-router.get('/', (req, res, next) => {
+router.get('/create', (req, res, next) => {
     res.render('profile/create');
 });
 

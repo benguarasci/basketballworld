@@ -11,7 +11,7 @@ var express = __importStar(require("express"));
 var DbClient = require("../DbClient");
 var router = express.Router();
 /* GET profile page. */
-router.get('/', function (req, res, next) {
+router.get('/create', function (req, res, next) {
     res.render('profile/create');
 });
 router.post('/', function (req, res) {
