@@ -1,69 +1,93 @@
 import * as express from "express";
-import {User} from "../models/user";
-let router = express.Router();
+import DbClient = require("../DbClient");
 
-/* GET profile page. */
-router.get('/create', (req, res, next) => {
-    res.render('profile/create');
+const router = express.Router();
+
+// sending create profile page to client
+router.get("/create", (req, res, next) => {
+    res.render("profile/create");
 });
 
-
-router.post('/', (req, res)=>{
+// create user account request
+router.post("/create", (req, res) => {
+    console.log("hello popsicles");
     const name = req.body.name;
     const email = req.body.email;
     const pw = req.body.password;
     const pw2 = req.body.confirmPassword;
-    console.log(req.body);
-    if (pw === pw2) {
+    let exit = false;
 
+    // if there are empty fields in form
+    if (name === "" || email === "" || pw === "" || pw2 === "") {
+        res.send("missing credentials");
+        return;
+    }
+
+    // checking to see if username already exists
+    DbClient.connect()
+        .then((db: any) => {
+            return db!.collection("users").find({name: name}).toArray();
+        }).then((array: any) => {
+            if (array.length !== 0) {
+                res.send("user name taken");
+                exit = true;
+                return;
+            }
+        });
+    if (exit) {
+        return;
+    }
+
+    // checking to see if passwords match
+    if (pw === pw2) {
+        DbClient.connect()
+            .then((db: any) => {
+                // adding new account to database
+                return db!.collection("users").insertOne({name: name, email: email, pw: pw});
+            })
+            .then((db: any) => {
+                // responding that account creation was success
+                res.send("account creation success");
+            })
+            .catch((err: any) => {
+                console.log(err.message);
+            });
+    } else {
+        res.send("password and password confirmation is not same");
     }
 });
+//sending account page to client
+router.get("/account", function(req, res, next) {
+    res.render("profile/account");
+});
 
-// LOGIN
+// sending login page to client
+router.get("/login", function(req, res, next) {
+    res.render("profile/login");
+});
 
-router.post('/login', function(req,res){
-
-    // http://mongodb.github.io/node-mongodb-native/3.2/api/Cursor.html#each
-    // https://docs.mongodb.com/manual/reference/method/cursor.forEach/
-
-    req.app.locals.db.collection("account").find({username: req.body.username}, {}, (err: any, result: any) =>  {
-        result.forEach( function(doc: any) {
-            if(doc.username) {
-                console.log("user exists!");
-                // TO DO: redirect to profile page and pass user model
+// handling login request from client
+router.post("/login", (req, res) => {
+    console.log("kill me");
+    const name = req.body.name;
+    const pw = req.body.password;
+    DbClient.connect()
+        .then((db: any) => {
+            // finding account in database that matches provided credentials
+            return db!.collection("users").findOne({name : name, pw: pw});
+        })
+        .then((item: any) => {
+            // no account matching search was found
+            if (item === undefined) {
+                res.send("sorry");
+            } else {
+                // sending account information if successful
+                res.send(item);
             }
+        })
+        .catch((err: any) => {
+            console.log(err.message);
         });
-    });
-
-});
-
-
-router.get('/account', function (req, res, next) {
-    res.render('profile/account');
-});
-
-
-
-// LOGIN
-
-router.get('/login', function (req, res, next) {
-    res.render('profile/login');
-});
-
-router.post('/login', function(req,res){
-
-    // http://mongodb.github.io/node-mongodb-native/3.2/api/Cursor.html#each
-    // https://docs.mongodb.com/manual/reference/method/cursor.forEach/
-
-    req.app.locals.db.collection("account").find({username: req.body.username}, {}, (err: any, result: any) =>  {
-        result.forEach( function(doc: any) {
-            if(doc.username) {
-                console.log("user exists!");
-                // TO DO: redirect to profile page and pass user model
-            }
-        });
-    });
-
 });
 
 module.exports = router;

@@ -3,7 +3,7 @@ extends ../layout
 block content
                 h1(style='padding-left: 15px; font-weight:bold') CREATE ACCOUNT
 
-                form(action='/profile/account')
+                form(method = "POST" action='/profile/create')
                     label(for='fname') Username
                     input#fname(type='text' name='name' placeholder='Kawhi Leonard')
                     label(for='email') Email

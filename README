@@ -4,3 +4,22 @@ Eli Brooks
 Cole Dodd
 
 BasketballWorld - a forum for basketball related discussion
+
+***M3***
+We satisfied the 'Create Thread' and 'Sign Up' user stories
+By navigating to the Threads button you can view created threads, and add to them with the 'make a post' button
+You can sign up and the login data will persist. The data entered is sanitized to be a correct email format,
+confirm password field and password field are checked to be the same.
+
+To run make sure to follow the DB setup from the lab3
+Run the DB Setup locally
+Then launch the project through in webstorm
+Go to localhost:3000 in any web browser when it is live
+
+TSLint is used for static code analysis
+Travis is used for automated tests on every build
+
+PROBLEMS FACED THIS ITERATION:
+There were many. The worst being that we couldnt get the cloud mongo db setup and went instead with the local db
+setup, we hope to go back to the cloud by M3.5. Learning all of the new languages was a challenge. It is difficult
+to plan or do any high level decision making effectively when you are doing and learning something completely new.
