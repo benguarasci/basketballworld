@@ -3,7 +3,7 @@ extends ../layout
 block content
                 h1(style='padding-left: 15px; font-weight:bold') CREATE ACCOUNT
 
-                form
+                form(action='/profile/account')
                     label(for='fname') Username
                     input#fname(type='text' name='name' placeholder='Kawhi Leonard')
                     label(for='email') Email
@@ -12,9 +12,10 @@ block content
                     input#pw(type='password' name='password')
                     label(for='pw2') Confirm Password:
                     input#pw2(type='password' name='confirmPassword')
-                    input(type='submit' value='REGISTER')
+                    input(type='submit' value='REGISTER' onclick="window.location='/profile/account';")
 
                     p(style='text-align: center') already have an account?
-                    a(href='/profile/login') Login
+                    center
+                        a(href='/profile/login') Login
 
                     //input(type='submit' value = "LOGIN" href='/profile/login')

@@ -3,7 +3,7 @@ extends ../layout
 block content
         h1(style='padding-left: 15px; font-weight:bold') LOGIN
 
-        form(style='display: inline-block;')
+        form(action='/profile/account')
             label(for='fname') Username/Email
             input#fname(type='text' name='name' placeholder='Kawhi Leonard')
             label(for='pw') Password:

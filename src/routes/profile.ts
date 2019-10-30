@@ -1,8 +1,9 @@
 import * as express from "express";
+import {User} from "../models/user";
 let router = express.Router();
 
 /* GET profile page. */
-router.get('/', (req, res, next) => {
+router.get('/create', (req, res, next) => {
     res.render('profile/create');
 });
 
@@ -17,6 +18,31 @@ router.post('/', (req, res)=>{
 
     }
 });
+
+// LOGIN
+
+router.post('/login', function(req,res){
+
+    // http://mongodb.github.io/node-mongodb-native/3.2/api/Cursor.html#each
+    // https://docs.mongodb.com/manual/reference/method/cursor.forEach/
+
+    req.app.locals.db.collection("account").find({username: req.body.username}, {}, (err: any, result: any) =>  {
+        result.forEach( function(doc: any) {
+            if(doc.username) {
+                console.log("user exists!");
+                // TO DO: redirect to profile page and pass user model
+            }
+        });
+    });
+
+});
+
+
+router.get('/account', function (req, res, next) {
+    res.render('profile/account');
+});
+
+
 
 // LOGIN
 

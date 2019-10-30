@@ -76,13 +76,14 @@ li a {
   text-align: center;
   padding: 5px 10px 5px 10px;
   text-decoration: none;
-  transition-duration: 0.4s;
+
 
 }
 
 /* Change the link color to #111 (black) on hover */
 li a:hover {
   background-color: #026bb6;
+  transition-duration: 0.4s;
 }
 
 input[type=text], select {
@@ -168,6 +169,11 @@ input[type=login]:hover {
 div {
   background-color: #f2f2f2;
   padding: 20px;
+}
+
+a {
+  color: #026bb6;
+  align-content: center;
 }
 
 div.newsfeed{

@@ -10,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = __importStar(require("express"));
 var router = express.Router();
 /* GET profile page. */
-router.get('/', function (req, res, next) {
+router.get('/create', function (req, res, next) {
     res.render('profile/create');
 });
 router.post('/', function (req, res) {
@@ -21,6 +21,22 @@ router.post('/', function (req, res) {
     console.log(req.body);
     if (pw === pw2) {
     }
+});
+// LOGIN
+router.post('/login', function (req, res) {
+    // http://mongodb.github.io/node-mongodb-native/3.2/api/Cursor.html#each
+    // https://docs.mongodb.com/manual/reference/method/cursor.forEach/
+    req.app.locals.db.collection("account").find({ username: req.body.username }, {}, function (err, result) {
+        result.forEach(function (doc) {
+            if (doc.username) {
+                console.log("user exists!");
+                // TO DO: redirect to profile page and pass user model
+            }
+        });
+    });
+});
+router.get('/account', function (req, res, next) {
+    res.render('profile/account');
 });
 // LOGIN
 router.get('/login', function (req, res, next) {
