@@ -32,9 +32,10 @@ Marks deducted:
 - try to keep each QAS to a single quality.  (-1)
 - blend of feature and QA in the QAS. (-2)
 
-# Milestone 2    / 20
+# Milestone 2   12 / 20
 
 ## Marking Guide
+
 - technical writing is clear and concise (key decisions are documented; organization is easy to follow; basic English spelling and writing conventions adhered to)
 - design follows basic principles like cohesion/coupling, single responsibility, open/closed
 - design addresses QAR from M1
@@ -45,8 +46,16 @@ Marks deducted:
 - ADRs don't capture trivial design decisions
 
 ## Notes M2
+
 (explaining why marks were deducted)
 -----
+
+- Does not talk about addressing the QARs from M1 (-3)
+- Only one user stoty implementation is included in the Sequence diagram. That one is also not complete.  The user needs to get a response from the system after  successfully creating the account (-2)
+- No rationale behind the class/modules that implements the ASRs/QAS/User stories (-2)
+- The choice of Language and Database as ADR was very trivial (Since they were required for the project) (-1)
+
+
 
 
 # Milestone 3    / 20
