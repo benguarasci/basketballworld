@@ -2,16 +2,32 @@ import { MongoClient, Db } from "mongodb";
 
 class DbClient {
     private db!: Db;
+    //public database: any;
 
     public async connect() {
+        // setup cloud database
         try {
-            const client = await MongoClient.connect("mongodb://localhost:27017");
+            const MongoClient = require('mongodb').MongoClient;
+            const uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test"; //?retryWrites=true&w=majority append to conn string, commented out cuz idk what it does
+            const client = await MongoClient(uri, { useUnifiedTopology: true, useNewUrlParser: true }).connect();
             this.db = client.db("bbworld");
-            console.log("Connected to db");
+            console.log("Connected to cloud db");
             return this.db;
-        } catch (error) {
-            console.log("Unable to connect to db");
         }
+        catch( error ) {
+            console.log("Unable to connect to cloud db");
+            return;
+        }
+
+        // setup database
+        // try {
+        //     const client = await MongoClient.connect("mongodb://localhost:27017");
+        //     this.db = client.db("bbworld");
+        //     console.log("Connected to db");
+        //     return this.db;
+        // } catch (error) {
+        //     console.log("Unable to connect to db");
+        // }
     }
 }
 

@@ -34,27 +34,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var mongodb_1 = require("mongodb");
 var DbClient = /** @class */ (function () {
     function DbClient() {
     }
+    //public database: any;
     DbClient.prototype.connect = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var client, error_1;
+            var MongoClient_1, uri, client, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, mongodb_1.MongoClient.connect("mongodb://localhost:27017")];
+                        MongoClient_1 = require('mongodb').MongoClient;
+                        uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test";
+                        return [4 /*yield*/, MongoClient_1(uri, { useUnifiedTopology: true, useNewUrlParser: true }).connect()];
                     case 1:
                         client = _a.sent();
                         this.db = client.db("bbworld");
-                        console.log("Connected to db");
+                        console.log("Connected to cloud db");
                         return [2 /*return*/, this.db];
                     case 2:
                         error_1 = _a.sent();
-                        console.log("Unable to connect to db");
-                        return [3 /*break*/, 3];
+                        console.log("Unable to connect to cloud db");
+                        return [2 /*return*/];
                     case 3: return [2 /*return*/];
                 }
             });
