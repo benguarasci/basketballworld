@@ -10,6 +10,7 @@ router.get("/create", (req, res, next) => {
 
 // create user account request
 router.post("/create", (req, res) => {
+    console.log("hello popsicles");
     const name = req.body.name;
     const email = req.body.email;
     const pw = req.body.password;
@@ -55,6 +56,10 @@ router.post("/create", (req, res) => {
         res.send("password and password confirmation is not same");
     }
 });
+//sending account page to client
+router.get("/account", function(req, res, next) {
+    res.render("profile/account");
+});
 
 // sending login page to client
 router.get("/login", function(req, res, next) {
@@ -63,6 +68,7 @@ router.get("/login", function(req, res, next) {
 
 // handling login request from client
 router.post("/login", (req, res) => {
+    console.log("kill me");
     const name = req.body.name;
     const pw = req.body.password;
     DbClient.connect()

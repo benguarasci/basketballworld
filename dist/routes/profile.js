@@ -16,6 +16,7 @@ router.get("/create", function (req, res, next) {
 });
 // create user account request
 router.post("/create", function (req, res) {
+    console.log("hello popsicles");
     var name = req.body.name;
     var email = req.body.email;
     var pw = req.body.password;
@@ -59,12 +60,17 @@ router.post("/create", function (req, res) {
         res.send("password and password confirmation is not same");
     }
 });
+//sending account page to client
+router.get("/account", function (req, res, next) {
+    res.render("profile/account");
+});
 // sending login page to client
 router.get("/login", function (req, res, next) {
     res.render("profile/login");
 });
 // handling login request from client
 router.post("/login", function (req, res) {
+    console.log("kill me");
     var name = req.body.name;
     var pw = req.body.password;
     DbClient.connect()
