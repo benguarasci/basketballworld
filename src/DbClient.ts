@@ -18,16 +18,6 @@ class DbClient {
             console.log("Unable to connect to cloud db");
             return;
         }
-
-        // setup database
-        // try {
-        //     const client = await MongoClient.connect("mongodb://localhost:27017");
-        //     this.db = client.db("bbworld");
-        //     console.log("Connected to db");
-        //     return this.db;
-        // } catch (error) {
-        //     console.log("Unable to connect to db");
-        // }
     }
 }
 

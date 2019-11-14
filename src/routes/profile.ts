@@ -1,93 +1,97 @@
-import * as express from "express";
-import DbClient = require("../DbClient");
+import {Request, Response, NextFunction, Router} from "express";
 
-const router = express.Router();
+const express = require('express');
+const DbClient = require("../DbClient");
+const cookieParser = require('cookie-parser');
+const router = Router();
 
-// sending create profile page to client
-router.get("/create", (req, res, next) => {
+router.get("/create", (req : Request, res: Response, next: NextFunction) => {
+
+    //logged in clients should be unable to create accounts
+    if ("username" in req.cookies) {
+        res.send("you are already logged");
+        return;
+    }
+    //if client is not logged in, they can create account
     res.render("profile/create");
 });
 
-// create user account request
 router.post("/create", (req, res) => {
-    console.log("hello popsicles");
-    const name = req.body.name;
-    const email = req.body.email;
-    const pw = req.body.password;
-    const pw2 = req.body.confirmPassword;
-    let exit = false;
+    let name = req.body.name;
+    let email = req.body.email;
+    let pw = req.body.password;
+    let pw2 = req.body.confirmPassword;
 
-    // if there are empty fields in form
-    if (name === "" || email === "" || pw === "" || pw2 === "") {
+    //ensuring no field is empty
+    if (name === "" || email === "" || pw === "" || pw2 === "")
         res.send("missing credentials");
-        return;
-    }
-
-    // checking to see if username already exists
-    DbClient.connect()
-        .then((db: any) => {
-            return db!.collection("users").find({name: name}).toArray();
-        }).then((array: any) => {
-            if (array.length !== 0) {
-                res.send("user name taken");
-                exit = true;
-                return;
-            }
-        });
-    if (exit) {
-        return;
-    }
-
-    // checking to see if passwords match
-    if (pw === pw2) {
+    else if (pw !== pw2) //ensuring passwords match
+        res.send("passwords do not match");
+    else if (searchDb4User(name) === undefined) //ensuring unique username
+        {console.log(searchDb4User(name));
+        res.send("username already taken");
+        }
+    else
+    //inserting new account into database
         DbClient.connect()
-            .then((db: any) => {
-                // adding new account to database
-                return db!.collection("users").insertOne({name: name, email: email, pw: pw});
+            //inserting item into database
+            .then((db: any) => db!.collection("users").insertOne({name: name, email: email, pw: pw}))
+            .then ((bool: any) => {
+                if (bool === false) res.send("account creation failed");
+                else { //if account creation was a success
+                    res.cookie("username", name);
+                    res.send("account creation success");
+                }
             })
-            .then((db: any) => {
-                // responding that account creation was success
-                res.send("account creation success");
-            })
-            .catch((err: any) => {
-                console.log(err.message);
-            });
-    } else {
-        res.send("password and password confirmation is not same");
-    }
-});
-//sending account page to client
-router.get("/account", function(req, res, next) {
-    res.render("profile/account");
+            .catch ((err:any) => {console.log(err.message)});
 });
 
-// sending login page to client
-router.get("/login", function(req, res, next) {
+router.get("/login", (req, res, next) => {
+    if ("username" in req.cookies) {
+        res.send("you are already logged");
+        return;
+    }
+    //if client is not logged in, they can create account
     res.render("profile/login");
 });
 
-// handling login request from client
 router.post("/login", (req, res) => {
-    console.log("kill me");
-    const name = req.body.name;
-    const pw = req.body.password;
+   let name = req.body.name;
+   let pw = req.body.password;
+   let account = searchDb4User(name);
+
+   if (account === null) res.send("can't find account, sorry");
+   else if (account.pw !== pw) res.send("password is incorrect");
+   else {
+       res.cookie("username", name);
+       res.send("login successful");
+   }
+});
+
+
+router.get("/account", (req, res, next) => {
+    res.send(req.cookies);
+});
+
+router.get("/logout", (req, res, next) => {
+    res.clearCookie("username");
+    res.send("logout successful");
+});
+
+//returns a query for a specific user
+const searchDb4User = (user : string) => {
+    let ret:any = null;
     DbClient.connect()
         .then((db: any) => {
-            // finding account in database that matches provided credentials
-            return db!.collection("users").findOne({name : name, pw: pw});
+            return db!.collection("users").findOne({name: user});
         })
-        .then((item: any) => {
-            // no account matching search was found
-            if (item === undefined) {
-                res.send("sorry");
-            } else {
-                // sending account information if successful
-                res.send(item);
-            }
+        .then((object: any)=>{
+            ret = object;
         })
-        .catch((err: any) => {
+        .catch ((err: any)=>{
             console.log(err.message);
         });
-});
+    return ret;
+};
 
 module.exports = router;
