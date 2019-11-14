@@ -24,25 +24,33 @@ router.post("/create", function (req, res) {
         res.send("missing credentials");
     else if (pw !== pw2) //ensuring passwords match
         res.send("passwords do not match");
-    else if (searchDb4User(name) === undefined) //ensuring unique username
-     {
-        console.log(searchDb4User(name));
-        res.send("username already taken");
-    }
-    else
-        //inserting new account into database
+    else {
+        var myDB_1;
         DbClient.connect()
-            //inserting item into database
-            .then(function (db) { return db.collection("users").insertOne({ name: name, email: email, pw: pw }); })
-            .then(function (bool) {
-            if (bool === false)
-                res.send("account creation failed");
-            else { //if account creation was a success
-                res.cookie("username", name);
-                res.send("account creation success");
+            .then(function (db) {
+            myDB_1 = db;
+            return db.collection("users").findOne({ name: name });
+        }).then(function (account) {
+            if (account !== null) {
+                console.log(account);
+                res.send("username taken");
             }
-        })
-            .catch(function (err) { console.log(err.message); });
+            else {
+                myDB_1.collection("users").insertOne({ name: name, email: email, pw: pw })
+                    .then(function (object) {
+                    if (object != null) {
+                        res.cookie("username", name);
+                        res.send("account creation success");
+                    }
+                    else {
+                        res.send("account creation failed");
+                    }
+                }).catch(function (err) {
+                    console.log(err.message);
+                });
+            }
+        });
+    }
 });
 router.get("/login", function (req, res, next) {
     if ("username" in req.cookies) {
@@ -55,15 +63,20 @@ router.get("/login", function (req, res, next) {
 router.post("/login", function (req, res) {
     var name = req.body.name;
     var pw = req.body.password;
-    var account = searchDb4User(name);
-    if (account === null)
-        res.send("can't find account, sorry");
-    else if (account.pw !== pw)
-        res.send("password is incorrect");
-    else {
-        res.cookie("username", name);
-        res.send("login successful");
-    }
+    DbClient.connect()
+        .then(function (db) { return db.collection("users").findOne({ name: name }); })
+        .then(function (account) {
+        if (account === null)
+            res.send("can't find account, sorry");
+        else if (account.pw !== pw)
+            res.send("username or password is incorrect");
+        else {
+            res.cookie("username", name);
+            res.send("login successful");
+        }
+    }).catch(function (err) {
+        console.log(err.message);
+    });
 });
 router.get("/account", function (req, res, next) {
     res.send(req.cookies);
@@ -72,19 +85,4 @@ router.get("/logout", function (req, res, next) {
     res.clearCookie("username");
     res.send("logout successful");
 });
-//returns a query for a specific user
-var searchDb4User = function (user) {
-    var ret = null;
-    DbClient.connect()
-        .then(function (db) {
-        return db.collection("users").findOne({ name: user });
-    })
-        .then(function (object) {
-        ret = object;
-    })
-        .catch(function (err) {
-        console.log(err.message);
-    });
-    return ret;
-};
 module.exports = router;

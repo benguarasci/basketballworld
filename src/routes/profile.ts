@@ -27,23 +27,32 @@ router.post("/create", (req, res) => {
         res.send("missing credentials");
     else if (pw !== pw2) //ensuring passwords match
         res.send("passwords do not match");
-    else if (searchDb4User(name) === undefined) //ensuring unique username
-        {console.log(searchDb4User(name));
-        res.send("username already taken");
-        }
-    else
-    //inserting new account into database
+    else {
+        let myDB : any;
         DbClient.connect()
-            //inserting item into database
-            .then((db: any) => db!.collection("users").insertOne({name: name, email: email, pw: pw}))
-            .then ((bool: any) => {
-                if (bool === false) res.send("account creation failed");
-                else { //if account creation was a success
-                    res.cookie("username", name);
-                    res.send("account creation success");
+            .then ((db:any) => {
+                myDB = db;
+                return db!.collection("users").findOne({name:name});
+            }).then ((account:any) => {
+                if (account !== null) {
+                    console.log(account);
+                    res.send("username taken");
+                }
+                else {
+                    myDB!.collection("users").insertOne({name:name, email:email, pw:pw})
+                        .then ((object:any) => {
+                            if (object != null) {
+                                res.cookie("username", name);
+                                res.send("account creation success");
+                            } else {
+                                res.send("account creation failed");
+                            }
+                        }).catch ((err:any)=>{
+                            console.log(err.message);
+                        })
                 }
             })
-            .catch ((err:any) => {console.log(err.message)});
+    }
 });
 
 router.get("/login", (req, res, next) => {
@@ -58,16 +67,20 @@ router.get("/login", (req, res, next) => {
 router.post("/login", (req, res) => {
    let name = req.body.name;
    let pw = req.body.password;
-   let account = searchDb4User(name);
 
-   if (account === null) res.send("can't find account, sorry");
-   else if (account.pw !== pw) res.send("password is incorrect");
-   else {
-       res.cookie("username", name);
-       res.send("login successful");
-   }
+    DbClient.connect()
+        .then((db:any) => db!.collection("users").findOne({name: name}))
+        .then ((account:any) => {
+            if (account === null) res.send("can't find account, sorry");
+            else if (account.pw !== pw) res.send("username or password is incorrect");
+            else {
+                res.cookie("username", name);
+                res.send("login successful");
+            }
+        }).catch ((err: any) => {
+            console.log(err.message);
+        })
 });
-
 
 router.get("/account", (req, res, next) => {
     res.send(req.cookies);
@@ -77,21 +90,5 @@ router.get("/logout", (req, res, next) => {
     res.clearCookie("username");
     res.send("logout successful");
 });
-
-//returns a query for a specific user
-const searchDb4User = (user : string) => {
-    let ret:any = null;
-    DbClient.connect()
-        .then((db: any) => {
-            return db!.collection("users").findOne({name: user});
-        })
-        .then((object: any)=>{
-            ret = object;
-        })
-        .catch ((err: any)=>{
-            console.log(err.message);
-        });
-    return ret;
-};
 
 module.exports = router;
