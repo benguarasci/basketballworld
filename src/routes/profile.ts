@@ -1,4 +1,6 @@
 import {Request, Response, NextFunction, Router} from "express";
+import {User} from "../models/user";
+import {Profile} from "../controllers/profile_c";
 
 const express = require('express');
 const DbClient = require("../DbClient");
@@ -17,42 +19,30 @@ router.get("/create", (req : Request, res: Response, next: NextFunction) => {
 });
 
 router.post("/create", (req, res) => {
-    let name = req.body.name;
-    let email = req.body.email;
-    let pw = req.body.password;
-    let pw2 = req.body.confirmPassword;
 
-    //ensuring no field is empty
-    if (name === "" || email === "" || pw === "" || pw2 === "")
+    // model instantiation
+    let user = new User(req.body.name, req.body.email, req.body.password);
+
+    // check for empty fields in the form
+    if(!user.isValid()) {
         res.send("missing credentials");
-    else if (pw !== pw2) //ensuring passwords match
-        res.send("passwords do not match");
-    else {
-        let myDB : any;
-        DbClient.connect()
-            .then ((db:any) => {
-                myDB = db;
-                return db!.collection("users").findOne({name:name});
-            }).then ((account:any) => {
-                if (account !== null) {
-                    console.log(account);
-                    res.send("username taken");
-                }
-                else {
-                    myDB!.collection("users").insertOne({name:name, email:email, pw:pw})
-                        .then ((object:any) => {
-                            if (object != null) {
-                                res.cookie("username", name);
-                                res.send("account creation success");
-                            } else {
-                                res.send("account creation failed");
-                            }
-                        }).catch ((err:any)=>{
-                            console.log(err.message);
-                        })
-                }
-            })
+        return;
     }
+
+    // verify password
+    if(!user.verify(req.body.confirmPassword)) {
+        res.send("passwords do not match");
+        return;
+    }
+
+    // check if username is already taken
+    Profile.userExists(user, res);
+
+    // create new user
+    Profile.insert(user, res);
+
+    // set cookie
+    Profile.setCookie(user, res);
 });
 
 router.get("/login", (req, res, next) => {
@@ -65,24 +55,15 @@ router.get("/login", (req, res, next) => {
 });
 
 router.post("/login", (req, res) => {
-   let name = req.body.name;
-   let pw = req.body.password;
 
-    DbClient.connect()
-        .then((db:any) => db!.collection("users").findOne({name: name}))
-        .then ((account:any) => {
-            if (account === null) res.send("can't find account, sorry");
-            else if (account.pw !== pw) res.send("username or password is incorrect");
-            else {
-                res.cookie("username", name);
-                res.send("login successful");
-            }
-        }).catch ((err: any) => {
-            console.log(err.message);
-        })
+    // model instantiation
+    let user = new User(req.body.name, '', req.body.password);
+
+    // login
+    Profile.login(user, res);
 });
 
-router.get("/account", (req, res, next) => {
+router.get("", (req, res, next) => {
     res.send(req.cookies);
 });
 
