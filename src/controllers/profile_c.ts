@@ -49,4 +49,15 @@ export class Profile{
         })
     }
 
+    public static home(username: string, res: any) {
+        DbClient.connect()
+            .then((db:any) => db!.collection("users").findOne({name: username}))
+            .then ((user:any) => {
+                console.log(user.email);
+                res.render("profile/home", {user: user});
+            }).catch ((err: any) => {
+                console.log(err.message);
+        })
+    }
+
 }

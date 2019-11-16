@@ -21,7 +21,7 @@ router.get("/create", (req : Request, res: Response, next: NextFunction) => {
 router.post("/create", (req, res) => {
 
     // model instantiation
-    let user = new User(req.body.name, req.body.email, req.body.password);
+    let user = new User(req.body.name, req.body.email, req.body.password, []);
 
     // check for empty fields in the form
     if(!user.isValid()) {
@@ -57,14 +57,26 @@ router.get("/login", (req, res, next) => {
 router.post("/login", (req, res) => {
 
     // model instantiation
-    let user = new User(req.body.name, '', req.body.password);
+    let user = new User(req.body.name, '', req.body.password, []);
 
     // login
     Profile.login(user, res);
 });
 
-router.get("", (req, res, next) => {
-    res.send(req.cookies);
+router.get("", async (req, res, next) => {
+
+    Profile.home(req.cookies.username, res);
+
+});
+
+router.post("/deletetag", (req, res) => {
+
+   console.log(req.body)
+});
+
+router.post("/createtag", (req, res) => {
+
+    console.log(req.body)
 });
 
 router.get("/logout", (req, res, next) => {

@@ -3,11 +3,13 @@ export class User{
     name: string;
     email: string;
     pw: string;
+    tags: string[];
 
-    constructor(name: string, email: string, pw: string) {
+    constructor(name: string, email: string, pw: string, tags: string[]) {
         this.name = name;
         this.email = email;
         this.pw = pw;
+        this.tags = tags;
     }
 
     isValid() {

@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var User = /** @class */ (function () {
-    function User(name, email, pw) {
+    function User(name, email, pw, tags) {
         this.name = name;
         this.email = email;
         this.pw = pw;
+        this.tags = tags;
     }
     User.prototype.isValid = function () {
         return (this.name != '' && this.email != '' && this.pw != '');

@@ -50,6 +50,16 @@ var Profile = /** @class */ (function () {
             console.log(err.message);
         });
     };
+    Profile.home = function (username, res) {
+        DbClient.connect()
+            .then(function (db) { return db.collection("users").findOne({ name: username }); })
+            .then(function (user) {
+            console.log(user.email);
+            res.render("profile/home", { user: user });
+        }).catch(function (err) {
+            console.log(err.message);
+        });
+    };
     return Profile;
 }());
 exports.Profile = Profile;
