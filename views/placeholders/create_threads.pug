@@ -1,0 +1,12 @@
+extends layout.pug
+
+block content
+    form(method="POST" action="/threads/create")
+        |title
+        input(type="text" name="title")
+        br
+        |description
+        textarea(name="description")
+        br
+        input(type="submit")
+    p message: #{message}

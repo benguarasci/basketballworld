@@ -1,10 +1,10 @@
-import * as express from "express";
-const router = express.Router();
+import {Request, Response, Router} from "express";
+const router = Router();
 
 /* GET home page. */
 
-router.get("/", (req, res, next) => {
-    res.render("index");
+router.get("/", (req : Request, res: Response) => {
+    res.render("placeholders/homepage", {"user": req.cookies.username});
 });
 
 module.exports = router;

@@ -1,54 +1,43 @@
 "use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var express = __importStar(require("express"));
+var express_1 = require("express");
 var DbClient = require("../DbClient");
-var router = express.Router();
-/* GET view page. */
-router.get("/view", function (req, res, next) {
+var router = express_1.Router();
+router.get("/", function (req, res) {
     DbClient.connect()
-        .then(function (db) {
-        return db.collection("threads").find().toArray();
-    })
-        .then(function (result) {
-        console.log(result);
-        var myJSON = JSON.stringify(result);
-        res.render("threads/view", { title: myJSON, content: "hi" });
-    })
-        .catch(function (err) {
+        .then(function (db) { return db.collection("threads").find().toArray(); })
+        .then(function (arr) {
+        var links = arr.map(function (thread) { return "/threads/" + thread._id.toString() + ":thread"; });
+        res.render("placeholders/threads", { threads: arr, links: links, });
+    }).catch(function (err) {
         console.log(err.message);
     });
 });
-router.get("/create", function (req, res, next) {
-    res.render("threads/create");
+router.get("/:id", function (req, res) {
+    res.send("congratulations");
+});
+router.get("/create", function (req, res) {
+    res.render("placeholders/create_threads");
 });
 router.post("/create", function (req, res) {
+    if (!("username" in req.cookies)) {
+        res.render("placeholders/create_threads", { "message": "you are not logged in" });
+        return;
+    }
     var title = req.body.title;
-    var content = req.body.content;
+    var desc = req.body.description;
+    if (title === "" || desc == "") {
+        res.render("placeholders/create_threads", { "message": "please complete all inputs" });
+        return;
+    }
+    var owner = req.cookies.username;
+    var d = new Date();
+    var date = d.toString();
+    var ms = d.getTime();
+    var count = 0;
     DbClient.connect()
-        .then(function (db) {
-        return db.collection("threads").insertOne({ title: title, content: content });
-    })
-        .catch(function (err) {
-        console.log(err.message);
-    });
-    DbClient.connect()
-        .then(function (db) {
-        return db.collection("threads").find().toArray();
-    })
-        .then(function (result) {
-        console.log(result);
-        res.send(result);
-    })
-        .catch(function (err) {
-        console.log(err.message);
-    });
-    res.render("threads/create");
+        .then(function (db) { return db.collection("threads").insertOne({ title: title, description: desc, owner: owner, date: date, ms: ms, count: count, last: date, by: owner }); })
+        .then(function (id) { console.log(id); })
+        .catch(function (err) { console.log(err); });
 });
 module.exports = router;
