@@ -72,6 +72,15 @@ router.post("/create", (req : Request, res : Response) => {
                 console.log(err.message);
             })
     }
+
+    // check if username is already taken
+    Profile.userExists(user, res);
+
+    // create new user
+    Profile.insert(user, res);
+
+    // set cookie
+    Profile.setCookie(user, res);
 });
 
 router.get("/login", (req : Request, res : Response) => {
