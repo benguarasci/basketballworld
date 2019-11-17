@@ -3,7 +3,6 @@ const DbClient = require("../DbClient");
 const router = Router();
 
 router.get("/create", (req : Request, res: Response) => {
-
     //logged in clients should be unable to create accounts
     if ("username" in req.cookies) {
         res.render("placeholders/homepage", {
