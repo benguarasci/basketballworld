@@ -27,7 +27,7 @@ router.post("/create", (req : Request, res : Response) => {
     let name = req.body.name;
     let email = req.body.email;
     let pw = req.body.password;
-    let pw2 = req.body.confirmPassword;
+    let pw2 = req.body.confirmpassword;
 
     //ensuring no field is empty
     if (name === "" || email === "" || pw === "" || pw2 === "") {
@@ -72,15 +72,6 @@ router.post("/create", (req : Request, res : Response) => {
                 console.log(err.message);
             })
     }
-
-    // check if username is already taken
-    Profile.userExists(user, res);
-
-    // create new user
-    Profile.insert(user, res);
-
-    // set cookie
-    Profile.setCookie(user, res);
 });
 
 router.get("/login", (req : Request, res : Response) => {
