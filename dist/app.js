@@ -5,6 +5,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var bodyparser = require("body-parser");
 var indexRouter = require("./routes");
 var profileRouter = require("./routes/profile");
 var threadsRouter = require("./routes/threads");
@@ -28,7 +29,6 @@ app.use("/", indexRouter);
 app.use("/profile", profileRouter);
 app.use("/threads", threadsRouter);
 // bodyparser setup
-var bodyparser = require("body-parser");
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 // catch 404 and forward to error handler
@@ -46,11 +46,4 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render("error");
 });
-// setup database
-// const MongoClient = require('mongodb').MongoClient;
-// const uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test?retryWrites=true&w=majority";
-// const client = new MongoClient(uri, { useNewUrlParser: true });
-// client.connect((err: any) => {
-//     app.locals.db = client.db("nba");
-// });
 module.exports = app;
