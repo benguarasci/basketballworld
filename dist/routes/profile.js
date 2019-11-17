@@ -1,95 +1,127 @@
 "use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var express = __importStar(require("express"));
+var express_1 = require("express");
 var DbClient = require("../DbClient");
-var router = express.Router();
-// sending create profile page to client
-router.get("/create", function (req, res, next) {
-    res.render("profile/create");
+var router = express_1.Router();
+router.get("/create", function (req, res) {
+    //logged in clients should be unable to create accounts
+    if ("username" in req.cookies) {
+        res.render("placeholders/homepage", {
+            "user": req.cookies.username,
+            "message": "you are already logged in"
+        });
+        return;
+    }
+    //if client is not logged in, they can create account
+    res.render("placeholders/create_account");
 });
-// create user account request
 router.post("/create", function (req, res) {
-    console.log("hello popsicles");
+    if ("username" in req.cookies) {
+        res.render("placeholders/homepage", {
+            "user": req.cookies.username,
+            "message": "you are already logged in"
+        });
+        return;
+    }
     var name = req.body.name;
     var email = req.body.email;
     var pw = req.body.password;
-    var pw2 = req.body.confirmPassword;
-    var exit = false;
-    // if there are empty fields in form
+    var pw2 = req.body.confirmpassword;
+    //ensuring no field is empty
     if (name === "" || email === "" || pw === "" || pw2 === "") {
-        res.send("missing credentials");
-        return;
+        res.render("placeholders/create_account", {
+            "message": "missing input"
+        });
     }
-    // checking to see if username already exists
-    DbClient.connect()
-        .then(function (db) {
-        return db.collection("users").find({ name: name }).toArray();
-    }).then(function (array) {
-        if (array.length !== 0) {
-            res.send("user name taken");
-            exit = true;
-            return;
-        }
-    });
-    if (exit) {
-        return;
-    }
-    // checking to see if passwords match
-    if (pw === pw2) {
+    else if (pw !== pw2) //ensuring passwords match
+        res.render("placeholders/create_account", {
+            "message": "passwords do not match"
+        });
+    else {
+        var myDB_1;
         DbClient.connect()
             .then(function (db) {
-            // adding new account to database
-            return db.collection("users").insertOne({ name: name, email: email, pw: pw });
-        })
-            .then(function (db) {
-            // responding that account creation was success
-            res.send("account creation success");
-        })
-            .catch(function (err) {
+            myDB_1 = db;
+            return db.collection("users").findOne({ name: name });
+        }).then(function (account) {
+            if (account !== null)
+                res.render("placeholders/create_account", {
+                    "message": "username taken"
+                });
+            else {
+                myDB_1.collection("users").insertOne({ name: name, email: email, pw: pw })
+                    .then(function (object) {
+                    if (object != null) {
+                        res.cookie("username", name);
+                        res.render("placeholders/homepage", {
+                            "user": name,
+                            "message": 'succeeded in creating new account'
+                        });
+                    }
+                    else {
+                        res.render("placeholders/homepage", {
+                            "message": 'failed in creating new account'
+                        });
+                    }
+                }).catch(function (err) {
+                    console.log(err.message);
+                });
+            }
+        }).catch(function (err) {
             console.log(err.message);
         });
     }
-    else {
-        res.send("password and password confirmation is not same");
+});
+router.get("/login", function (req, res) {
+    if ("username" in req.cookies) {
+        res.render("placeholders/homepage", {
+            "user": req.cookies.username,
+            "message": "you are already logged in"
+        });
+        return;
     }
+    //if client is not logged in, they can create account
+    res.render("placeholders/login");
 });
-//sending account page to client
-router.get("/account", function (req, res, next) {
-    res.render("profile/account");
-});
-// sending login page to client
-router.get("/login", function (req, res, next) {
-    res.render("profile/login");
-});
-// handling login request from client
 router.post("/login", function (req, res) {
-    console.log("kill me");
+    if ("username" in req.cookies) {
+        res.render("placeholders/homepage", {
+            "user": req.cookies.username,
+            "message": "you are already logged in"
+        });
+        return;
+    }
     var name = req.body.name;
     var pw = req.body.password;
     DbClient.connect()
-        .then(function (db) {
-        // finding account in database that matches provided credentials
-        return db.collection("users").findOne({ name: name, pw: pw });
-    })
-        .then(function (item) {
-        // no account matching search was found
-        if (item === undefined) {
-            res.send("sorry");
+        .then(function (db) { return db.collection("users").findOne({ name: name }); })
+        .then(function (account) {
+        if (account === null) {
+            res.render("placeholders/login", {
+                "message": "can't find account, sorry"
+            });
+        }
+        else if (account.pw !== pw) {
+            res.render("placeholders/login", {
+                "message": "username or password is incorrect"
+            });
         }
         else {
-            // sending account information if successful
-            res.send(item);
+            res.cookie("username", name);
+            res.render("placeholders/homepage", {
+                "user": name,
+                "message": "you successfully logged in"
+            });
         }
-    })
-        .catch(function (err) {
+    }).catch(function (err) {
         console.log(err.message);
     });
+});
+router.get("/account", function (req, res) {
+    res.send(req.cookies);
+});
+router.get("/logout", function (req, res) {
+    res.clearCookie("username");
+    res.render("placeholders/login");
 });
 module.exports = router;

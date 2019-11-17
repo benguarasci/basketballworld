@@ -1,0 +1,12 @@
+extends layout.pug
+
+block content
+
+    a(href="/threads/create") wanna create a thread?
+    each thread, i in threads
+        a(href=links[i])
+            h2=thread.title
+        ul
+            li created by #{thread.owner} at #{thread.date}
+            li posts: #{thread.count}
+            li last post by #{thread.by} at #{thread.date}

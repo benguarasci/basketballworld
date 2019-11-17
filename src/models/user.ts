@@ -1,14 +1,22 @@
-// export class User{
-//
-//     _id: string;
-//     username: string;
-//     permission: number;
-//     email: string;
-//
-//     constructor(_id: string, username: string, permission: number, email: string) {
-//         this._id = _id;
-//         this.username = username;
-//         this.permission = permission;
-//         this.email = email;
-//     }
-// }
+export class User{
+
+    name: string;
+    email: string;
+    pw: string;
+    tags: string[];
+
+    constructor(name: string, email: string, pw: string, tags: string[]) {
+        this.name = name;
+        this.email = email;
+        this.pw = pw;
+        this.tags = tags;
+    }
+
+    isValid() {
+        return(this.name != '' && this.email != '' && this.pw != '');
+    }
+
+    verify(pw: string) {
+        return(this.pw === pw);
+    }
+}

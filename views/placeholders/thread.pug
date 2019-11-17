@@ -1,0 +1,15 @@
+extends layout
+block content
+    h2=thread.title
+    each post in posts
+        h3=post.date
+        h4=post.author
+        p=post.content
+    form(method="POST" action=thread.target)
+        |Content
+        br
+        textarea(name="content")
+        br
+        input(type="submit")
+    if (message)
+        p=message

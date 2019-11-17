@@ -1,0 +1,22 @@
+extends layout.pug
+
+block content
+    form(method="POST" action="/profile/create")
+        br
+        |username
+        input(type="text" name="name")
+        br
+        |email
+        input(type="text" name="email")
+        br
+        |password
+        input(type="password" name="password")
+        br
+        |password confirm
+        input(type="password" name="confirmpassword")
+        br
+        input(type="submit")
+    if message
+        p message #{message}
+    p already have an account?
+        a(href="/profile/login") login

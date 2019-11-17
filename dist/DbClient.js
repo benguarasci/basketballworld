@@ -40,14 +40,14 @@ var DbClient = /** @class */ (function () {
     //public database: any;
     DbClient.prototype.connect = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var MongoClient_1, uri, client, error_1;
+            var MongoClient, uri, client, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        MongoClient_1 = require('mongodb').MongoClient;
+                        MongoClient = require('mongodb').MongoClient;
                         uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test";
-                        return [4 /*yield*/, MongoClient_1(uri, { useUnifiedTopology: true, useNewUrlParser: true }).connect()];
+                        return [4 /*yield*/, MongoClient(uri, { useUnifiedTopology: true, useNewUrlParser: true }).connect()];
                     case 1:
                         client = _a.sent();
                         this.db = client.db("bbworld");
