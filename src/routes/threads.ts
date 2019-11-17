@@ -12,59 +12,8 @@ router.get("/", (req : Request, res : Response) => {
             console.log(err.message);
         })
 });
-router.get("/:thread", (req: Request, res: Response) => {
-    let threadID = new ObjectId(req.params.thread);
-    let thisDB : any;
-    DbClient.connect()
-        .then ((db : any) => {
-            thisDB = db;
-            return db!.collection("threads").findOne({_id : threadID})
-        }).then ((thread : any) => {
-            if (thread === null) res.render("placeholders/homepage", {"message":"couldn't find page, sorry"});
-            else {
-                thisDB!.collection("posts").find({parentThread: threadID}).toArray()
-                    .then((arr:any)=>{
-                        let posts;
-                        if (arr.length === 0) posts = [];
-                        else posts = arr;
-                        console.log("/threads/"+req.params.thread);
-                        res.render("placeholders/thread", {user:req.cookies.username, thread:thread, posts:posts, target:"/threads/"+req.params.thread})
-                    }).catch((err:any)=>{console.log(err.message)})
-            }
-        }).catch((err:any)=>{console.log(err.message)})
-});
-router.post("/:thread", (req: Request, res: Response) => {
-    if (!("username" in req.cookies)) {
-        res.render("placeholders/threads", {"message": "you are not logged in"});
-        return;
-    }
-    if (req.body.content === "") {
-        res.render("placeholders/threads", {"message": "you have to write something"});
-        return;
-    }
-    let content = req.body.content;
-    let threadID = new ObjectId(req.params.thread);
-    let author = req.cookies.username;
-    let d = new Date();
-    let date = d.toString();
-    let ms = d.getTime();
-    console.log("kill me");
-    DbClient.connect()
-        .then((db : any) => {
-            console.log("save me");
-            db!.collection("posts").insertOne({content:content, author:author,parentThread:threadID, date:date, ms:ms})
-                .then((id:any)=>{
-                    console.log("help me");
-                    res.redirect("/threads/"+req.params.thread);
-                }).catch((err:any)=>{
-                    console.log(err.message);
-                })
-        })
-        .catch((err:any)=>{
-            console.log(err.message);
-        })
-});
 router.get("/create", (req : Request, res : Response) => {
+    console.log("hello hello");
     if (!("username" in req.cookies)) {
         res.render("placeholders/threads", {"message": "you are not logged in"});
         return;
@@ -89,7 +38,58 @@ router.post("/create", (req: Request, res: Response) => {
     let count = 0;
     DbClient.connect()
         .then ((db : any) => db!.collection("threads").insertOne({'user':req.cookies.username, title: title, description: desc, owner: owner, date: date, ms: ms, count: count, last: date, by:owner}))
-        .then ((id : any) => {console.log(id)})
+        .then ((id : any) => {
+            console.log("id is:" +id);
+            res.redirect("/threads/"+id.insertedId.toString())
+        })
         .catch((err: any) => {console.log(err)});
+});
+router.get("/:thread", (req: Request, res: Response) => {
+    let threadID = new ObjectId(req.params.thread);
+    let thisDB : any;
+    DbClient.connect()
+        .then ((db : any) => {
+            thisDB = db;
+            return db!.collection("threads").findOne({_id : threadID})
+        }).then ((thread : any) => {
+        if (thread === null) res.render("placeholders/homepage", {"message":"couldn't find page, sorry"});
+        else {
+            thisDB!.collection("posts").find({parentThread: threadID}).toArray()
+                .then((arr:any)=>{
+                    let posts;
+                    if (arr.length === 0) posts = [];
+                    else posts = arr;
+                    res.render("placeholders/thread", {user:req.cookies.username, thread:thread, posts:posts, target:"/threads/"+req.params.thread})
+                }).catch((err:any)=>{console.log(err.message)})
+        }
+    }).catch((err:any)=>{console.log(err.message)})
+});
+router.post("/:thread", (req: Request, res: Response) => {
+    if (!("username" in req.cookies)) {
+        res.render("placeholders/threads", {"message": "you are not logged in"});
+        return;
+    }
+    if (req.body.content === "") {
+        res.render("placeholders/threads", {"message": "you have to write something"});
+        return;
+    }
+    let content = req.body.content;
+    let threadID = new ObjectId(req.params.thread);
+    let author = req.cookies.username;
+    let d = new Date();
+    let date = d.toString();
+    let ms = d.getTime();
+    DbClient.connect()
+        .then((db : any) => {
+            db!.collection("posts").insertOne({content:content, author:author,parentThread:threadID, date:date, ms:ms})
+                .then((id:any)=>{
+                    res.redirect("/threads/"+req.params.thread);
+                }).catch((err:any)=>{
+                console.log(err.message);
+            })
+        })
+        .catch((err:any)=>{
+            console.log(err.message);
+        })
 });
 module.exports = router;

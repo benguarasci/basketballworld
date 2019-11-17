@@ -14,62 +14,8 @@ router.get("/", function (req, res) {
         console.log(err.message);
     });
 });
-router.get("/:thread", function (req, res) {
-    var threadID = new ObjectId(req.params.thread);
-    var thisDB;
-    DbClient.connect()
-        .then(function (db) {
-        thisDB = db;
-        return db.collection("threads").findOne({ _id: threadID });
-    }).then(function (thread) {
-        if (thread === null)
-            res.render("placeholders/homepage", { "message": "couldn't find page, sorry" });
-        else {
-            thisDB.collection("posts").find({ parentThread: threadID }).toArray()
-                .then(function (arr) {
-                var posts;
-                if (arr.length === 0)
-                    posts = [];
-                else
-                    posts = arr;
-                console.log("/threads/" + req.params.thread);
-                res.render("placeholders/thread", { user: req.cookies.username, thread: thread, posts: posts, target: "/threads/" + req.params.thread });
-            }).catch(function (err) { console.log(err.message); });
-        }
-    }).catch(function (err) { console.log(err.message); });
-});
-router.post("/:thread", function (req, res) {
-    if (!("username" in req.cookies)) {
-        res.render("placeholders/threads", { "message": "you are not logged in" });
-        return;
-    }
-    if (req.body.content === "") {
-        res.render("placeholders/threads", { "message": "you have to write something" });
-        return;
-    }
-    var content = req.body.content;
-    var threadID = new ObjectId(req.params.thread);
-    var author = req.cookies.username;
-    var d = new Date();
-    var date = d.toString();
-    var ms = d.getTime();
-    console.log("kill me");
-    DbClient.connect()
-        .then(function (db) {
-        console.log("save me");
-        db.collection("posts").insertOne({ content: content, author: author, parentThread: threadID, date: date, ms: ms })
-            .then(function (id) {
-            console.log("help me");
-            res.redirect("/threads/" + req.params.thread);
-        }).catch(function (err) {
-            console.log(err.message);
-        });
-    })
-        .catch(function (err) {
-        console.log(err.message);
-    });
-});
 router.get("/create", function (req, res) {
+    console.log("hello hello");
     if (!("username" in req.cookies)) {
         res.render("placeholders/threads", { "message": "you are not logged in" });
         return;
@@ -94,7 +40,61 @@ router.post("/create", function (req, res) {
     var count = 0;
     DbClient.connect()
         .then(function (db) { return db.collection("threads").insertOne({ 'user': req.cookies.username, title: title, description: desc, owner: owner, date: date, ms: ms, count: count, last: date, by: owner }); })
-        .then(function (id) { console.log(id); })
+        .then(function (id) {
+        console.log("id is:" + id);
+        res.redirect("/threads/" + id.insertedId.toString());
+    })
         .catch(function (err) { console.log(err); });
+});
+router.get("/:thread", function (req, res) {
+    var threadID = new ObjectId(req.params.thread);
+    var thisDB;
+    DbClient.connect()
+        .then(function (db) {
+        thisDB = db;
+        return db.collection("threads").findOne({ _id: threadID });
+    }).then(function (thread) {
+        if (thread === null)
+            res.render("placeholders/homepage", { "message": "couldn't find page, sorry" });
+        else {
+            thisDB.collection("posts").find({ parentThread: threadID }).toArray()
+                .then(function (arr) {
+                var posts;
+                if (arr.length === 0)
+                    posts = [];
+                else
+                    posts = arr;
+                res.render("placeholders/thread", { user: req.cookies.username, thread: thread, posts: posts, target: "/threads/" + req.params.thread });
+            }).catch(function (err) { console.log(err.message); });
+        }
+    }).catch(function (err) { console.log(err.message); });
+});
+router.post("/:thread", function (req, res) {
+    if (!("username" in req.cookies)) {
+        res.render("placeholders/threads", { "message": "you are not logged in" });
+        return;
+    }
+    if (req.body.content === "") {
+        res.render("placeholders/threads", { "message": "you have to write something" });
+        return;
+    }
+    var content = req.body.content;
+    var threadID = new ObjectId(req.params.thread);
+    var author = req.cookies.username;
+    var d = new Date();
+    var date = d.toString();
+    var ms = d.getTime();
+    DbClient.connect()
+        .then(function (db) {
+        db.collection("posts").insertOne({ content: content, author: author, parentThread: threadID, date: date, ms: ms })
+            .then(function (id) {
+            res.redirect("/threads/" + req.params.thread);
+        }).catch(function (err) {
+            console.log(err.message);
+        });
+    })
+        .catch(function (err) {
+        console.log(err.message);
+    });
 });
 module.exports = router;
