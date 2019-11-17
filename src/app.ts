@@ -7,6 +7,7 @@ import bodyparser = require("body-parser");
 const indexRouter = require("./routes");
 const profileRouter = require("./routes/profile");
 const threadsRouter = require("./routes/threads");
+const shoesRouter = require("./routes/shoes");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use("/", indexRouter);
 app.use("/profile", profileRouter);
 app.use("/threads", threadsRouter);
+app.use("/shoes", shoesRouter);
 
 // bodyparser setup
 app.use(bodyparser.urlencoded( {extended: true} ));

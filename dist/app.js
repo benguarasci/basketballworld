@@ -9,6 +9,7 @@ var bodyparser = require("body-parser");
 var indexRouter = require("./routes");
 var profileRouter = require("./routes/profile");
 var threadsRouter = require("./routes/threads");
+var shoesRouter = require("./routes/shoes");
 var app = express();
 // heroku setup
 var port = process.env.PORT;
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use("/", indexRouter);
 app.use("/profile", profileRouter);
 app.use("/threads", threadsRouter);
+app.use("/shoes", shoesRouter);
 // bodyparser setup
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
