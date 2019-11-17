@@ -18,7 +18,11 @@ export class threadLister {
         return await db!.collection("threads").findOne({_id : threadID});
     }
     async getPosts (parentId : string) {
-
+        let threadID = new ObjectId(parentId);
+        let db = await DbClient.connect();
+        let thread = db!.collection("threads").findOne({_id : threadID});
+        let posts = db!.collection("posts").find({parentThread: parentId}).toArray();
+        return [thread, posts];
     }
 }
 
