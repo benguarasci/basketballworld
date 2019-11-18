@@ -1,7 +1,8 @@
-import {Request, Response, NextFunction, Router} from "express";
+import {Request, Response, Router} from "express";
 const DbClient = require("../DbClient");
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
+
 router.get("/", (req : Request, res : Response) => {
     DbClient.connect()
         .then((db: any) => db!.collection("threads").find().toArray())

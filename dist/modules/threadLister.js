@@ -84,8 +84,12 @@ var threadLister = /** @class */ (function () {
                         return [4 /*yield*/, DbClient.connect()];
                     case 1:
                         db = _a.sent();
-                        thread = db.collection("threads").findOne({ _id: threadID });
-                        posts = db.collection("posts").find({ parentThread: parentId }).toArray();
+                        return [4 /*yield*/, db.collection("threads").findOne({ _id: threadID })];
+                    case 2:
+                        thread = _a.sent();
+                        return [4 /*yield*/, db.collection("posts").find({ parentThread: parentId }).toArray()];
+                    case 3:
+                        posts = _a.sent();
                         return [2 /*return*/, [thread, posts]];
                 }
             });

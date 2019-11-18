@@ -1,6 +1,6 @@
 const { profileRetriever } = require("../modules/profileRetriever")
 
-export class Profile {
+class Profile {
 
     name: string;
     email: string;
@@ -22,3 +22,4 @@ export class Profile {
         return(this.pw === pw);
     }
 }
+export = new Profile;
