@@ -1,4 +1,6 @@
-export class User{
+const { profileRetriever } = require("../modules/profileRetriever")
+
+export class Profile {
 
     name: string;
     email: string;
@@ -13,7 +15,7 @@ export class User{
     }
 
     isValid() {
-        return(this.name != '' && this.email != '' && this.pw != '');
+        return(this.name != "" && this.email != "" && this.pw != "");
     }
 
     verify(pw: string) {

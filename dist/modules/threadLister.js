@@ -36,85 +36,61 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
-var Profile = require("../models/profile_m");
-var ProfileController = /** @class */ (function () {
-    function ProfileController() {
+var ObjectId = require("mongodb").ObjectID;
+var threadLister = /** @class */ (function () {
+    function threadLister() {
+        // does nothing
     }
-    // Returns the profile as output based on input
-    ProfileController.prototype.retrieve = function (req, res) {
+    threadLister.prototype.getThreads = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var userRequested, db, foundUser;
+            var db, threadsList, links;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, DbClient.connect()];
+                    case 1:
+                        db = _a.sent();
+                        return [4 /*yield*/, db.collection("threads").find().toArray()];
+                    case 2:
+                        threadsList = _a.sent();
+                        links = threadsList.map(function (thread) { return "/threads/" + thread._id.toString(); });
+                        return [2 /*return*/, [threadsList, links]];
+                }
+            });
+        });
+    };
+    threadLister.prototype.getThread = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var threadID, db;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        userRequested = new Profile;
-                        userRequested.name = req.body.name;
-                        userRequested.email = req.body.email;
-                        userRequested.pw = req.body.pw;
+                        threadID = new ObjectId(id);
                         return [4 /*yield*/, DbClient.connect()];
                     case 1:
                         db = _a.sent();
-                        return [4 /*yield*/, db.collection("users").findOne(userRequested)];
-                    case 2:
-                        foundUser = _a.sent();
-                        // If the user is not found return null
-                        if (foundUser === null) {
-                            res.render("placeholders/login", {
-                                "message": "can't find account, sorry"
-                            });
-                        }
-                        // Otherwise return the user
-                        else {
-                            return [2 /*return*/, [foundUser, "user"]];
-                        }
-                        return [2 /*return*/];
+                        return [4 /*yield*/, db.collection("threads").findOne({ _id: threadID })];
+                    case 2: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
-    ProfileController.prototype.login = function (req, res) {
+    threadLister.prototype.getPosts = function (parentId) {
         return __awaiter(this, void 0, void 0, function () {
-            var name, pw;
+            var threadID, db, thread, posts;
             return __generator(this, function (_a) {
-                if ("username" in req.cookies) {
-                    res.render("placeholders/homepage", {
-                        "user": req.cookies.username,
-                        "message": "you are already logged in"
-                    });
-                    return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        threadID = new ObjectId(parentId);
+                        return [4 /*yield*/, DbClient.connect()];
+                    case 1:
+                        db = _a.sent();
+                        thread = db.collection("threads").findOne({ _id: threadID });
+                        posts = db.collection("posts").find({ parentThread: parentId }).toArray();
+                        return [2 /*return*/, [thread, posts]];
                 }
-                name = req.body.name;
-                pw = req.body.password;
-                DbClient.connect()
-                    .then(function (db) {
-                    return db.collection("users").findOne({ name: name });
-                })
-                    .then(function (account) {
-                    if (account === null) {
-                        res.render("placeholders/login", {
-                            "message": "can't find account, sorry"
-                        });
-                    }
-                    else if (account.pw !== pw) {
-                        res.render("placeholders/login", {
-                            "message": "username or password is incorrect"
-                        });
-                    }
-                    else {
-                        res.cookie("username", name);
-                        res.render("placeholders/homepage", {
-                            "user": name,
-                            "message": "you successfully logged in"
-                        });
-                    }
-                })
-                    .catch(function (err) {
-                    console.log(err.message);
-                });
-                return [2 /*return*/];
             });
         });
     };
-    return ProfileController;
+    return threadLister;
 }());
-exports.ProfileController = ProfileController;
+exports.threadLister = threadLister;
