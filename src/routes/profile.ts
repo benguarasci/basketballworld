@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
-import {isLoggedIn, isValidProfile, createNewProfile, retrieveProfile, login, isLoginFormComplete, pushTag, pullTag, editEmail, editPassword} from "../managers/profile";
-
+import {isLoggedIn, createNewProfile, retrieveProfile, login, pushTag, pullTag, editEmail, editPassword} from "../managers/profile";
+import createProfileForm from "../mymodels/createProfile"
 const router = Router();
 
 router.get("/create", (req : Request, res: Response) => {
@@ -8,17 +8,13 @@ router.get("/create", (req : Request, res: Response) => {
 });
 router.post("/create", (req : Request, res : Response) => {
     if (isLoggedIn(req, res)) return;
-
-    let name = req.body.name;
-    let email = req.body.email;
-    let pw = req.body.password;
-
-    isValidProfile(req, res)
+    let form = new createProfileForm(req);
+    form.isValidForm(res)
         .then((bool : boolean) => {
             if (bool) {
-                createNewProfile(name, email, pw)
+                createNewProfile(form)
                     .then(()=>{
-                        return login(res, name, pw)
+                        return login(res,form);
                     })
             }
         })
@@ -27,7 +23,8 @@ router.get("/login", (req : Request, res : Response) => {
     if (!isLoggedIn(req, res)) res.render("placeholders/login");
 });
 router.post("/login", (req : Request, res : Response) => {
-    if (!isLoggedIn(req, res) || !isLoginFormComplete(req, res)) login(res, req.body.name, req.body.pw).then();
+    let form = new createProfileForm(req);
+    if (!isLoggedIn(req, res) || !form.isLoginFormComplete(res)) login(res, form).then();
 });
 router.get("/logout", (req : Request, res : Response) => {
     res.clearCookie("username");

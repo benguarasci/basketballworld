@@ -3,13 +3,14 @@ import {isLoggedIn} from "../managers/profile";
 const DbClient = require("../DbClient");
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
+import createThreadForm from "../mymodels/createThread";
 
 async function listThreads() {
     let db = await DbClient.connect();
     let threads = await db!.collection("threads").find().toArray();
     let links = threads.map((thread : any) => "/threads/"+thread._id.toString());
     return [threads, links];
-};
+}
 router.get("/", (req : Request, res : Response) => {
     listThreads()
         .then((threads:any) => {
@@ -19,31 +20,20 @@ router.get("/", (req : Request, res : Response) => {
 router.get("/create", (req : Request, res : Response) => {
     if (!isLoggedIn(req, res)) res.render("placeholders/create_threads", {'user':req.cookies.username});
 });
-function isFormComplete(req: Request, res: Response, title:string, desc:string) {
-    if (title === "" || desc == "") {
-        res.render("placeholders/create_threads", {'user':req.cookies.username, "message": "please complete all inputs"});
-        return false;
-    }
-    return true;
+async function createThread (req: Request, res : Response, form : any) {
+    let db = await DbClient.connect();
+    return await db!.collection("threads").insertOne({"title": form.title, "description": form.desc, "owner":form.owner, "ms": form.ms, "count": form.count, by: form.owner});
 }
 router.post("/create", (req: Request, res: Response) => {
     if (isLoggedIn(req, res)) return;
-    let title = req.body.title;
-    let desc = req.body.description;
-    if (!isFormComplete(req, res, title, desc)) return;
-    let owner = req.cookies.username;
-    let d = new Date();
-    let date = d.toString();
-    let ms = d.getTime();
-    let count = 0;
-    DbClient.connect()
-        .then ((db : any) => db!.collection("threads").insertOne({'user':req.cookies.username, title: title, description: desc, owner: owner, date: date, ms: ms, count: count, last: date, by:owner}))
-        .then ((id : any) => {
-            console.log("id is:" +id);
-            res.redirect("/threads/"+id.insertedId.toString())
-        })
-        .catch((err: any) => {console.log(err)});
+    let form = new createThreadForm (req);
+    if (!form.isFormComplete(res)) return;
+
+    createThread(req, res, form).then((id : any) =>
+        res.redirect("/threads/"+id.insertedId.toString())
+    );
 });
+
 router.get("/:thread", (req: Request, res: Response) => {
     let threadID = new ObjectId(req.params.thread);
     let thisDB : any;
