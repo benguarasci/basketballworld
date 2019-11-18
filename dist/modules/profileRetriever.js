@@ -37,11 +37,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
 var Profile = require("../models/profile_m");
-var ProfileController = /** @class */ (function () {
-    function ProfileController() {
+// For retrieving user profiles
+var profileRetriever = /** @class */ (function () {
+    function profileRetriever() {
     }
     // Returns the profile as output based on input
-    ProfileController.prototype.retrieve = function (req, res) {
+    profileRetriever.prototype.retrieveProfile = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var userRequested, db, foundUser;
             return __generator(this, function (_a) {
@@ -72,49 +73,6 @@ var ProfileController = /** @class */ (function () {
             });
         });
     };
-    ProfileController.prototype.login = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var name, pw;
-            return __generator(this, function (_a) {
-                if ("username" in req.cookies) {
-                    res.render("placeholders/homepage", {
-                        "user": req.cookies.username,
-                        "message": "you are already logged in"
-                    });
-                    return [2 /*return*/];
-                }
-                name = req.body.name;
-                pw = req.body.password;
-                DbClient.connect()
-                    .then(function (db) {
-                    return db.collection("users").findOne({ name: name });
-                })
-                    .then(function (account) {
-                    if (account === null) {
-                        res.render("placeholders/login", {
-                            "message": "can't find account, sorry"
-                        });
-                    }
-                    else if (account.pw !== pw) {
-                        res.render("placeholders/login", {
-                            "message": "username or password is incorrect"
-                        });
-                    }
-                    else {
-                        res.cookie("username", name);
-                        res.render("placeholders/homepage", {
-                            "user": name,
-                            "message": "you successfully logged in"
-                        });
-                    }
-                })
-                    .catch(function (err) {
-                    console.log(err.message);
-                });
-                return [2 /*return*/];
-            });
-        });
-    };
-    return ProfileController;
+    return profileRetriever;
 }());
-exports.ProfileController = ProfileController;
+exports.profileRetriever = profileRetriever;
