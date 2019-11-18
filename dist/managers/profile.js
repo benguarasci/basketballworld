@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -48,47 +49,7 @@ function isLoggedIn(req, res) {
         return false;
 }
 exports.isLoggedIn = isLoggedIn;
-function isValidProfile(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var name, email, pw, pw2, db, account;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    name = req.body.name;
-                    email = req.body.email;
-                    pw = req.body.password;
-                    pw2 = req.body.confirmpassword;
-                    if (name === "" || email === "" || pw === "" || pw2 === "") {
-                        res.render("placeholders/create_account", {
-                            "message": "missing input"
-                        });
-                        return [2 /*return*/, false];
-                    }
-                    else if (pw !== pw2) { //ensuring passwords match
-                        res.render("placeholders/create_account", {
-                            "message": "passwords do not match"
-                        });
-                        return [2 /*return*/, false];
-                    }
-                    return [4 /*yield*/, DbClient.connect()];
-                case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").findOne({ name: name })];
-                case 2:
-                    account = _a.sent();
-                    if (account !== null) {
-                        res.render("placeholders/create_account", {
-                            "message": "username taken"
-                        });
-                        return [2 /*return*/, false];
-                    }
-                    return [2 /*return*/, true];
-            }
-        });
-    });
-}
-exports.isValidProfile = isValidProfile;
-function createNewProfile(username, email, password) {
+function createNewProfile(form) {
     return __awaiter(this, void 0, void 0, function () {
         var db;
         return __generator(this, function (_a) {
@@ -96,7 +57,7 @@ function createNewProfile(username, email, password) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").insertOne({ name: username, email: email, pw: password })];
+                    return [4 /*yield*/, db.collection("users").insertOne({ name: form.name, email: form.email, pw: form.pw })];
                 case 2:
                     _a.sent();
                     return [2 /*return*/];
@@ -120,7 +81,7 @@ function retrieveProfile(req, res) {
     });
 }
 exports.retrieveProfile = retrieveProfile;
-function login(res, username, password) {
+function login(res, form) {
     return __awaiter(this, void 0, void 0, function () {
         var db, account;
         return __generator(this, function (_a) {
@@ -128,7 +89,7 @@ function login(res, username, password) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").findOne({ name: username })];
+                    return [4 /*yield*/, db.collection("users").findOne({ name: form.name })];
                 case 2:
                     account = _a.sent();
                     if (account === null) {
@@ -136,15 +97,15 @@ function login(res, username, password) {
                             "message": "can't find account, sorry"
                         });
                     }
-                    else if (account.pw !== password) {
+                    else if (account.pw !== form.password) {
                         res.render("placeholders/login", {
                             "message": "username or password is incorrect"
                         });
                     }
                     else {
-                        res.cookie("username", username);
+                        res.cookie("username", form.name);
                         res.render("placeholders/homepage", {
-                            "user": username,
+                            "user": form.password,
                             "message": "you successfully logged in"
                         });
                     }
@@ -154,15 +115,6 @@ function login(res, username, password) {
     });
 }
 exports.login = login;
-function isLoginFormComplete(req, res) {
-    if (req.body.name === "" || req.body.pw === "") {
-        res.render("placeholders/login", { "message": "empty input" });
-        return false;
-    }
-    else
-        return true;
-}
-exports.isLoginFormComplete = isLoginFormComplete;
 // https://docs.mongodb.com/manual/reference/operator/update/push/
 function pushTag(req, res) {
     return __awaiter(this, void 0, void 0, function () {

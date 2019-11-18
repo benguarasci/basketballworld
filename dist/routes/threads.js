@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -34,12 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var profile_1 = require("../managers/profile");
 var DbClient = require("../DbClient");
 var router = express_1.Router();
 var ObjectId = require("mongodb").ObjectID;
+var createThread_1 = __importDefault(require("../mymodels/createThread"));
 function listThreads() {
     return __awaiter(this, void 0, void 0, function () {
         var db, threads, links;
@@ -57,7 +62,6 @@ function listThreads() {
         });
     });
 }
-;
 router.get("/", function (req, res) {
     listThreads()
         .then(function (threads) {
@@ -68,32 +72,29 @@ router.get("/create", function (req, res) {
     if (!profile_1.isLoggedIn(req, res))
         res.render("placeholders/create_threads", { 'user': req.cookies.username });
 });
-function isFormComplete(req, res, title, desc) {
-    if (title === "" || desc == "") {
-        res.render("placeholders/create_threads", { 'user': req.cookies.username, "message": "please complete all inputs" });
-        return false;
-    }
-    return true;
+function createThread(req, res, form) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("threads").insertOne({ "title": form.title, "description": form.desc, "owner": form.owner, "ms": form.ms, "count": form.count, by: form.owner })];
+                case 2: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
 }
 router.post("/create", function (req, res) {
     if (profile_1.isLoggedIn(req, res))
         return;
-    var title = req.body.title;
-    var desc = req.body.description;
-    if (!isFormComplete(req, res, title, desc))
+    var form = new createThread_1.default(req);
+    if (!form.isFormComplete(res))
         return;
-    var owner = req.cookies.username;
-    var d = new Date();
-    var date = d.toString();
-    var ms = d.getTime();
-    var count = 0;
-    DbClient.connect()
-        .then(function (db) { return db.collection("threads").insertOne({ 'user': req.cookies.username, title: title, description: desc, owner: owner, date: date, ms: ms, count: count, last: date, by: owner }); })
-        .then(function (id) {
-        console.log("id is:" + id);
-        res.redirect("/threads/" + id.insertedId.toString());
-    })
-        .catch(function (err) { console.log(err); });
+    createThread(req, res, form).then(function (id) {
+        return res.redirect("/threads/" + id.insertedId.toString());
+    });
 });
 router.get("/:thread", function (req, res) {
     var threadID = new ObjectId(req.params.thread);
