@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var profile_1 = require("../managers/profile");
+var alterAccount_1 = require("../modules/alterAccount");
 var router = express_1.Router();
 router.get("/create", function (req, res) {
     if (!profile_1.isLoggedIn(req, res))
@@ -93,7 +94,7 @@ router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 
 router.post("/pushtag", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount.pushTag(req, res)];
+            case 0: return [4 /*yield*/, alterAccount_1.pushTag(req, res)];
             case 1:
                 _a.sent();
                 res.redirect('/home');
@@ -104,7 +105,7 @@ router.post("/pushtag", function (req, res) { return __awaiter(void 0, void 0, v
 router.post("/poptag", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount.popTag(req, res)];
+            case 0: return [4 /*yield*/, alterAccount_1.popTag(req, res)];
             case 1:
                 _a.sent();
                 res.redirect('/home');
@@ -115,7 +116,7 @@ router.post("/poptag", function (req, res) { return __awaiter(void 0, void 0, vo
 router.post("/editemail", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount.editEmail(req, res)];
+            case 0: return [4 /*yield*/, alterAccount_1.editEmail(req, res)];
             case 1:
                 _a.sent();
                 res.redirect('/home');
@@ -126,7 +127,7 @@ router.post("/editemail", function (req, res) { return __awaiter(void 0, void 0,
 router.post("/editpassword", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount.editPassword(req, res)];
+            case 0: return [4 /*yield*/, alterAccount_1.editPassword(req, res)];
             case 1:
                 _a.sent();
                 res.redirect('/home');

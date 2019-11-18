@@ -1,36 +1,36 @@
 import {Request, Response, Router} from "express";
+import {isLoggedIn} from "../managers/profile";
 const DbClient = require("../DbClient");
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
 
+async function listThreads() {
+    let db = await DbClient.connect();
+    let threads = await db!.collection("threads").find().toArray();
+    let links = threads.map((thread : any) => "/threads/"+thread._id.toString());
+    return [threads, links];
+};
 router.get("/", (req : Request, res : Response) => {
-    DbClient.connect()
-        .then((db: any) => db!.collection("threads").find().toArray())
-        .then((arr:any) => {
-            let links = arr.map((thread : any) => "/threads/"+thread._id.toString());
-            res.render("placeholders/threads", {'user':req.cookies.username, threads : arr, links : links});
-        }).catch ((err: any) => {
-            console.log(err.message);
+    listThreads()
+        .then((threads:any) => {
+            res.render("placeholders/threads", {'user':req.cookies.username, threads : threads[0], links : threads[1]});
         })
 });
 router.get("/create", (req : Request, res : Response) => {
-    if (!("username" in req.cookies)) {
-        res.render("placeholders/threads", {"message": "you are not logged in"});
-        return;
-    }
-    res.render("placeholders/create_threads", {'user':req.cookies.username});
+    if (!isLoggedIn(req, res)) res.render("placeholders/create_threads", {'user':req.cookies.username});
 });
-router.post("/create", (req: Request, res: Response) => {
-    if (!("username" in req.cookies)) {
-        res.render("placeholders/threads", {"message": "you are not logged in"});
-        return;
-    }
-    let title = req.body.title;
-    let desc = req.body.description;
+function isFormComplete(req: Request, res: Response, title:string, desc:string) {
     if (title === "" || desc == "") {
         res.render("placeholders/create_threads", {'user':req.cookies.username, "message": "please complete all inputs"});
-        return;
+        return false;
     }
+    return true;
+}
+router.post("/create", (req: Request, res: Response) => {
+    if (isLoggedIn(req, res)) return;
+    let title = req.body.title;
+    let desc = req.body.description;
+    if (!isFormComplete(req, res, title, desc)) return;
     let owner = req.cookies.username;
     let d = new Date();
     let date = d.toString();

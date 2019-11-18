@@ -37,76 +37,74 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
-var alterAccount = /** @class */ (function () {
-    function alterAccount() {
-    }
-    // https://docs.mongodb.com/manual/reference/operator/update/push/
-    alterAccount.pushTag = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var db;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, DbClient.connect()];
-                    case 1:
-                        db = _a.sent();
-                        return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $push: { tags: req.body.tag } })];
-                    case 2:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
+// https://docs.mongodb.com/manual/reference/operator/update/push/
+function pushTag(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $push: { tags: req.body.tag } })];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
         });
-    };
-    // https://docs.mongodb.com/manual/reference/operator/update/pop/
-    alterAccount.popTag = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var db;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, DbClient.connect()];
-                    case 1:
-                        db = _a.sent();
-                        return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $pop: { tags: req.body.new } })];
-                    case 2:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
+    });
+}
+exports.pushTag = pushTag;
+// https://docs.mongodb.com/manual/reference/operator/update/pop/
+function popTag(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $pop: { tags: req.body.new } })];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
         });
-    };
-    // https://docs.mongodb.com/manual/reference/operator/update/positional/
-    alterAccount.editEmail = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var db;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, DbClient.connect()];
-                    case 1:
-                        db = _a.sent();
-                        return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $set: { email: req.body.email } })];
-                    case 2:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
+    });
+}
+exports.popTag = popTag;
+// https://docs.mongodb.com/manual/reference/operator/update/positional/
+function editEmail(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $set: { email: req.body.email } })];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
         });
-    };
-    alterAccount.editPassword = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var db;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, DbClient.connect()];
-                    case 1:
-                        db = _a.sent();
-                        return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $set: { email: req.body.password } })];
-                    case 2:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
+    });
+}
+exports.editEmail = editEmail;
+function editPassword(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $set: { email: req.body.password } })];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
         });
-    };
-    return alterAccount;
-}());
-exports.alterAccount = alterAccount;
+    });
+}
+exports.editPassword = editPassword;
