@@ -56,5 +56,5 @@ export async function editEmail (req:Request, res:Response) {
 }
 export async function editPassword (req:Request, res:Response) {
     let db = await DbClient.connect();
-    await db!.collection("users").updateOne({name: req.cookies.username}, { $set: { email: req.body.password } });
+    await db!.collection("users").updateOne({name: req.cookies.username}, { $set: { pw: req.body.password } });
 }

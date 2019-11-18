@@ -225,7 +225,7 @@ function editPassword(req, res) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $set: { email: req.body.password } })];
+                    return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $set: { pw: req.body.password } })];
                 case 2:
                     _a.sent();
                     return [2 /*return*/];
