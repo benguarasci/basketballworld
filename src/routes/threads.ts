@@ -13,7 +13,6 @@ router.get("/", (req : Request, res : Response) => {
         })
 });
 router.get("/create", (req : Request, res : Response) => {
-    console.log("hello hello");
     if (!("username" in req.cookies)) {
         res.render("placeholders/threads", {"message": "you are not logged in"});
         return;
