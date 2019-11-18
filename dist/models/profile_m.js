@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var profileRetriever = require("../modules/profileRetriever").profileRetriever;
 var Profile = /** @class */ (function () {
     function Profile(name, email, pw, tags) {
@@ -16,4 +15,4 @@ var Profile = /** @class */ (function () {
     };
     return Profile;
 }());
-exports.Profile = Profile;
+module.exports = new Profile;

@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -36,160 +37,42 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
-var profileRetriever_1 = require("../modules/profileRetriever");
-var alterAccount_1 = require("../modules/alterAccount");
-var DbClient = require("../DbClient");
+var profile_1 = require("../managers/profile");
 var router = express_1.Router();
-var isLoggedIn = function (req, res) {
-    if ("username" in req.cookies) {
-        res.render("placeholders/homepage", {
-            "user": req.cookies.username,
-            "message": "you are already logged in"
-        });
-        return true;
-    }
-    else
-        return false;
-};
 router.get("/create", function (req, res) {
-    if (!isLoggedIn(req, res))
+    if (!profile_1.isLoggedIn(req, res))
         res.render("placeholders/create_account");
 });
-function isValidProfile(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var name, email, pw, pw2, db, account;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    name = req.body.name;
-                    email = req.body.email;
-                    pw = req.body.password;
-                    pw2 = req.body.confirmpassword;
-                    if (name === "" || email === "" || pw === "" || pw2 === "") {
-                        res.render("placeholders/create_account", {
-                            "message": "missing input"
-                        });
-                        return [2 /*return*/, false];
-                    }
-                    else if (pw !== pw2) { //ensuring passwords match
-                        res.render("placeholders/create_account", {
-                            "message": "passwords do not match"
-                        });
-                        return [2 /*return*/, false];
-                    }
-                    return [4 /*yield*/, DbClient.connect()];
-                case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").findOne({ name: name })];
-                case 2:
-                    account = _a.sent();
-                    if (account !== null) {
-                        res.render("placeholders/create_account", {
-                            "message": "username taken"
-                        });
-                        return [2 /*return*/, false];
-                    }
-                    return [2 /*return*/, true];
-            }
-        });
-    });
-}
-function createNewProfile(username, email, password) {
-    return __awaiter(this, void 0, void 0, function () {
-        var db;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
-                case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").insertOne({ name: username, email: email, pw: password })];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
 router.post("/create", function (req, res) {
-    if (isLoggedIn(req, res))
+    if (profile_1.isLoggedIn(req, res))
         return;
     var name = req.body.name;
     var email = req.body.email;
     var pw = req.body.password;
-    //ensuring no field is empty
-    //if (!isValidProfile(req, res)) return;
-    isValidProfile(req, res)
+    profile_1.isValidProfile(req, res)
         .then(function (bool) {
-        if (bool === true) {
-            createNewProfile(name, email, pw)
+        if (bool) {
+            profile_1.createNewProfile(name, email, pw)
                 .then(function () {
-                return login(res, name, pw);
+                return profile_1.login(res, name, pw);
             });
         }
     });
 });
 router.get("/login", function (req, res) {
-    if ("username" in req.cookies) {
-        res.render("placeholders/homepage", {
-            "user": req.cookies.username,
-            "message": "you are already logged in"
-        });
-        return;
-    }
-    //if client is not logged in, they can create account
-    res.render("placeholders/login");
+    if (!profile_1.isLoggedIn(req, res))
+        res.render("placeholders/login");
 });
-function login(res, username, password) {
-    return __awaiter(this, void 0, void 0, function () {
-        var db, account;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
-                case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").findOne({ name: username })];
-                case 2:
-                    account = _a.sent();
-                    if (account === null) {
-                        res.render("placeholders/login", {
-                            "message": "can't find account, sorry"
-                        });
-                    }
-                    else if (account.pw !== password) {
-                        res.render("placeholders/login", {
-                            "message": "username or password is incorrect"
-                        });
-                    }
-                    else {
-                        res.cookie("username", username);
-                        res.render("placeholders/homepage", {
-                            "user": username,
-                            "message": "you successfully logged in"
-                        });
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-function isLoginFormComplete(req, res) {
-    if (req.body.name === "" || req.body.pw === "") {
-        res.render("placeholders/login", { "message": "empty input" });
-        return false;
-    }
-    else
-        return true;
-}
 router.post("/login", function (req, res) {
-    if (!isLoggedIn(req, res) || !isLoginFormComplete(req, res))
-        login(res, req.body.name, req.body.pw).then();
+    if (!profile_1.isLoggedIn(req, res) || !profile_1.isLoginFormComplete(req, res))
+        profile_1.login(res, req.body.name, req.body.pw).then();
 });
 router.get("/logout", function (req, res) {
     res.clearCookie("username");
     res.render("placeholders/login");
 });
 // Viewing user profile
-router.get("/home", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, _b, _c, _d, _e;
     return __generator(this, function (_f) {
         switch (_f.label) {
@@ -198,7 +81,7 @@ router.get("/home", function (req, res) { return __awaiter(_this, void 0, void 0
                 _c = ["profile/home"];
                 _d = {};
                 _e = "user";
-                return [4 /*yield*/, profileRetriever_1.profileRetriever.retrieveProfile(req, res).catch(function (e) { return console.log(e); })];
+                return [4 /*yield*/, profileRetriever.retrieveProfile(req, res).catch(function (e) { return console.log(e); })];
             case 1:
                 _b.apply(_a, _c.concat([(_d[_e] = _f.sent(),
                         _d)]));
@@ -207,10 +90,10 @@ router.get("/home", function (req, res) { return __awaiter(_this, void 0, void 0
     });
 }); });
 // Editing user profile
-router.post("/pushtag", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.post("/pushtag", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount_1.alterAccount.pushTag(req, res)];
+            case 0: return [4 /*yield*/, alterAccount.pushTag(req, res)];
             case 1:
                 _a.sent();
                 res.redirect('/home');
@@ -218,10 +101,10 @@ router.post("/pushtag", function (req, res) { return __awaiter(_this, void 0, vo
         }
     });
 }); });
-router.post("/poptag", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.post("/poptag", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount_1.alterAccount.popTag(req, res)];
+            case 0: return [4 /*yield*/, alterAccount.popTag(req, res)];
             case 1:
                 _a.sent();
                 res.redirect('/home');
@@ -229,10 +112,10 @@ router.post("/poptag", function (req, res) { return __awaiter(_this, void 0, voi
         }
     });
 }); });
-router.post("/editemail", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.post("/editemail", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount_1.alterAccount.editEmail(req, res)];
+            case 0: return [4 /*yield*/, alterAccount.editEmail(req, res)];
             case 1:
                 _a.sent();
                 res.redirect('/home');
@@ -240,10 +123,10 @@ router.post("/editemail", function (req, res) { return __awaiter(_this, void 0, 
         }
     });
 }); });
-router.post("/editpassword", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.post("/editpassword", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount_1.alterAccount.editPassword(req, res)];
+            case 0: return [4 /*yield*/, alterAccount.editPassword(req, res)];
             case 1:
                 _a.sent();
                 res.redirect('/home');

@@ -1,5 +1,7 @@
 import {Request, Response, Router} from "express";
 import {isLoggedIn, isValidProfile, createNewProfile, login, isLoginFormComplete} from "../managers/profile";
+import {pushTag, popTag, editEmail, editPassword} from "../modules/alterAccount";
+
 const router = Router();
 
 router.get("/create", (req : Request, res: Response) => {
@@ -42,20 +44,20 @@ router.get("/home", async (req : Request, res : Response) => {
 
 // Editing user profile
 router.post("/pushtag", async (req : Request, res : Response) => {
-    await alterAccount.pushTag(req, res);
+    await pushTag(req, res);
     res.redirect('/home');
 });
 
 router.post("/poptag", async (req : Request, res : Response) => {
-    await alterAccount.popTag(req, res);
+    await popTag(req, res);
     res.redirect('/home');
 });
 router.post("/editemail", async (req : Request, res : Response) => {
-    await alterAccount.editEmail(req, res);
+    await editEmail(req, res);
     res.redirect('/home');
 });
 router.post("/editpassword", async (req : Request, res : Response) => {
-    await alterAccount.editPassword(req, res);
+    await editPassword(req, res);
     res.redirect('/home');
 });
 

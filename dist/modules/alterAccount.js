@@ -37,85 +37,76 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
-var Profile = require("../models/profile_m");
-var ProfileController = /** @class */ (function () {
-    function ProfileController() {
+var alterAccount = /** @class */ (function () {
+    function alterAccount() {
     }
-    // Returns the profile as output based on input
-    ProfileController.prototype.retrieve = function (req, res) {
+    // https://docs.mongodb.com/manual/reference/operator/update/push/
+    alterAccount.pushTag = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var userRequested, db, foundUser;
+            var db;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        userRequested = new Profile;
-                        userRequested.name = req.body.name;
-                        userRequested.email = req.body.email;
-                        userRequested.pw = req.body.pw;
-                        return [4 /*yield*/, DbClient.connect()];
+                    case 0: return [4 /*yield*/, DbClient.connect()];
                     case 1:
                         db = _a.sent();
-                        return [4 /*yield*/, db.collection("users").findOne(userRequested)];
+                        return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $push: { tags: req.body.tag } })];
                     case 2:
-                        foundUser = _a.sent();
-                        // If the user is not found return null
-                        if (foundUser === null) {
-                            res.render("placeholders/login", {
-                                "message": "can't find account, sorry"
-                            });
-                        }
-                        // Otherwise return the user
-                        else {
-                            return [2 /*return*/, [foundUser, "user"]];
-                        }
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    ProfileController.prototype.login = function (req, res) {
+    // https://docs.mongodb.com/manual/reference/operator/update/pop/
+    alterAccount.popTag = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var name, pw;
+            var db;
             return __generator(this, function (_a) {
-                if ("username" in req.cookies) {
-                    res.render("placeholders/homepage", {
-                        "user": req.cookies.username,
-                        "message": "you are already logged in"
-                    });
-                    return [2 /*return*/];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, DbClient.connect()];
+                    case 1:
+                        db = _a.sent();
+                        return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $pop: { tags: req.body.new } })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
                 }
-                name = req.body.name;
-                pw = req.body.password;
-                DbClient.connect()
-                    .then(function (db) {
-                    return db.collection("users").findOne({ name: name });
-                })
-                    .then(function (account) {
-                    if (account === null) {
-                        res.render("placeholders/login", {
-                            "message": "can't find account, sorry"
-                        });
-                    }
-                    else if (account.pw !== pw) {
-                        res.render("placeholders/login", {
-                            "message": "username or password is incorrect"
-                        });
-                    }
-                    else {
-                        res.cookie("username", name);
-                        res.render("placeholders/homepage", {
-                            "user": name,
-                            "message": "you successfully logged in"
-                        });
-                    }
-                })
-                    .catch(function (err) {
-                    console.log(err.message);
-                });
-                return [2 /*return*/];
             });
         });
     };
-    return ProfileController;
+    // https://docs.mongodb.com/manual/reference/operator/update/positional/
+    alterAccount.editEmail = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var db;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, DbClient.connect()];
+                    case 1:
+                        db = _a.sent();
+                        return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $set: { email: req.body.email } })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    alterAccount.editPassword = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var db;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, DbClient.connect()];
+                    case 1:
+                        db = _a.sent();
+                        return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $set: { email: req.body.password } })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return alterAccount;
 }());
-exports.ProfileController = ProfileController;
+exports.alterAccount = alterAccount;
