@@ -4,6 +4,12 @@ Eli Brooks
 Cole Dodd
 
 BasketballWorld - a forum for basketball related discussion
+***M3.5***
+BasketballWorld is now connected to MongoDB Atlas cloud database.
+A user can now login, logout, make posts, make threads, and research shoes.
+Testing scripts have been added.
+We have added modules to increase cohesion in the router files.
+
 
 ***M3***
 We satisfied the 'Create Thread' and 'Sign Up' user stories
