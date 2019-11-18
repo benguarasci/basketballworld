@@ -33,4 +33,30 @@ router.get("/logout", (req : Request, res : Response) => {
     res.render("placeholders/login");
 });
 
+// Viewing user profile
+router.get("/home", async (req : Request, res : Response) => {
+    res.render("profile/home", {
+        "user": await profileRetriever.retrieveProfile(req, res).catch((e: any) => console.log(e))
+    });
+});
+
+// Editing user profile
+router.post("/pushtag", async (req : Request, res : Response) => {
+    await alterAccount.pushTag(req, res);
+    res.redirect('/home');
+});
+
+router.post("/poptag", async (req : Request, res : Response) => {
+    await alterAccount.popTag(req, res);
+    res.redirect('/home');
+});
+router.post("/editemail", async (req : Request, res : Response) => {
+    await alterAccount.editEmail(req, res);
+    res.redirect('/home');
+});
+router.post("/editpassword", async (req : Request, res : Response) => {
+    await alterAccount.editPassword(req, res);
+    res.redirect('/home');
+});
+
 module.exports = router;

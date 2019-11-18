@@ -36,6 +36,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
+var profileRetriever_1 = require("../modules/profileRetriever");
+var alterAccount_1 = require("../modules/alterAccount");
 var DbClient = require("../DbClient");
 var router = express_1.Router();
 var isLoggedIn = function (req, res) {
@@ -186,4 +188,67 @@ router.get("/logout", function (req, res) {
     res.clearCookie("username");
     res.render("placeholders/login");
 });
+// Viewing user profile
+router.get("/home", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, _b, _c, _d, _e;
+    return __generator(this, function (_f) {
+        switch (_f.label) {
+            case 0:
+                _b = (_a = res).render;
+                _c = ["profile/home"];
+                _d = {};
+                _e = "user";
+                return [4 /*yield*/, profileRetriever_1.profileRetriever.retrieveProfile(req, res).catch(function (e) { return console.log(e); })];
+            case 1:
+                _b.apply(_a, _c.concat([(_d[_e] = _f.sent(),
+                        _d)]));
+                return [2 /*return*/];
+        }
+    });
+}); });
+// Editing user profile
+router.post("/pushtag", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, alterAccount_1.alterAccount.pushTag(req, res)];
+            case 1:
+                _a.sent();
+                res.redirect('/home');
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/poptag", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, alterAccount_1.alterAccount.popTag(req, res)];
+            case 1:
+                _a.sent();
+                res.redirect('/home');
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/editemail", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, alterAccount_1.alterAccount.editEmail(req, res)];
+            case 1:
+                _a.sent();
+                res.redirect('/home');
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/editpassword", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, alterAccount_1.alterAccount.editPassword(req, res)];
+            case 1:
+                _a.sent();
+                res.redirect('/home');
+                return [2 /*return*/];
+        }
+    });
+}); });
 module.exports = router;
