@@ -7,7 +7,7 @@ block content
     ul
         each tag in user.tags
             li= tag
-            form(method = "POST" action='/profile/poptag')
+            form(method = "POST" action='/profile/pulltag')
                 input(type="hidden" name="tag" value=tag)
                 input(type='submit' value='X')
             nbsp

@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -35,6 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 var profileRetriever = require("../modules/profileRetriever").profileRetriever;
 var DbClient = require("../DbClient").DbClient;
 var Profile = require("../models/profile_m").Profile;
@@ -45,7 +45,7 @@ mockUser.email = "a@b.com";
 mockUser.pw = "123";
 mockUser.tags = null;
 // Tests to see if the mockUser can be inserted into the 'users' collection
-test("Insert User DB test", function () { return __awaiter(void 0, void 0, void 0, function () {
+test("Insert User DB test", function () { return __awaiter(_this, void 0, void 0, function () {
     var insertedUser;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -69,7 +69,7 @@ test("Insert User DB test", function () { return __awaiter(void 0, void 0, void 
     });
 }); });
 // Tests to see if the mockUser can be deleted from the 'users' collection
-test("Delete User DB test", function () { return __awaiter(void 0, void 0, void 0, function () {
+test("Delete User DB test", function () { return __awaiter(_this, void 0, void 0, function () {
     var deletedUser;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -90,7 +90,7 @@ test("Delete User DB test", function () { return __awaiter(void 0, void 0, void 
     });
 }); });
 // Tests to see if the mockUser module 'isValid' validates that the fields have been filled
-test("Tests userProfileRetriever module", function () { return __awaiter(void 0, void 0, void 0, function () {
+test("Tests userProfileRetriever module", function () { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/];
     });

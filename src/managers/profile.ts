@@ -42,7 +42,10 @@ export async function createNewProfile (username:string, email:string, password:
     let db = await DbClient.connect();
     await db!.collection("users").insertOne({name: username, email: email, pw: password});
 }
-
+export async function retrieveProfile (req : Request, res: Response) {
+    let db = await DbClient.connect();
+    return await db!.collection("users").findOne({name: req.cookies.username});
+}
 export async function login (res: Response, username : string, password : string) {
     let db = await DbClient.connect();
     let account = await db!.collection("users").findOne({name: username});
@@ -67,4 +70,23 @@ export function isLoginFormComplete (req : Request, res: Response) {
         res.render("placeholders/login", {"message" : "empty input"});
         return false;
     } else return true;
+}
+// https://docs.mongodb.com/manual/reference/operator/update/push/
+export async function pushTag (req:Request, res:Response) {
+    let db = await DbClient.connect();
+    await db!.collection("users").updateOne({name: req.cookies.username}, { $push: { tags: req.body.new } });
+}
+// https://docs.mongodb.com/manual/reference/operator/update/pull/
+export async function pullTag (req:Request, res:Response) {
+    let db = await DbClient.connect();
+    await db!.collection("users").updateOne({name: req.cookies.username}, { $pull: { tags: req.body.tag} });
+}
+// https://docs.mongodb.com/manual/reference/operator/update/positional/
+export async function editEmail (req:Request, res:Response) {
+    let db = await DbClient.connect();
+    await db!.collection("users").updateOne({name: req.cookies.username}, { $set: { email: req.body.email } });
+}
+export async function editPassword (req:Request, res:Response) {
+    let db = await DbClient.connect();
+    await db!.collection("users").updateOne({name: req.cookies.username}, { $set: { email: req.body.password } });
 }

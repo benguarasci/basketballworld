@@ -1,6 +1,5 @@
 import {Request, Response, Router} from "express";
-import {isLoggedIn, isValidProfile, createNewProfile, login, isLoginFormComplete} from "../managers/profile";
-import {pushTag, popTag, editEmail, editPassword} from "../modules/alterAccount";
+import {isLoggedIn, isValidProfile, createNewProfile, retrieveProfile, login, isLoginFormComplete, pushTag, pullTag, editEmail, editPassword} from "../managers/profile";
 
 const router = Router();
 
@@ -34,31 +33,26 @@ router.get("/logout", (req : Request, res : Response) => {
     res.clearCookie("username");
     res.render("placeholders/login");
 });
-
-// Viewing user profile
 router.get("/home", async (req : Request, res : Response) => {
     res.render("profile/home", {
-        "user": await profileRetriever.retrieveProfile(req, res).catch((e: any) => console.log(e))
+        "user": await retrieveProfile(req, res).catch((e: any) => console.log(e))
     });
 });
-
-// Editing user profile
 router.post("/pushtag", async (req : Request, res : Response) => {
     await pushTag(req, res);
-    res.redirect('/home');
+    res.redirect('/profile/home');
 });
-
-router.post("/poptag", async (req : Request, res : Response) => {
-    await popTag(req, res);
-    res.redirect('/home');
+router.post("/pulltag", async (req : Request, res : Response) => {
+    await pullTag(req, res);
+    res.redirect('/profile/home');
 });
 router.post("/editemail", async (req : Request, res : Response) => {
     await editEmail(req, res);
-    res.redirect('/home');
+    res.redirect('/profile/home');
 });
 router.post("/editpassword", async (req : Request, res : Response) => {
     await editPassword(req, res);
-    res.redirect('/home');
+    res.redirect('/profile/home');
 });
 
 module.exports = router;

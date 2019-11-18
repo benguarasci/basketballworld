@@ -6,7 +6,7 @@ const Profile = require("../models/profile_m");
 export class profileRetriever {
 
     // Returns the profile as output based on input
-    async retrieveProfile(req: Request, res: Response) {
+    static async retrieveProfile(req: Request, res: Response) {
 
         // The user inputted
         const userRequested = new Profile;

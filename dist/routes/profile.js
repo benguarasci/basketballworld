@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -35,10 +34,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var profile_1 = require("../managers/profile");
-var alterAccount_1 = require("../modules/alterAccount");
 var router = express_1.Router();
 router.get("/create", function (req, res) {
     if (!profile_1.isLoggedIn(req, res))
@@ -72,8 +71,7 @@ router.get("/logout", function (req, res) {
     res.clearCookie("username");
     res.render("placeholders/login");
 });
-// Viewing user profile
-router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.get("/home", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var _a, _b, _c, _d, _e;
     return __generator(this, function (_f) {
         switch (_f.label) {
@@ -82,7 +80,7 @@ router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 
                 _c = ["profile/home"];
                 _d = {};
                 _e = "user";
-                return [4 /*yield*/, profileRetriever.retrieveProfile(req, res).catch(function (e) { return console.log(e); })];
+                return [4 /*yield*/, profile_1.retrieveProfile(req, res).catch(function (e) { return console.log(e); })];
             case 1:
                 _b.apply(_a, _c.concat([(_d[_e] = _f.sent(),
                         _d)]));
@@ -90,47 +88,46 @@ router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); });
-// Editing user profile
-router.post("/pushtag", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/pushtag", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount_1.pushTag(req, res)];
+            case 0: return [4 /*yield*/, profile_1.pushTag(req, res)];
             case 1:
                 _a.sent();
-                res.redirect('/home');
+                res.redirect('/profile/home');
                 return [2 /*return*/];
         }
     });
 }); });
-router.post("/poptag", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/pulltag", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount_1.popTag(req, res)];
+            case 0: return [4 /*yield*/, profile_1.pullTag(req, res)];
             case 1:
                 _a.sent();
-                res.redirect('/home');
+                res.redirect('/profile/home');
                 return [2 /*return*/];
         }
     });
 }); });
-router.post("/editemail", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/editemail", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount_1.editEmail(req, res)];
+            case 0: return [4 /*yield*/, profile_1.editEmail(req, res)];
             case 1:
                 _a.sent();
-                res.redirect('/home');
+                res.redirect('/profile/home');
                 return [2 /*return*/];
         }
     });
 }); });
-router.post("/editpassword", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/editpassword", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, alterAccount_1.editPassword(req, res)];
+            case 0: return [4 /*yield*/, profile_1.editPassword(req, res)];
             case 1:
                 _a.sent();
-                res.redirect('/home');
+                res.redirect('/profile/home');
                 return [2 /*return*/];
         }
     });
