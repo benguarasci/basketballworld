@@ -2,8 +2,18 @@ extends ../layout
 
 block content
     h1 #{user.name}'s PROFILE
-    p EMAIL: #{user.email}
-    p TAGS:
+
+    form(method = "POST" action='/profile/editpassword')
+        label(for='password') Edit Password:
+        input#password(type='text' name='password' placeholder='Password')
+        input(type='submit' value='Submit')
+
+    form(method = "POST" action='/profile/editemail')
+        label(for='email') Edit Email:
+        input#email(type='text' name='email' value=user.email)
+        input(type='submit' value='Submit')
+
+    p Tags:
     ul
         each tag in user.tags
             li= tag
@@ -14,6 +24,6 @@ block content
             <br />
 
     form(method = "POST" action='/profile/pushtag')
-        label(for='new') Create Tag
+        label(for='new') Create Tag:
         input#new(type='text' name='new' placeholder='Tag')
         input(type='submit' value='Submit')
