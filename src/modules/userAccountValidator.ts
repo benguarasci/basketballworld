@@ -20,4 +20,13 @@ export class validator {
             else return [true, "valid input"];
         }
     }
+    public validateNewPost(req: Request, res: Response) {
+        if (!("username" in req.cookies)) {
+            return [false, "you are not logged in"];
+        } else if (req.body.content === "") {
+            return [false, "you have to write something"];
+        } else {
+            return "valid";
+        }
+    }
 }
