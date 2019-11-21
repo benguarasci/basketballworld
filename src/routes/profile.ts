@@ -1,5 +1,6 @@
 import {Request, Response, Router} from "express";
 import {isLoggedIn, createNewProfile, retrieveProfile, login, pushTag, pullTag, editEmail, editPassword} from "../managers/profile";
+import {retrieveThreads} from "../managers/thread";
 import createProfileForm from "../mymodels/createProfile"
 const router = Router();
 
@@ -32,7 +33,8 @@ router.get("/logout", (req : Request, res : Response) => {
 });
 router.get("/home", async (req : Request, res : Response) => {
     res.render("profile/home", {
-        "user": await retrieveProfile(req, res).catch((e: any) => console.log(e))
+        profile: await retrieveProfile(req, res).catch((e: any) => console.log(e)),
+        threads: await retrieveThreads(req, res).catch((e: any) => console.log(e))
     });
 });
 router.post("/pushtag", async (req : Request, res : Response) => {

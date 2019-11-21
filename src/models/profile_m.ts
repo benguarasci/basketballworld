@@ -1,5 +1,3 @@
-const { profileRetriever } = require("../modules/profileRetriever")
-
 export default class Profile {
 
     name: string;

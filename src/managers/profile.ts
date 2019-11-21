@@ -27,14 +27,14 @@ export async function login (res: Response, form : any) {
         res.render("placeholders/login", {
             "message": "can't find account, sorry"
         });
-    } else if (account.pw !== form.password) {
+    } else if (account.pw !== form.pw) {
         res.render("placeholders/login", {
             "message": "username or password is incorrect"
         });
     } else {
         res.cookie("username", form.name);
         res.render("placeholders/homepage", {
-            "user": form.password,
+            "user": form.pw,
             "message": "you successfully logged in"
         });
     }
