@@ -24,7 +24,7 @@ export default class createProfileForm {
             return false;
         }
         let db = await DbClient.connect();
-        let account = await db!.collection("users").findOne({name:name});
+        let account = await db!.collection("users").findOne({name: this.name});
         if (account !== null) {
             res.render("placeholders/create_account", {
                 "message": "username taken"

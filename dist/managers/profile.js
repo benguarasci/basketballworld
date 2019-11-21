@@ -97,7 +97,9 @@ function login(res, form) {
                             "message": "can't find account, sorry"
                         });
                     }
-                    else if (account.pw !== form.password) {
+                    else if (account.pw !== form.pw) {
+                        console.log(account.pw);
+                        console.log(form.pw);
                         res.render("placeholders/login", {
                             "message": "username or password is incorrect"
                         });
@@ -105,7 +107,7 @@ function login(res, form) {
                     else {
                         res.cookie("username", form.name);
                         res.render("placeholders/homepage", {
-                            "user": form.password,
+                            "user": form.name,
                             "message": "you successfully logged in"
                         });
                     }

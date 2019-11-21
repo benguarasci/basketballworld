@@ -65,7 +65,7 @@ var createProfileForm = /** @class */ (function () {
                         return [4 /*yield*/, DbClient.connect()];
                     case 1:
                         db = _a.sent();
-                        return [4 /*yield*/, db.collection("users").findOne({ name: name })];
+                        return [4 /*yield*/, db.collection("users").findOne({ name: this.name })];
                     case 2:
                         account = _a.sent();
                         if (account !== null) {
