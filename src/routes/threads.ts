@@ -1,9 +1,10 @@
 import {Request, Response, Router} from "express";
-import {isLoggedIn} from "../managers/profile";
+import {isLoggedIn, retrieveProfile} from "../managers/profile";
 const DbClient = require("../DbClient");
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
 import createThreadForm from "../mymodels/createThread";
+import {createThread} from "../managers/thread";
 
 async function listThreads() {
     let db = await DbClient.connect();
@@ -17,19 +18,13 @@ router.get("/", (req : Request, res : Response) => {
             res.render("placeholders/threads", {'user':req.cookies.username, threads : threads[0], links : threads[1]});
         })
 });
-router.get("/create", (req : Request, res : Response) => {
-    if (!isLoggedIn(req, res)) res.render("placeholders/create_threads", {'user':req.cookies.username});
-});
-async function createThread (req: Request, res : Response, form : any) {
-    let db = await DbClient.connect();
-    return await db!.collection("threads").insertOne({"title": form.title, "description": form.desc, "owner":form.owner, "ms": form.ms, "count": form.count, by: form.owner});
-}
-router.post("/create", (req: Request, res: Response) => {
-    if (isLoggedIn(req, res)) return;
-    let form = new createThreadForm (req);
-    if (!form.isFormComplete(res)) return;
 
-    createThread(req, res, form).then((id : any) =>
+router.get("/create", (req : Request, res : Response) => {
+    res.render("threads/create", {'user':req.cookies.username});
+});
+
+router.post("/create", async (req: Request, res: Response) => {
+    await createThread(req, res).then((id : any) =>
         res.redirect("/threads/"+id.insertedId.toString())
     );
 });

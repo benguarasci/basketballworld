@@ -2,38 +2,48 @@ extends ../layout
 
 block content
     h1 #{profile.name}'s PROFILE
+    <hr/>
+
 
     if threads
-        h1 Threads:
+        <br/>
             each thread in threads
                 each tag in thread.tags
-                    b= tag
-                p= thread.title
+                    text= tag + " "
+                h2= thread.title
                 p= thread.description
+                <br/>
+        <hr/>
 
-    form(method = "POST" action='/profile/editpassword')
-        label(for='password') Edit Password:
-        input#password(type='text' name='password' placeholder='Password')
-        input(type='submit' value='Submit')
+    div(style={display:'flex'})
+        div(style={flex:0.5})
+            if profile.tags
+                h1 Tags
+                ul
+                    each tag in profile.tags
+                        div(style={display:'flex'})
+                            div(style={flex: 0.25})
+                                h4= tag
+                            div(style={flex: 0.75})
+                                form(method = "POST" action='/profile/pulltag')
+                                input(type="hidden" name="tag" value=tag)
+                                input(type='submit' value='X')
+                        nbsp
+                        <br />
 
-    form(method = "POST" action='/profile/editemail')
-        label(for='email') Edit Email:
-        input#email(type='text' name='email' value=profile.email)
-        input(type='submit' value='Submit')
+                form(method = "POST" action='/profile/pushtag')
+                    label(for='new') Create Tag:
+                    input#new(type='text' name='new' placeholder='Tag')
+                    input(type='submit' value='Submit')
+        div(style={flex:0.5})
+            h1 Info
+            form(method = "POST" action='/profile/editpassword')
+                label(for='password') Edit Password:
+                input#password(type='text' name='password' placeholder='Password')
+                input(type='submit' value='Submit')
 
-    if profile.tags
-        h1 Tags:
-        ul
-            each tag in profile.tags
-                li= tag
-                form(method = "POST" action='/profile/pulltag')
-                    input(type="hidden" name="tag" value=tag)
-                    input(type='submit' value='X')
-                nbsp
-                <br />
-
-        form(method = "POST" action='/profile/pushtag')
-            label(for='new') Create Tag:
-            input#new(type='text' name='new' placeholder='Tag')
-            input(type='submit' value='Submit')
+            form(method = "POST" action='/profile/editemail')
+                label(for='email') Edit Email:
+                input#email(type='text' name='email' value=profile.email)
+                input(type='submit' value='Submit')
 

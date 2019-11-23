@@ -35,10 +35,7 @@ export async function login (res: Response, form : any) {
         });
     } else {
         res.cookie("username", form.name);
-        res.render("placeholders/homepage", {
-            "user": form.name,
-            "message": "you successfully logged in"
-        });
+        res.redirect('/profile/home');
     }
 }
 // https://docs.mongodb.com/manual/reference/operator/update/push/
