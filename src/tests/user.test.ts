@@ -1,4 +1,4 @@
-const { profileRetriever } = require("../modules/profileRetriever");
+const { createNewProfile, retrieveProfile } = require("../managers/profile");
 const { DbClient } = require("../DbClient");
 const { Profile } = require("../models/profile_m");
 
@@ -9,37 +9,49 @@ mockUser.email = "a@b.com";
 mockUser.pw = "123";
 mockUser.tags = null;
 
+//A mock user request
+const mockProfileRequest = (name: any, email: any, password: any, cookies: any) => ({
+    name: mockUser.name,
+    email: mockUser.email,
+    password: mockUser.pw,
+    cookies: {username: mockUser.name},
+});
+
+// A mock user response
+// const mockResponse = () => {
+//     const res = {};
+//     res.status = 200;
+//     res.json = "";
+//     return res;
+// };
+
 // Tests to see if the mockUser can be inserted into the 'users' collection
 test("Insert User DB test", async () => {
 
-    // *** This should call the profile.insert module instead ***
+    const mockForm = (name: any, email: any, pw: any) => ({
+        name: mockUser.name,
+        email: mockUser.email,
+        pw: mockUser.pw,
 
-    await DbClient.connect().then((db: any) =>
-        db!.collection("users").insertOne(mockUser));
+    });
 
-    const insertedUser = await DbClient.connect().then((db: any) =>
-        db!.collection("users").findOne(mockUser));
+    await createNewProfile(mockForm);
 
-    // The insertedUser should equal the mockUser added
-    expect(insertedUser).toEqual(mockUser);
-});
+    const addedUser = await retrieveProfile(mockProfileRequest);
 
-// Tests to see if the mockUser can be deleted from the 'users' collection
-test("Delete User DB test", async () => {
-
-    await DbClient.connect().then((db: any) =>
-        db!.collection("users").deleteOne(mockUser));
-
-    const deletedUser = await DbClient.connect().then((db: any) =>
-        db!.collection("users").findOne(mockUser));
-
-    // Since the mockUser has been deleted the deletedUser should return null
-    expect(deletedUser).toEqual(null)
+    expect(mockUser).toEqual(addedUser);
 
 });
 
 // Tests to see if the mockUser module 'isValid' validates that the fields have been filled
-test("Tests userProfileRetriever module", async () => {
+// test("Tests profileRetriever function", async () => {
+//     const user = await retrieveProfile(mockProfileRequest);
+//     expect(user).toEqual(mockUser.name);
+//
+// });
 
-
-});
+// Tests to see if the mockUser can be deleted from the 'users' collection
+// test("Delete User DB test", async () => {x
+//
+//
+// });
