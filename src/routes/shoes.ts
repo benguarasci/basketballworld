@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction, Router} from "express";
 import DbClient = require("../DbClient");
 
+import {refresh, like, dislike} from "../managers/shoe";
 const router = Router();
 
 // sending create profile page to client
@@ -22,10 +23,7 @@ router.get("/browse", (req, res, next) => {
                             res.render('shoes/browse', {lebronlikes: 0, lebrondislikes: 0, kawhilikes: 0, kawhidislikes: 0, giannislikes: 0, giannisdislikes: 0, KDlikes: 0, KDdislikes: 0});
                         })
                     }else{
-                        db!.collection('data').find().toArray()
-                            .then((data:any) => {
-                                res.render('shoes/browse', {lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes})
-                            })
+                        refresh(res).then((val:any)=>{});
                     }
                 })
         })
@@ -34,145 +32,49 @@ router.get("/browse", (req, res, next) => {
 });
 
 router.get("/lebronlike", (req : Request, res: Response)=>{
-    DbClient.connect()
-        .then((db:any)=>{
-            db!.collection("data").findOne({name:"Lebron"})
-                .then((like:any)=>{
-                    return db!.collection("data").updateOne({_id : like._id}, {$inc: {likes:1}})
-                        .then ((id : any) => {
-                            db!.collection("data").find().toArray()
-                                .then((data:any)=>{
-                                    res.render('shoes/browse', {lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes})
-                                })
-                        })
-                })
-        })
+    like(res, "Lebron")
+        .then((confirm: any)=>refresh(res))
+        .then((confirm:any)=>{});
 });
 
 router.get("/lebrondislike", (req : Request, res: Response)=>{
-    DbClient.connect()
-        .then((db:any)=>{
-            db!.collection("data").findOne({name:"Lebron"})
-                .then((like:any)=>{
-                    return db!.collection("data").updateOne({_id : like._id}, {$inc: {dislikes:1}})
-                        .then ((id : any) => {
-                            db!.collection("data").find().toArray()
-                                .then((data:any)=>{
-                                    res.render('shoes/browse', {lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes})
-                                    })
-                        })
-                })
-        })
+    dislike(res, "Lebron")
+        .then((confirm: any)=>refresh(res))
+        .then((confirm:any)=>{});
 });
 
 router.get("/kawhilike", (req : Request, res: Response)=>{
-    DbClient.connect()
-        .then((db:any)=>{
-            db!.collection("data").findOne({name:"Kawhi"})
-                .then((like:any)=>{
-                    return db!.collection("data").updateOne({_id : like._id}, {$inc: {likes:1}})
-                        .then ((id : any) => {
-                            db!.collection("data").find().toArray()
-                                .then((data:any)=>{
-                                    res.render('shoes/browse', {lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes})
-                                })
-                        })
-                })
-        })
+    like(res, "Kawhi")
+        .then((confirm: any)=>refresh(res))
+        .then((confirm:any)=>{});
 });
 
 router.get("/kawhidislike", (req : Request, res: Response)=>{
-    DbClient.connect()
-        .then((db:any)=>{
-            db!.collection("data").findOne({name:"Kawhi"})
-                .then((like:any)=>{
-                    return db!.collection("data").updateOne({_id : like._id}, {$inc: {dislikes:1}})
-                        .then ((id : any) => {
-                            db!.collection("data").find().toArray()
-                                .then((data:any)=>{
-                                    res.render('shoes/browse', {lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes})
-                                })
-                        })
-                })
-        })
+    dislike(res, "Kawhi")
+        .then((confirm: any)=>refresh(res))
+        .then((confirm:any)=>{});
 });
+
 router.get("/giannislike", (req : Request, res: Response)=>{
-    DbClient.connect()
-        .then((db:any)=>{
-            db!.collection("data").findOne({name:"Giannis"})
-                .then((like:any)=>{
-                    return db!.collection("data").updateOne({_id : like._id}, {$inc: {likes:1}})
-                        .then ((id : any) => {
-                            db!.collection("data").find().toArray()
-                                .then((data:any)=>{
-                                    res.render('shoes/browse', {lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes})
-                                })
-                        })
-                })
-        })
-});
+    like(res, "Giannis")
+        .then((confirm: any)=>refresh(res))
+        .then((confirm:any)=>{});
+    });
 router.get("/giannisdislike", (req : Request, res: Response)=>{
-    DbClient.connect()
-        .then((db:any)=>{
-            db!.collection("data").findOne({name:"Giannis"})
-                .then((like:any)=>{
-                    return db!.collection("data").updateOne({_id : like._id}, {$inc: {dislikes:1}})
-                        .then ((id : any) => {
-                            db!.collection("data").find().toArray()
-                                .then((data:any)=>{
-                                    res.render('shoes/browse', {lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes})
-                                })
-                        })
-                })
-        })
+    dislike(res, "Giannis")
+        .then((confirm: any)=>refresh(res))
+        .then((confirm:any)=>{});
 });
 
 router.get("/kdlike", (req : Request, res: Response)=>{
-    DbClient.connect()
-        .then((db:any)=>{
-            db!.collection("data").findOne({name:"KD"})
-                .then((like:any)=>{
-                    return db!.collection("data").updateOne({_id : like._id}, {$inc: {likes:1}})
-                        .then ((id : any) => {
-                            db!.collection("data").find().toArray()
-                                .then((data:any)=>{
-                                    res.render('shoes/browse', {lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes})
-                                })
-                        })
-                })
-        })
+    like(res, "KD")
+        .then((confirm: any)=>refresh(res))
+        .then((confirm:any)=>{});
 });
 router.get("/kddislike", (req : Request, res: Response)=>{
-    DbClient.connect()
-        .then((db:any)=>{
-            db!.collection("data").findOne({name:"KD"})
-                .then((like:any)=>{
-                    return db!.collection("data").updateOne({_id : like._id}, {$inc: {dislikes:1}})
-                        .then ((id : any) => {
-                            db!.collection("data").find().toArray()
-                                .then((data:any)=>{
-                                    res.render('shoes/browse', {lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes})
-                                })
-                        })
-                })
-        })
+    dislike(res, "KD")
+        .then((confirm: any)=>refresh(res))
+        .then((confirm:any)=>{});
 });
-//
-// const like = document.getElementById('like1');
-// like.addEventListener('click', function (e) {
-//     console.log('liked');
-//
-//     fetch('/clicked', {method: 'POST'})
-//         .then(function (response) {
-//             if(response.ok){
-//                console.log("like recorded")
-//                 return;
-//             }
-//             throw new Error("like did not reach database");
-//         })
-//         .catch(function(error){
-//             console.log(error);
-//         });
-// });
 
 module.exports = router;
