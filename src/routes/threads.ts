@@ -37,12 +37,8 @@ router.post("/create", async (req: Request, res: Response) => {
 });
 
 router.post("/delete/:id", async (req: Request, res: Response) => {
-    await deleteThread(req, res).then(() =>
-        listThreads()
-            .then((threads: any) => {
-                res.render("placeholders/threads", {'user':req.cookies.username, threads : threads[0], links : threads[1]});
-            })
-    );
+    await deleteThread(req, res);
+    res.redirect('/profile/home');
 });
 
 router.post("/edit/:id", async (req: Request, res: Response) => {
