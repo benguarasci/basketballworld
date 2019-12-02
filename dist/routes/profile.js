@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var profile_1 = require("../managers/profile");
+var thread_1 = require("../managers/thread");
 var createProfile_1 = __importDefault(require("../mymodels/createProfile"));
 var router = express_1.Router();
 router.get("/create", function (req, res) {
@@ -75,17 +76,19 @@ router.get("/logout", function (req, res) {
     res.render("placeholders/login");
 });
 router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, _b, _c, _d, _e;
-    return __generator(this, function (_f) {
-        switch (_f.label) {
+    var _a, _b, _c, _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
             case 0:
                 _b = (_a = res).render;
                 _c = ["profile/home"];
                 _d = {};
-                _e = "user";
                 return [4 /*yield*/, profile_1.retrieveProfile(req, res).catch(function (e) { return console.log(e); })];
             case 1:
-                _b.apply(_a, _c.concat([(_d[_e] = _f.sent(),
+                _d.profile = _e.sent();
+                return [4 /*yield*/, thread_1.retrieveThreads(req, res).catch(function (e) { return console.log(e); })];
+            case 2:
+                _b.apply(_a, _c.concat([(_d.threads = _e.sent(),
                         _d)]));
                 return [2 /*return*/];
         }

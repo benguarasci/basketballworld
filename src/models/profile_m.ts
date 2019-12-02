@@ -1,6 +1,4 @@
-const { profileRetriever } = require("../modules/profileRetriever")
-
-export default class Profile {
+export class Profile {
 
     name: string;
     email: string;
