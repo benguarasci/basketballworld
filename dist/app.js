@@ -10,6 +10,7 @@ var indexRouter = require("./routes");
 var profileRouter = require("./routes/profile");
 var threadsRouter = require("./routes/threads");
 var shoesRouter = require("./routes/shoes");
+var adminRouter = require("./routes/admin");
 var app = express();
 // heroku setup
 var port = process.env.PORT;
@@ -30,6 +31,7 @@ app.use("/", indexRouter);
 app.use("/profile", profileRouter);
 app.use("/threads", threadsRouter);
 app.use("/shoes", shoesRouter);
+app.use("/admin", adminRouter);
 // bodyparser setup
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
