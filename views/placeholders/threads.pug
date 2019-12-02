@@ -10,3 +10,8 @@ block content
             li created by #{thread.owner} at #{thread.date}
             li posts: #{thread.count}
             li last post by #{thread.by} at #{thread.date}
+            // If the thread was created by the logged in user
+            if thread.owner === user
+                // Allows the user to delete their thread
+                form(method='POST' action='/threads/delete/' + thread._id)
+                    input(type='submit' value='DELETE THREAD')

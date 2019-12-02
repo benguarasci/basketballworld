@@ -4,7 +4,7 @@ const DbClient = require("../DbClient");
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
 import createThreadForm from "../mymodels/createThread";
-import {createThread} from "../managers/thread";
+import {createThread, deleteThread} from "../managers/thread";
 
 async function listThreads() {
     let db = await DbClient.connect();
@@ -26,6 +26,15 @@ router.get("/create", (req : Request, res : Response) => {
 router.post("/create", async (req: Request, res: Response) => {
     await createThread(req, res).then((id : any) =>
         res.redirect("/threads/"+id.insertedId.toString())
+    );
+});
+
+router.post("/delete/:id", async (req: Request, res: Response) => {
+    await deleteThread(req, res).then(() =>
+        listThreads()
+            .then((threads: any) => {
+                res.render("placeholders/threads", {'user':req.cookies.username, threads : threads[0], links : threads[1]});
+            })
     );
 });
 

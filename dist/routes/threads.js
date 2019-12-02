@@ -35,16 +35,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
-var profile_1 = require("../managers/profile");
 var DbClient = require("../DbClient");
 var router = express_1.Router();
 var ObjectId = require("mongodb").ObjectID;
-var createThread_1 = __importDefault(require("../mymodels/createThread"));
+var thread_1 = require("../managers/thread");
 function listThreads() {
     return __awaiter(this, void 0, void 0, function () {
         var db, threads, links;
@@ -69,33 +65,35 @@ router.get("/", function (req, res) {
     });
 });
 router.get("/create", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res))
-        res.render("placeholders/create_threads", { 'user': req.cookies.username });
+    res.render("threads/create", { 'user': req.cookies.username });
 });
-function createThread(req, res, form) {
-    return __awaiter(this, void 0, void 0, function () {
-        var db;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
-                case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("threads").insertOne({ "title": form.title, "description": form.desc, "owner": form.owner, "ms": form.ms, "count": form.count, by: form.owner })];
-                case 2: return [2 /*return*/, _a.sent()];
-            }
-        });
+router.post("/create", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, thread_1.createThread(req, res).then(function (id) {
+                    return res.redirect("/threads/" + id.insertedId.toString());
+                })];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
     });
-}
-router.post("/create", function (req, res) {
-    if (profile_1.isLoggedIn(req, res))
-        return;
-    var form = new createThread_1.default(req);
-    if (!form.isFormComplete(res))
-        return;
-    createThread(req, res, form).then(function (id) {
-        return res.redirect("/threads/" + id.insertedId.toString());
+}); });
+router.post("/delete/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, thread_1.deleteThread(req, res).then(function () {
+                    return listThreads()
+                        .then(function (threads) {
+                        res.render("placeholders/threads", { 'user': req.cookies.username, threads: threads[0], links: threads[1] });
+                    });
+                })];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
     });
-});
+}); });
 router.get("/:thread", function (req, res) {
     var threadID = new ObjectId(req.params.thread);
     var thisDB;

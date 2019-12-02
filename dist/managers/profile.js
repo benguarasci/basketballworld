@@ -106,10 +106,7 @@ function login(res, form) {
                     }
                     else {
                         res.cookie("username", form.name);
-                        res.render("placeholders/homepage", {
-                            "user": form.name,
-                            "message": "you successfully logged in"
-                        });
+                        res.redirect('/profile/home');
                     }
                     return [2 /*return*/];
             }

@@ -1,13 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Threads = /** @class */ (function () {
-    function Threads(title, content) {
+var Thread = /** @class */ (function () {
+    function Thread(user, title, content, tags) {
+        this.user = user;
         this.title = title;
         this.content = content;
+        this.tags = tags;
     }
-    Threads.prototype.isValid = function () {
+    Thread.prototype.isValid = function () {
         return (this.title != "" && this.content != "");
     };
-    return Threads;
+    return Thread;
 }());
-exports.Threads = Threads;
+exports.Thread = Thread;
