@@ -10,6 +10,7 @@ async function retrieveProfiles() {
     return await db.collection("users").find({}).toArray();
 }
 
+
 router.get("/", (req : Request, res : Response) => {
     res.render("placeholders/admin", {'user':req.cookies.username});
 });
