@@ -8,6 +8,7 @@ const indexRouter = require("./routes");
 const profileRouter = require("./routes/profile");
 const threadsRouter = require("./routes/threads");
 const shoesRouter = require("./routes/shoes");
+const adminRouter = require("./routes/admin");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/", indexRouter);
 app.use("/profile", profileRouter);
 app.use("/threads", threadsRouter);
 app.use("/shoes", shoesRouter);
+app.use("/admin", adminRouter);
 
 // bodyparser setup
 app.use(bodyparser.urlencoded( {extended: true} ));
