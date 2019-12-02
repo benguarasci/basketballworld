@@ -9,6 +9,12 @@ async function retrieveProfiles() {
     let db = await DbClient.connect();
     return await db.collection("users").find({}).toArray();
 }
+async function deleteProfileByID(id : string) {
+    console.log(id);
+    let db = await DbClient.connect();
+    id = ObjectId(id);
+    return await db.collection("users").deleteOne({"_id": ObjectId(id)});
+}
 
 
 router.get("/", (req : Request, res : Response) => {
@@ -17,7 +23,16 @@ router.get("/", (req : Request, res : Response) => {
 router.get("/profiles", (req: Request, res: Response) => {
     retrieveProfiles()
         .then((profiles : any) => {
-            res.send(profiles);
+            let ids = profiles.map((profile:any)=>profile._id.toString());
+            console.log(ids);
+            res.render("placeholders/admin_list_profiles", {'user':req.cookies.username, "profiles": profiles, "ids": ids});
+        })
+});
+router.get("/delete/:id", (req: Request, res: Response) => {
+    console.log("fail");
+    deleteProfileByID(req.params.id)
+        .then((val : any) => {
+            res.redirect("/admin/profiles");
         })
 });
 

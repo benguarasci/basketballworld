@@ -54,13 +54,39 @@ function retrieveProfiles() {
         });
     });
 }
+function deleteProfileByID(id) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log(id);
+                    return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    id = ObjectId(id);
+                    return [4 /*yield*/, db.collection("users").deleteOne({ "_id": ObjectId(id) })];
+                case 2: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
 router.get("/", function (req, res) {
     res.render("placeholders/admin", { 'user': req.cookies.username });
 });
 router.get("/profiles", function (req, res) {
     retrieveProfiles()
         .then(function (profiles) {
-        res.send(profiles);
+        var ids = profiles.map(function (profile) { return profile._id.toString(); });
+        console.log(ids);
+        res.render("placeholders/admin_list_profiles", { 'user': req.cookies.username, "profiles": profiles, "ids": ids });
+    });
+});
+router.get("/delete/:id", function (req, res) {
+    console.log("fail");
+    deleteProfileByID(req.params.id)
+        .then(function (val) {
+        res.redirect("/admin/profiles");
     });
 });
 module.exports = router;

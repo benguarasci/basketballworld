@@ -1,0 +1,8 @@
+extends layout.pug
+
+block content
+    ul
+        each profile, i in profiles
+            li #{profile.name} #{profile.email} #{profile.pw} #{profile._id}
+            li
+                a(href="/admin/delete/"+profile._id) delete #{profile._id}
