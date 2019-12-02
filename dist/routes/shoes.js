@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var DbClient = require("../DbClient");
+var shoe_1 = require("../managers/shoe");
 var router = express_1.Router();
 // sending create profile page to client
 router.get("/browse", function (req, res, next) {
@@ -21,149 +22,49 @@ router.get("/browse", function (req, res, next) {
                 });
             }
             else {
-                db.collection('data').find().toArray()
-                    .then(function (data) {
-                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
-                });
+                shoe_1.refresh(res).then(function (val) { });
             }
         });
     });
 });
 router.get("/lebronlike", function (req, res) {
-    DbClient.connect()
-        .then(function (db) {
-        db.collection("data").findOne({ name: "Lebron" })
-            .then(function (like) {
-            return db.collection("data").updateOne({ _id: like._id }, { $inc: { likes: 1 } })
-                .then(function (id) {
-                db.collection("data").find().toArray()
-                    .then(function (data) {
-                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
-                });
-            });
-        });
-    });
+    shoe_1.like(res, "Lebron")
+        .then(function (confirm) { return shoe_1.refresh(res); })
+        .then(function (confirm) { });
 });
 router.get("/lebrondislike", function (req, res) {
-    DbClient.connect()
-        .then(function (db) {
-        db.collection("data").findOne({ name: "Lebron" })
-            .then(function (like) {
-            return db.collection("data").updateOne({ _id: like._id }, { $inc: { dislikes: 1 } })
-                .then(function (id) {
-                db.collection("data").find().toArray()
-                    .then(function (data) {
-                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
-                });
-            });
-        });
-    });
+    shoe_1.dislike(res, "Lebron")
+        .then(function (confirm) { return shoe_1.refresh(res); })
+        .then(function (confirm) { });
 });
 router.get("/kawhilike", function (req, res) {
-    DbClient.connect()
-        .then(function (db) {
-        db.collection("data").findOne({ name: "Kawhi" })
-            .then(function (like) {
-            return db.collection("data").updateOne({ _id: like._id }, { $inc: { likes: 1 } })
-                .then(function (id) {
-                db.collection("data").find().toArray()
-                    .then(function (data) {
-                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
-                });
-            });
-        });
-    });
+    shoe_1.like(res, "Kawhi")
+        .then(function (confirm) { return shoe_1.refresh(res); })
+        .then(function (confirm) { });
 });
 router.get("/kawhidislike", function (req, res) {
-    DbClient.connect()
-        .then(function (db) {
-        db.collection("data").findOne({ name: "Kawhi" })
-            .then(function (like) {
-            return db.collection("data").updateOne({ _id: like._id }, { $inc: { dislikes: 1 } })
-                .then(function (id) {
-                db.collection("data").find().toArray()
-                    .then(function (data) {
-                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
-                });
-            });
-        });
-    });
+    shoe_1.dislike(res, "Kawhi")
+        .then(function (confirm) { return shoe_1.refresh(res); })
+        .then(function (confirm) { });
 });
 router.get("/giannislike", function (req, res) {
-    DbClient.connect()
-        .then(function (db) {
-        db.collection("data").findOne({ name: "Giannis" })
-            .then(function (like) {
-            return db.collection("data").updateOne({ _id: like._id }, { $inc: { likes: 1 } })
-                .then(function (id) {
-                db.collection("data").find().toArray()
-                    .then(function (data) {
-                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
-                });
-            });
-        });
-    });
+    shoe_1.like(res, "Giannis")
+        .then(function (confirm) { return shoe_1.refresh(res); })
+        .then(function (confirm) { });
 });
 router.get("/giannisdislike", function (req, res) {
-    DbClient.connect()
-        .then(function (db) {
-        db.collection("data").findOne({ name: "Giannis" })
-            .then(function (like) {
-            return db.collection("data").updateOne({ _id: like._id }, { $inc: { dislikes: 1 } })
-                .then(function (id) {
-                db.collection("data").find().toArray()
-                    .then(function (data) {
-                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
-                });
-            });
-        });
-    });
+    shoe_1.dislike(res, "Giannis")
+        .then(function (confirm) { return shoe_1.refresh(res); })
+        .then(function (confirm) { });
 });
 router.get("/kdlike", function (req, res) {
-    DbClient.connect()
-        .then(function (db) {
-        db.collection("data").findOne({ name: "KD" })
-            .then(function (like) {
-            return db.collection("data").updateOne({ _id: like._id }, { $inc: { likes: 1 } })
-                .then(function (id) {
-                db.collection("data").find().toArray()
-                    .then(function (data) {
-                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
-                });
-            });
-        });
-    });
+    shoe_1.like(res, "KD")
+        .then(function (confirm) { return shoe_1.refresh(res); })
+        .then(function (confirm) { });
 });
 router.get("/kddislike", function (req, res) {
-    DbClient.connect()
-        .then(function (db) {
-        db.collection("data").findOne({ name: "KD" })
-            .then(function (like) {
-            return db.collection("data").updateOne({ _id: like._id }, { $inc: { dislikes: 1 } })
-                .then(function (id) {
-                db.collection("data").find().toArray()
-                    .then(function (data) {
-                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
-                });
-            });
-        });
-    });
+    shoe_1.dislike(res, "KD")
+        .then(function (confirm) { return shoe_1.refresh(res); })
+        .then(function (confirm) { });
 });
-//
-// const like = document.getElementById('like1');
-// like.addEventListener('click', function (e) {
-//     console.log('liked');
-//
-//     fetch('/clicked', {method: 'POST'})
-//         .then(function (response) {
-//             if(response.ok){
-//                console.log("like recorded")
-//                 return;
-//             }
-//             throw new Error("like did not reach database");
-//         })
-//         .catch(function(error){
-//             console.log(error);
-//         });
-// });
 module.exports = router;
