@@ -4,16 +4,38 @@ block content
     h1 #{profile.name}'s PROFILE
     <hr/>
 
-
-    if threads
-        <br/>
-            each thread in threads
-                each tag in thread.tags
-                    text= tag + " "
-                h2= thread.title
-                p= thread.description
+    div(style={display: 'flex'})
+        div(style={flex: 0.5})
+            h1 Threads
+            if threads
                 <br/>
-        <hr/>
+                each thread in threads
+                    if thread.tags
+                        each tag in thread.tags
+                            text= tag + " "
+                    h2= thread.title
+                    p= thread.description
+                    <br/>
+        div(style={flex: 0.5})
+            h1 My Threads
+            if myThreads
+                <br/>
+                each thread in myThreads
+                    div(style={display: 'flex'})
+                        div(style={flex: 0.76})
+                            if thread.tags
+                                each tag in thread.tags
+                                    text= tag + " "
+                            h2= thread.title
+                            p= thread.description
+                        div(style={flex: 0.12})
+                            form(method='POST' action='/threads/edit/' + thread._id)
+                                input(type='submit' value='Edit')
+                        div(style={flex: 0.12})
+                            form(method='POST' action='/threads/delete/' + thread._id)
+                                input(type='submit' value='X')
+                    <br/>
+    <hr/>
 
     div(style={display:'flex'})
         div(style={flex:0.5})
@@ -26,8 +48,8 @@ block content
                                 h4= tag
                             div(style={flex: 0.75})
                                 form(method = "POST" action='/profile/pulltag')
-                                input(type="hidden" name="tag" value=tag)
-                                input(type='submit' value='X')
+                                    input(type="hidden" name="tag" value=tag)
+                                    input(type='submit' value='X')
                         nbsp
                         <br />
 
