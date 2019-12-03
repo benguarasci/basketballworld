@@ -1,10 +1,17 @@
 import {Request, Response, Router} from "express";
-import {isLoggedIn, retrieveProfile} from "../managers/profile";
+import {isLoggedIn, pushTag, retrieveProfile} from "../managers/profile";
 const DbClient = require("../DbClient");
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
 import createThreadForm from "../mymodels/createThread";
-import {createThread, deleteThread} from "../managers/thread";
+import {
+    createThread,
+    deleteThread,
+    retrieveThread,
+    editThread,
+    retrieveThreads,
+    retrieveMyThreads
+} from "../managers/thread";
 
 async function listThreads() {
     let db = await DbClient.connect();
@@ -30,12 +37,19 @@ router.post("/create", async (req: Request, res: Response) => {
 });
 
 router.post("/delete/:id", async (req: Request, res: Response) => {
-    await deleteThread(req, res).then(() =>
-        listThreads()
-            .then((threads: any) => {
-                res.render("placeholders/threads", {'user':req.cookies.username, threads : threads[0], links : threads[1]});
-            })
-    );
+    await deleteThread(req, res);
+    res.redirect('/profile/home');
+});
+
+router.post("/edit/:id", async (req: Request, res: Response) => {
+    res.render("threads/edit", {
+        thread: await retrieveThread(req, res).catch((e: any) => console.log(e))
+    });
+});
+
+router.post("/confirm", async (req: Request, res: Response) => {
+    await editThread(req, res);
+    res.redirect('/profile/home');
 });
 
 router.get("/:thread", (req: Request, res: Response) => {

@@ -47,6 +47,7 @@ export async function pushTag (req:Request, res:Response) {
 export async function pullTag (req:Request, res:Response) {
     let db = await DbClient.connect();
     await db!.collection("users").updateOne({name: req.cookies.username}, { $pull: { tags: req.body.tag} });
+
 }
 // https://docs.mongodb.com/manual/reference/operator/update/positional/
 export async function editEmail (req:Request, res:Response) {
