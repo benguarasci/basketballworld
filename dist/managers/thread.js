@@ -62,6 +62,24 @@ function retrieveThreads(req, res) {
     });
 }
 exports.retrieveThreads = retrieveThreads;
+function retrieveMyThreads(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, profile;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, profile_1.retrieveProfile(req, res)];
+                case 2:
+                    profile = _a.sent();
+                    return [4 /*yield*/, db.collection("threads").find({ owner: profile.name }).toArray()];
+                case 3: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
+exports.retrieveMyThreads = retrieveMyThreads;
 function createThread(req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var db, thread;
@@ -107,3 +125,54 @@ function deleteThread(req, res) {
     });
 }
 exports.deleteThread = deleteThread;
+// Edits a thread based on the _id input
+function editThread(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, threadID, thread, Exception_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    threadID = new ObjectId(req.body._id);
+                    thread = new createThread_1.default(req);
+                    if (!thread.isFormComplete(res)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, db.collection("threads").replaceOne({ _id: threadID }, thread)];
+                case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3: return [3 /*break*/, 5];
+                case 4:
+                    Exception_2 = _a.sent();
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.editThread = editThread;
+// Gets a thread based on the _id input
+function retrieveThread(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, threadID, Exception_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    threadID = new ObjectId(req.params.id);
+                    return [4 /*yield*/, db.collection("threads").findOne({ _id: threadID })];
+                case 2: return [2 /*return*/, _a.sent()];
+                case 3:
+                    Exception_3 = _a.sent();
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.retrieveThread = retrieveThread;

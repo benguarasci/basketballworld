@@ -1,4 +1,4 @@
-import {Request, Response, Router} from "express";
+import {Request, Response, NextFunction, Router} from "express";
 import {isLoggedIn, pushTag, retrieveProfile} from "../managers/profile";
 const DbClient = require("../DbClient");
 const router = Router();
@@ -19,6 +19,7 @@ async function listThreads() {
     let links = threads.map((thread : any) => "/threads/"+thread._id.toString());
     return [threads, links];
 }
+
 router.get("/", (req : Request, res : Response) => {
     listThreads()
         .then((threads:any) => {

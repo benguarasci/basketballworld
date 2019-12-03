@@ -82,14 +82,37 @@ router.post("/create", function (req, res) { return __awaiter(void 0, void 0, vo
 router.post("/delete/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, thread_1.deleteThread(req, res).then(function () {
-                    return listThreads()
-                        .then(function (threads) {
-                        res.render("placeholders/threads", { 'user': req.cookies.username, threads: threads[0], links: threads[1] });
-                    });
-                })];
+            case 0: return [4 /*yield*/, thread_1.deleteThread(req, res)];
             case 1:
                 _a.sent();
+                res.redirect('/profile/home');
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/edit/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, _b, _c, _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
+            case 0:
+                _b = (_a = res).render;
+                _c = ["threads/edit"];
+                _d = {};
+                return [4 /*yield*/, thread_1.retrieveThread(req, res).catch(function (e) { return console.log(e); })];
+            case 1:
+                _b.apply(_a, _c.concat([(_d.thread = _e.sent(),
+                        _d)]));
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/confirm", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, thread_1.editThread(req, res)];
+            case 1:
+                _a.sent();
+                res.redirect('/profile/home');
                 return [2 /*return*/];
         }
     });

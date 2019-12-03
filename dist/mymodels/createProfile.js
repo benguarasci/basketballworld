@@ -43,6 +43,7 @@ var createProfileForm = /** @class */ (function () {
         this.email = req.body.email;
         this.pw = req.body.password;
         this.pw2 = req.body.confirmpassword;
+        this.level = 1;
     }
     createProfileForm.prototype.isValidForm = function (res) {
         return __awaiter(this, void 0, void 0, function () {

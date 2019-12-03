@@ -5,11 +5,13 @@ export default class createProfileForm {
     public email : string;
     public pw : string;
     public pw2 : string;
+    public level : number;
     constructor (req : Request) {
         this.name = req.body.name;
         this.email = req.body.email;
         this.pw = req.body.password;
         this.pw2 = req.body.confirmpassword;
+        this.level = 1;
     }
     async isValidForm (res: Response) {
         if (this.name === "" || this.email === "" || this.pw === "" || this.pw2 === "") {

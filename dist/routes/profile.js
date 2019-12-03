@@ -88,7 +88,10 @@ router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 
                 _d.profile = _e.sent();
                 return [4 /*yield*/, thread_1.retrieveThreads(req, res).catch(function (e) { return console.log(e); })];
             case 2:
-                _b.apply(_a, _c.concat([(_d.threads = _e.sent(),
+                _d.threads = _e.sent();
+                return [4 /*yield*/, thread_1.retrieveMyThreads(req, res).catch(function (e) { return console.log(e); })];
+            case 3:
+                _b.apply(_a, _c.concat([(_d.myThreads = _e.sent(),
                         _d)]));
                 return [2 /*return*/];
         }
