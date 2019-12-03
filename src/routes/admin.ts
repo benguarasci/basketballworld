@@ -15,8 +15,6 @@ async function deleteProfileByID(id : string) {
     id = ObjectId(id);
     return await db.collection("users").deleteOne({"_id": ObjectId(id)});
 }
-
-
 router.get("/", (req : Request, res : Response) => {
     res.render("placeholders/admin", {'user':req.cookies.username});
 });

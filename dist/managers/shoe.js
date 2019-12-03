@@ -37,56 +37,58 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
-var createProfileForm = /** @class */ (function () {
-    function createProfileForm(req) {
-        this.name = req.body.name;
-        this.email = req.body.email;
-        this.pw = req.body.password;
-        this.pw2 = req.body.confirmpassword;
-    }
-    createProfileForm.prototype.isValidForm = function (res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var db, account;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (this.name === "" || this.email === "" || this.pw === "" || this.pw2 === "") {
-                            res.render("placeholders/create_account", {
-                                "message": "missing input"
-                            });
-                            return [2 /*return*/, false];
-                        }
-                        else if (this.pw !== this.pw2) { //ensuring passwords match
-                            res.render("placeholders/create_account", {
-                                "message": "passwords do not match"
-                            });
-                            return [2 /*return*/, false];
-                        }
-                        return [4 /*yield*/, DbClient.connect()];
-                    case 1:
-                        db = _a.sent();
-                        return [4 /*yield*/, db.collection("users").findOne({ name: this.name })];
-                    case 2:
-                        account = _a.sent();
-                        if (account !== null) {
-                            res.render("placeholders/create_account", {
-                                "message": "username taken"
-                            });
-                            return [2 /*return*/, false];
-                        }
-                        return [2 /*return*/, true];
-                }
-            });
+var ObjectId = require("mongodb").ObjectID;
+function refresh(res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("data").find().toArray()];
+                case 2:
+                    data = _a.sent();
+                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
+                    return [2 /*return*/];
+            }
         });
-    };
-    createProfileForm.prototype.isLoginFormComplete = function (res) {
-        if (this.name === "" || this.pw === "") {
-            res.render("placeholders/login", { "message": "empty input" });
-            return false;
-        }
-        else
-            return true;
-    };
-    return createProfileForm;
-}());
-exports.default = createProfileForm;
+    });
+}
+exports.refresh = refresh;
+function like(res, Player) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, like;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("data").findOne({ "name": Player })];
+                case 2:
+                    like = _a.sent();
+                    return [4 /*yield*/, db.collection("data").updateOne({ _id: like._id }, { $inc: { likes: 1 } })];
+                case 3: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
+exports.like = like;
+function dislike(res, Player) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, like;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("data").findOne({ "name": Player })];
+                case 2:
+                    like = _a.sent();
+                    return [4 /*yield*/, db.collection("data").updateOne({ _id: like._id }, { $inc: { dislikes: 1 } })];
+                case 3: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
+exports.dislike = dislike;
