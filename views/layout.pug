@@ -14,31 +14,26 @@ html
         li
           a(href='/') Home
         li
-        li
-          a(href='/threads/view') Threads
-        li
-        li
+          a(href='/threads/view') Trending Threads
         li
           a(href='/shoes/browse') Shoes
         li
         if user
-          p User: #{user}
+          li
+            a(href='/profile/home') #{user}'s Profile
+          li
           li
             a(href="/profile/logout") Logout
           li
-          li
-            a(href='/profile/home') Profile
-          li
         else
-          ul
-            li
-              a(href="/profile/login") Login
-            li
-            li
-              a(href="/profile/create") Create Account
-            li
-        li
-          a(href="/admin") Admin Powers
+          li
+            a(href="/profile/login") Login
+          li
+          li
+            a(href="/profile/create") Create Account
+          li
+        li(style={float:'right'})
+          a(href="/admin") Administrator Panel
         li
 
       div.display
