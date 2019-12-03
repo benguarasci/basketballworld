@@ -72,14 +72,18 @@ var createThreadForm = /** @class */ (function () {
         var descSplit = this.description.split(" ");
         // For each curse word in the array
         for (var i in curseWords) {
-            // Check if the curse word exists in the post
+            // For each word in the title
             for (var k in titleSplit) {
+                // Remove punctuation for that word
+                titleSplit[k] = titleSplit[k].replace(/[~`!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g, "");
+                // Check if the word is a curse word
                 if (titleSplit[k] === curseWords[i]) {
                     // Replace the curse word with stars to censor it
                     this.title = this.title.replace(curseWords[i], "****");
                 }
             }
             for (var k in descSplit) {
+                descSplit[k] = descSplit[k].replace(/[~`!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g, "");
                 if (descSplit[k] === curseWords[i]) {
                     // Replace the curse word with stars to censor it
                     this.description = this.description.replace(curseWords[i], "****");
