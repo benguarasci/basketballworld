@@ -12,7 +12,8 @@ block content
                 each thread in threads
                     if thread.tags
                         each tag in thread.tags
-                            text(style={color: 'blue'})= "#" + tag + " "
+                            if tag
+                                text(style={color: 'blue'})= "#" + tag + " "
                     a(href="/threads/" + thread._id style={color: 'black'})
                         h2= thread.title
                     <br/>
@@ -25,7 +26,8 @@ block content
                         div(style={flex: 0.76})
                             if thread.tags
                                 each tag in thread.tags
-                                    text= tag + " "
+                                    if tag
+                                        text(style={color: 'blue'})= "#" + tag + " "
                             h2= thread.title
                             p= thread.description
                         div(style={flex: 0.12})
