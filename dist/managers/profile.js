@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
 function isLoggedIn(req, res) {
     if ("username" in req.cookies) {
-        res.render("placeholders/homepage", {
+        res.render("index", {
             "user": req.cookies.username,
             "message": "you are already logged in"
         });
@@ -93,14 +93,14 @@ function login(res, form) {
                 case 2:
                     account = _a.sent();
                     if (account === null) {
-                        res.render("placeholders/login", {
+                        res.render("profile/login", {
                             "message": "can't find account, sorry"
                         });
                     }
                     else if (account.pw !== form.pw) {
                         console.log(account.pw);
                         console.log(form.pw);
-                        res.render("placeholders/login", {
+                        res.render("profile/login", {
                             "message": "username or password is incorrect"
                         });
                     }

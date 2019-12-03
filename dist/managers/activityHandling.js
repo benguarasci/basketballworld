@@ -37,56 +37,49 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
-var createProfileForm = /** @class */ (function () {
-    function createProfileForm(req) {
-        this.name = req.body.name;
-        this.email = req.body.email;
-        this.pw = req.body.password;
-        this.pw2 = req.body.confirmpassword;
-    }
-    createProfileForm.prototype.isValidForm = function (res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var db, account;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (this.name === "" || this.email === "" || this.pw === "" || this.pw2 === "") {
-                            res.render("profile/create", {
-                                "message": "missing input"
-                            });
-                            return [2 /*return*/, false];
-                        }
-                        else if (this.pw !== this.pw2) { //ensuring passwords match
-                            res.render("profile/create", {
-                                "message": "passwords do not match"
-                            });
-                            return [2 /*return*/, false];
-                        }
-                        return [4 /*yield*/, DbClient.connect()];
-                    case 1:
-                        db = _a.sent();
-                        return [4 /*yield*/, db.collection("users").findOne({ name: this.name })];
-                    case 2:
-                        account = _a.sent();
-                        if (account !== null) {
-                            res.render("profile/create", {
-                                "message": "username taken"
-                            });
-                            return [2 /*return*/, false];
-                        }
-                        return [2 /*return*/, true];
-                }
-            });
+function isBanned(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, user;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("users").findOne({ "name": req.cookies.username })];
+                case 2:
+                    user = _a.sent();
+                    if (user.level == 0) {
+                        res.render("placeholders/homepage", { message: "You are banned" });
+                    }
+                    return [2 /*return*/];
+            }
         });
-    };
-    createProfileForm.prototype.isLoginFormComplete = function (res) {
-        if (this.name === "" || this.pw === "") {
-            res.render("profile/login", { "message": "empty input" });
-            return false;
-        }
-        else
-            return true;
-    };
-    return createProfileForm;
-}());
-exports.default = createProfileForm;
+    });
+}
+function isAdmin(req) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, user;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("users").findOne({ "name": req.cookies.username })];
+                case 2:
+                    user = _a.sent();
+                    return [2 /*return*/, (user.level == 2)];
+            }
+        });
+    });
+}
+function canModify(object, req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var bool;
+        return __generator(this, function (_a) {
+            bool = object.name === req.cookies.name;
+            isAdmin(req)
+                .then(function (confirm) { return bool || confirm; });
+            return [2 /*return*/];
+        });
+    });
+}

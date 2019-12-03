@@ -4,7 +4,7 @@ const router = Router();
 /* GET home page. */
 
 router.get("/", (req : Request, res: Response) => {
-    res.render("placeholders/homepage", {"user": req.cookies.username});
+    res.render("index", {"user": req.cookies.username});
 });
 
 

@@ -52,11 +52,9 @@ var DbClient = /** @class */ (function () {
                     case 1:
                         client = _a.sent();
                         this.db = client.db("bbworld");
-                        console.log("Connected to cloud db");
                         return [2 /*return*/, this.db];
                     case 2:
                         error_1 = _a.sent();
-                        console.log("Unable to connect to cloud db");
                         return [2 /*return*/];
                     case 3: return [2 /*return*/];
                 }

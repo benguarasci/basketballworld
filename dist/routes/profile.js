@@ -46,7 +46,7 @@ var createProfile_1 = __importDefault(require("../mymodels/createProfile"));
 var router = express_1.Router();
 router.get("/create", function (req, res) {
     if (!profile_1.isLoggedIn(req, res))
-        res.render("placeholders/create_account");
+        res.render("profile/create");
 });
 router.post("/create", function (req, res) {
     if (profile_1.isLoggedIn(req, res))
@@ -64,7 +64,7 @@ router.post("/create", function (req, res) {
 });
 router.get("/login", function (req, res) {
     if (!profile_1.isLoggedIn(req, res))
-        res.render("placeholders/login");
+        res.render("profile/login");
 });
 router.post("/login", function (req, res) {
     var form = new createProfile_1.default(req);
@@ -73,7 +73,7 @@ router.post("/login", function (req, res) {
 });
 router.get("/logout", function (req, res) {
     res.clearCookie("username");
-    res.render("placeholders/login");
+    res.render("profile/login");
 });
 router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, _b, _c, _d;
@@ -82,7 +82,9 @@ router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 
             case 0:
                 _b = (_a = res).render;
                 _c = ["profile/home"];
-                _d = {};
+                _d = {
+                    'user': req.cookies.username
+                };
                 return [4 /*yield*/, profile_1.retrieveProfile(req, res).catch(function (e) { return console.log(e); })];
             case 1:
                 _d.profile = _e.sent();

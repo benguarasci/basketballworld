@@ -19,10 +19,10 @@ async function listThreads() {
     let links = threads.map((thread : any) => "/threads/"+thread._id.toString());
     return [threads, links];
 }
-router.get("/", (req : Request, res : Response) => {
+router.get("/view", (req : Request, res : Response) => {
     listThreads()
         .then((threads:any) => {
-            res.render("placeholders/threads", {'user':req.cookies.username, threads : threads[0], links : threads[1]});
+            res.render("threads/view", {'user':req.cookies.username, threads : threads[0], links : threads[1]});
         })
 });
 
@@ -43,6 +43,7 @@ router.post("/delete/:id", async (req: Request, res: Response) => {
 
 router.post("/edit/:id", async (req: Request, res: Response) => {
     res.render("threads/edit", {
+        'user':req.cookies.username,
         thread: await retrieveThread(req, res).catch((e: any) => console.log(e))
     });
 });
@@ -60,25 +61,25 @@ router.get("/:thread", (req: Request, res: Response) => {
             thisDB = db;
             return db!.collection("threads").findOne({_id : threadID})
         }).then ((thread : any) => {
-        if (thread === null) res.render("placeholders/homepage", {"message":"couldn't find page, sorry"});
+        if (thread === null) res.render("index", {"message":"couldn't find page, sorry"});
         else {
             thisDB!.collection("posts").find({parentThread: threadID}).toArray()
                 .then((arr:any)=>{
                     let posts;
                     if (arr.length === 0) posts = [];
                     else posts = arr;
-                    res.render("placeholders/thread", {user:req.cookies.username, thread:thread, posts:posts, target:"/threads/"+req.params.thread})
+                    res.render("threads/thread", {user:req.cookies.username, thread:thread, posts:posts, target:"/threads/"+req.params.thread})
                 }).catch((err:any)=>{console.log(err.message)})
         }
     }).catch((err:any)=>{console.log(err.message)})
 });
 router.post("/:thread", (req: Request, res: Response) => {
     if (!("username" in req.cookies)) {
-        res.render("placeholders/threads", {"message": "you are not logged in"});
+        res.render("threads/view", {"message": "you are not logged in"});
         return;
     }
     if (req.body.content === "") {
-        res.render("placeholders/threads", {"message": "you have to write something"});
+        res.render("threads/view", {"message": "you have to write something"});
         return;
     }
     let content = req.body.content;

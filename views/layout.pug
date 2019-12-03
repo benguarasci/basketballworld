@@ -18,15 +18,33 @@ html
           a(href='/threads/view') Threads
         li
         li
-          a(href='/profile/create') Profile
-        li
         li
           a(href='/shoes/browse') Shoes
+        li
+        if user
+          p User: #{user}
+          li
+            a(href="/profile/logout") Logout
+          li
+          li
+            a(href='/profile/home') Profile
+          li
+        else
+          ul
+            li
+              a(href="/profile/login") Login
+            li
+            li
+              a(href="/profile/create") Create Account
+            li
+        li
+          a(href="/admin") Admin Powers
         li
 
       div.display
         img(src='/img/logo_favicon.ico', style='width:45px; display: block; position: absolute; left:15px ; top:50%; transform: translateY(-50%)')
         h1(style='display:inline-block; font-weight: bold;')= 'BASKETBALL WORLD'
+
   body
     div.content
       block content

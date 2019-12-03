@@ -5,7 +5,7 @@ import createProfileForm from "../mymodels/createProfile"
 const router = Router();
 
 router.get("/create", (req : Request, res: Response) => {
-    if (!isLoggedIn(req, res)) res.render("placeholders/create_account");
+    if (!isLoggedIn(req, res)) res.render("profile/create");
 });
 router.post("/create", (req : Request, res : Response) => {
     if (isLoggedIn(req, res)) return;
@@ -21,7 +21,7 @@ router.post("/create", (req : Request, res : Response) => {
         })
 });
 router.get("/login", (req : Request, res : Response) => {
-    if (!isLoggedIn(req, res)) res.render("placeholders/login");
+    if (!isLoggedIn(req, res)) res.render("profile/login");
 });
 router.post("/login", (req : Request, res : Response) => {
     let form = new createProfileForm(req);
@@ -29,10 +29,11 @@ router.post("/login", (req : Request, res : Response) => {
 });
 router.get("/logout", (req : Request, res : Response) => {
     res.clearCookie("username");
-    res.render("placeholders/login");
+    res.render("profile/login");
 });
 router.get("/home", async (req : Request, res : Response) => {
     res.render("profile/home", {
+        'user':req.cookies.username,
         profile: await retrieveProfile(req, res).catch((e: any) => console.log(e)),
         threads: await retrieveThreads(req, res).catch((e: any) => console.log(e)),
         myThreads: await retrieveMyThreads(req, res).catch((e: any) => console.log(e))

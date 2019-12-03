@@ -58,7 +58,7 @@ var createThreadForm = /** @class */ (function () {
     // Checks to see if the form is complete and not empty
     createThreadForm.prototype.isFormComplete = function (res) {
         if (this.title === "" || this.description == "") {
-            res.render("placeholders/create_threads", { 'user': this.owner, "message": "please complete all inputs" });
+            res.render("threads/create", { 'user': this.owner, "message": "please complete all inputs" });
             return false;
         }
         // Ensures the form is clean
@@ -67,15 +67,23 @@ var createThreadForm = /** @class */ (function () {
     };
     // Cleans the form of any swear words
     createThreadForm.prototype.cleanForm = function () {
+        // Split into arrays
+        var titleSplit = this.title.split(" ");
+        var descSplit = this.description.split(" ");
         // For each curse word in the array
         for (var i in curseWords) {
             // Check if the curse word exists in the post
-            if (this.title.toLowerCase().includes(curseWords[i])) {
-                // Replace the curse word with a stars to censor it
-                this.title = this.title.replace(curseWords[i], "****");
+            for (var k in titleSplit) {
+                if (titleSplit[k] === curseWords[i]) {
+                    // Replace the curse word with stars to censor it
+                    this.title = this.title.replace(curseWords[i], "****");
+                }
             }
-            if (this.description.toLowerCase().includes(curseWords[i])) {
-                this.description = this.description.replace(curseWords[i], "****");
+            for (var k in descSplit) {
+                if (descSplit[k] === curseWords[i]) {
+                    // Replace the curse word with stars to censor it
+                    this.description = this.description.replace(curseWords[i], "****");
+                }
             }
         }
     };
