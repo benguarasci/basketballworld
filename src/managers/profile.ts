@@ -4,7 +4,7 @@ import createProfileForm from "../mymodels/createProfile"
 
 export function isLoggedIn (req : Request, res: Response) {
     if ("username" in req.cookies) {
-        res.render("placeholders/homepage", {
+        res.render("index", {
             "user": req.cookies.username,
             "message" : "you are already logged in"
         });
@@ -24,13 +24,13 @@ export async function login (res: Response, form : any) {
     let db = await DbClient.connect();
     let account = await db!.collection("users").findOne({name: form.name});
     if (account === null) {
-        res.render("placeholders/login", {
+        res.render("profile/login", {
             "message": "can't find account, sorry"
         });
     } else if (account.pw !== form.pw) {
         console.log(account.pw);
         console.log(form.pw);
-        res.render("placeholders/login", {
+        res.render("profile/login", {
             "message": "username or password is incorrect"
         });
     } else {

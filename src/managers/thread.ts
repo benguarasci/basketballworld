@@ -21,7 +21,7 @@ export async function createThread (req : Request, res: Response) {
     let db = await DbClient.connect();
     let thread = new createThreadForm(req);
     if(thread.isFormComplete(res)) {
-        await db!.collection("threads").insertOne(thread);
+        return await db!.collection("threads").insertOne(thread);
     }
 }
 // Deletes a thread based on the _id input

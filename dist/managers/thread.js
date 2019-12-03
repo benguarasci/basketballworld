@@ -91,9 +91,7 @@ function createThread(req, res) {
                     thread = new createThread_1.default(req);
                     if (!thread.isFormComplete(res)) return [3 /*break*/, 3];
                     return [4 /*yield*/, db.collection("threads").insertOne(thread)];
-                case 2:
-                    _a.sent();
-                    _a.label = 3;
+                case 2: return [2 /*return*/, _a.sent()];
                 case 3: return [2 /*return*/];
             }
         });

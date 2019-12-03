@@ -15,12 +15,12 @@ export default class createProfileForm {
     }
     async isValidForm (res: Response) {
         if (this.name === "" || this.email === "" || this.pw === "" || this.pw2 === "") {
-            res.render("placeholders/create_account", {
+            res.render("profile/create", {
                 "message": "missing input"
             });
             return false;
         } else if (this.pw !== this.pw2) {//ensuring passwords match
-            res.render("placeholders/create_account", {
+            res.render("profile/create", {
                 "message": "passwords do not match"
             });
             return false;
@@ -28,7 +28,7 @@ export default class createProfileForm {
         let db = await DbClient.connect();
         let account = await db!.collection("users").findOne({name: this.name});
         if (account !== null) {
-            res.render("placeholders/create_account", {
+            res.render("profile/create", {
                 "message": "username taken"
             });
             return false
@@ -37,7 +37,7 @@ export default class createProfileForm {
     }
     isLoginFormComplete (res: Response) {
         if (this.name === "" || this.pw === "") {
-            res.render("placeholders/login", {"message" : "empty input"});
+            res.render("profile/login", {"message" : "empty input"});
             return false;
         } else return true;
     }

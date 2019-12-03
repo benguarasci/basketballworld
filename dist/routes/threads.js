@@ -58,10 +58,10 @@ function listThreads() {
         });
     });
 }
-router.get("/", function (req, res) {
+router.get("/view", function (req, res) {
     listThreads()
         .then(function (threads) {
-        res.render("placeholders/threads", { 'user': req.cookies.username, threads: threads[0], links: threads[1] });
+        res.render("threads/view", { 'user': req.cookies.username, threads: threads[0], links: threads[1] });
     });
 });
 router.get("/create", function (req, res) {
@@ -97,7 +97,9 @@ router.post("/edit/:id", function (req, res) { return __awaiter(void 0, void 0, 
             case 0:
                 _b = (_a = res).render;
                 _c = ["threads/edit"];
-                _d = {};
+                _d = {
+                    'user': req.cookies.username
+                };
                 return [4 /*yield*/, thread_1.retrieveThread(req, res).catch(function (e) { return console.log(e); })];
             case 1:
                 _b.apply(_a, _c.concat([(_d.thread = _e.sent(),
@@ -126,7 +128,7 @@ router.get("/:thread", function (req, res) {
         return db.collection("threads").findOne({ _id: threadID });
     }).then(function (thread) {
         if (thread === null)
-            res.render("placeholders/homepage", { "message": "couldn't find page, sorry" });
+            res.render("index", { "message": "couldn't find page, sorry" });
         else {
             thisDB.collection("posts").find({ parentThread: threadID }).toArray()
                 .then(function (arr) {
@@ -135,18 +137,18 @@ router.get("/:thread", function (req, res) {
                     posts = [];
                 else
                     posts = arr;
-                res.render("placeholders/thread", { user: req.cookies.username, thread: thread, posts: posts, target: "/threads/" + req.params.thread });
+                res.render("threads/thread", { user: req.cookies.username, thread: thread, posts: posts, target: "/threads/" + req.params.thread });
             }).catch(function (err) { console.log(err.message); });
         }
     }).catch(function (err) { console.log(err.message); });
 });
 router.post("/:thread", function (req, res) {
     if (!("username" in req.cookies)) {
-        res.render("placeholders/threads", { "message": "you are not logged in" });
+        res.render("threads/view", { "message": "you are not logged in" });
         return;
     }
     if (req.body.content === "") {
-        res.render("placeholders/threads", { "message": "you have to write something" });
+        res.render("threads/view", { "message": "you have to write something" });
         return;
     }
     var content = req.body.content;
