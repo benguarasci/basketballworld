@@ -1,6 +1,7 @@
 extends ../layout
 block content
     h2=thread.title
+    p=thread.description
     each post in posts
         h3=post.date
         h4=post.author

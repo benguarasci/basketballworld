@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 const DbClient = require("../DbClient");
 import createProfileForm from "../mymodels/createProfile"
 import {isBanned, isBannedBy_account} from "./activityHandling"
+import {usersCol} from "../app";
 
 export function isLoggedIn (req : Request, res: Response) {
     if ("username" in req.cookies) {
@@ -19,16 +20,16 @@ export function isLoggedIn_NoRender (req : Request, res: Response) {
 }
 
 export async function createNewProfile (form : any) {
-    let db = await DbClient.connect();
-    await db!.collection("users").insertOne({name: form.name, email: form.email, pw: form.pw, level: 1});
+    //let db = await DbClient.connect();
+    await usersCol.insertOne({name: form.name, email: form.email, pw: form.pw, level: 1});
 }
 export async function retrieveProfile (req : Request, res: Response) {
-    let db = await DbClient.connect();
-    return await db!.collection("users").findOne({name: req.cookies.username});
+    //let db = await DbClient.connect();
+    return await usersCol.findOne({name: req.cookies.username});
 }
 export async function login (res: Response, form : any) {
-    let db = await DbClient.connect();
-    let account = await db!.collection("users").findOne({name: form.name});
+    //let db = await DbClient.connect();
+    let account = await usersCol.findOne({name: form.name});
     if (account === null) {
         res.render("profile/login", {
             "message": "can't find account, sorry"
@@ -49,21 +50,21 @@ export async function login (res: Response, form : any) {
 }
 // https://docs.mongodb.com/manual/reference/operator/update/push/
 export async function pushTag (req:Request, res:Response) {
-    let db = await DbClient.connect();
-    await db!.collection("users").updateOne({name: req.cookies.username}, { $push: { tags: req.body.new } });
+    //let db = await DbClient.connect();
+    await usersCol.updateOne({name: req.cookies.username}, { $push: { tags: req.body.new } });
 }
 // https://docs.mongodb.com/manual/reference/operator/update/pull/
 export async function pullTag (req:Request, res:Response) {
-    let db = await DbClient.connect();
-    await db!.collection("users").updateOne({name: req.cookies.username}, { $pull: { tags: req.body.tag} });
+    //let db = await DbClient.connect();
+    await usersCol.updateOne({name: req.cookies.username}, { $pull: { tags: req.body.tag} });
 
 }
 // https://docs.mongodb.com/manual/reference/operator/update/positional/
 export async function editEmail (req:Request, res:Response) {
-    let db = await DbClient.connect();
-    await db!.collection("users").updateOne({name: req.cookies.username}, { $set: { email: req.body.email } });
+    //let db = await DbClient.connect();
+    await usersCol.updateOne({name: req.cookies.username}, { $set: { email: req.body.email } });
 }
 export async function editPassword (req:Request, res:Response) {
-    let db = await DbClient.connect();
-    await db!.collection("users").updateOne({name: req.cookies.username}, { $set: { pw: req.body.password } });
+    //let db = await DbClient.connect();
+    await usersCol.updateOne({name: req.cookies.username}, { $set: { pw: req.body.password } });
 }

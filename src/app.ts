@@ -9,15 +9,29 @@ const profileRouter = require("./routes/profile");
 const threadsRouter = require("./routes/threads");
 const shoesRouter = require("./routes/shoes");
 const adminRouter = require("./routes/admin");
+const MongoClient = require('mongodb').MongoClient;
 
 const app = express();
 
-// heroku setup
-let port = process.env.PORT;
-if (port === null || port === "") {
-    port = "8000";
-}
-app.listen(port);
+// Database connection exports
+export let database: any, threadsCol: any, usersCol: any, shoesCol: any, postsCol: any;
+// URI for our database connection
+const uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test";
+
+// Connects to the database once at app startup
+app.listen(8001, () => {
+    MongoClient.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true }, (error: any, client: any) => {
+        if(error) {
+            throw error;
+        }
+        database = client.db("bbworld");
+        threadsCol = database.collection("threads");
+        postsCol = database.collection("posts");
+        usersCol = database.collection("users");
+        shoesCol = database.collection("shoes");
+        console.log("Connected to `" + "bbworld" + "`!");
+    });
+});
 
 // view engine setup
 app.set("../views", path.join(__dirname, "views"));

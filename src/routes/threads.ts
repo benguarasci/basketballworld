@@ -12,10 +12,12 @@ import {
     retrieveThreads,
     retrieveMyThreads
 } from "../managers/thread";
+import {threadsCol} from "../app";
 
 async function listThreads() {
-    let db = await DbClient.connect();
-    let threads = await db!.collection("threads").find().toArray();
+    //let db = await DbClient.connect();
+    let threads = await threadsCol.find().toArray();
+    //let threads = await db!.collection("threads").find().toArray();
     let links = threads.map((thread : any) => "/threads/"+thread._id.toString());
     return [threads, links];
 }
