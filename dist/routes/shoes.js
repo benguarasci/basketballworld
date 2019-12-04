@@ -48,11 +48,13 @@ function listShoes() {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
+                    console.log("listshoes:");
                     return [4 /*yield*/, db.collection("shoes").find().toArray()];
                 case 2:
                     shoes = _a.sent();
-                    likes = shoes.map(function (shoe) { return "/browse/likes/" + shoe._id.toString(); });
-                    dislikes = shoes.map(function (shoe) { return "/browse/dislikes/" + shoe._id.toString(); });
+                    console.log(shoes);
+                    likes = shoes.map(function (shoe) { return "/shoes/likes/" + shoe._id.toString(); });
+                    dislikes = shoes.map(function (shoe) { return "/shoes/dislikes/" + shoe._id.toString(); });
                     return [2 /*return*/, [shoes, likes, dislikes]];
             }
         });
@@ -66,11 +68,13 @@ router.get("/browse", function (req, res, next) {
         res.render("shoes/browse", { shoes: shoes[0], likes: shoes[1], dislikes: shoes[2] });
     });
 });
-router.get("/browse/likes/:id", function (req, res) {
+router.get("/likes/:id", function (req, res) {
     console.log("in route");
+    console.log("cheerios");
     shoe_1.like(res, req)
-        .then(function (shoes) {
-        res.render("shoes/browse", { shoes: shoes[0], likes: shoes[1], dislikes: shoes[2] });
+        .then(function (conf) {
+        console.log("put me");
+        res.redirect("/shoes/browse");
     });
 });
 router.get("/shoes/dislikes/:id", function (req, res) {

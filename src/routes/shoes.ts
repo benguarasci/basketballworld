@@ -6,11 +6,15 @@ const router = Router();
 
 async function listShoes() {
     let db = await DbClient.connect();
+    console.log("listshoes:");
+
     let shoes = await db!.collection("shoes").find().toArray();
+    console.log(shoes);
     let likes = shoes.map((shoe: any) => "/shoes/likes/" + shoe._id.toString());
     let dislikes = shoes.map((shoe: any) => "/shoes/dislikes/" + shoe._id.toString());
     return [shoes, likes, dislikes];
 }
+
 // sending create profile page to client
 router.get("/browse", (req, res, next) => {
         console.log("hello");
@@ -20,18 +24,20 @@ router.get("/browse", (req, res, next) => {
             })
     });
 
-router.get("/shoes/likes/:id", (req, res) =>{
+router.get("/likes/:id", (req, res) =>{
     console.log("in route");
+    console.log("cheerios");
     like(res, req)
-        .then((shoes:any) => {
-            res.render("shoes/browse", {shoes: shoes[0], likes : shoes[1], dislikes: shoes[2]});
+        .then((conf:any)=>{
+            console.log("put me");
+            res.redirect("/shoes/browse");
         })
-})
+});
 
 router.get("/shoes/dislikes/:id", (req, res) =>{
 
 
-})
+});
 /*
 router.get("/lebronlike", (req : Request, res: Response)=>{
     if (!isLoggedIn_NoRender(req, res)) {

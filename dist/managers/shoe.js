@@ -91,6 +91,8 @@ function like(res, req) {
                     return [4 /*yield*/, db.collection("shoes").findOne({ _id: ID })];
                 case 2:
                     shoe = _a.sent();
+                    console.log("here i am");
+                    console.log(shoe);
                     console.log("shoe: " + shoe);
                     return [4 /*yield*/, db.collection("shoes").updateOne({ _id: shoe._id }, { $inc: { likes: 1 } })];
                 case 3: return [2 /*return*/, _a.sent()];

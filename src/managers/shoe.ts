@@ -5,7 +5,7 @@ const DbClient = require("../DbClient");
 const ObjectId = require("mongodb").ObjectID;
 
 export async function insertShoe (image: any, model: string, player: string, price: string, description: string, likes: number, dislikes: number){
-    let db = await DbClient.connect()
+    let db = await DbClient.connect();
     let shoe = new Shoe(image, model, player, price, description, likes, dislikes);
     let temp = await db!.collection("shoes").findOne(shoe);
     if(temp === null){
@@ -23,6 +23,8 @@ export async function refresh (res: Response, req: Request) {
         let ID =  ObjectId(req.params.id);
         console.log("ID: " + ID);
         let shoe = await db!.collection("shoes").findOne({_id: ID});
+        console.log("here i am");
+        console.log(shoe);
         console.log("shoe: " + shoe);
         return await db!.collection("shoes").updateOne({_id: shoe._id}, {$inc: {likes: 1}});
     }

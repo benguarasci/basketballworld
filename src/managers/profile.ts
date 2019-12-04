@@ -15,10 +15,7 @@ export function isLoggedIn (req : Request, res: Response) {
 }
 
 export function isLoggedIn_NoRender (req : Request, res: Response) {
-    if ("username" in req.cookies) {
-        return true;
-    }
-    else return false;
+    return "username" in req.cookies;
 }
 
 export async function createNewProfile (form : any) {
