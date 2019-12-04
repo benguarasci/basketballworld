@@ -41,16 +41,14 @@ var DbClient = require("../DbClient");
 var router = express_1.Router();
 var ObjectId = require("mongodb").ObjectID;
 var thread_1 = require("../managers/thread");
+var app_1 = require("../app");
 function listThreads() {
     return __awaiter(this, void 0, void 0, function () {
-        var db, threads, links;
+        var threads, links;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 0: return [4 /*yield*/, app_1.threadsCol.find().toArray()];
                 case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("threads").find().toArray()];
-                case 2:
                     threads = _a.sent();
                     links = threads.map(function (thread) { return "/threads/" + thread._id.toString(); });
                     return [2 /*return*/, [threads, links]];

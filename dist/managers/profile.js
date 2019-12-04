@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
 var activityHandling_1 = require("./activityHandling");
+var app_1 = require("../app");
 function isLoggedIn(req, res) {
     if ("username" in req.cookies) {
         res.render("index", {
@@ -56,14 +57,13 @@ function isLoggedIn_NoRender(req, res) {
 exports.isLoggedIn_NoRender = isLoggedIn_NoRender;
 function createNewProfile(form) {
     return __awaiter(this, void 0, void 0, function () {
-        var db;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 0: 
+                //let db = await DbClient.connect();
+                return [4 /*yield*/, app_1.usersCol.insertOne({ name: form.name, email: form.email, pw: form.pw, level: 1 })];
                 case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").insertOne({ name: form.name, email: form.email, pw: form.pw, level: 1 })];
-                case 2:
+                    //let db = await DbClient.connect();
                     _a.sent();
                     return [2 /*return*/];
             }
@@ -73,14 +73,12 @@ function createNewProfile(form) {
 exports.createNewProfile = createNewProfile;
 function retrieveProfile(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var db;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
-                case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").findOne({ name: req.cookies.username })];
-                case 2: return [2 /*return*/, _a.sent()];
+                case 0: return [4 /*yield*/, app_1.usersCol.findOne({ name: req.cookies.username })];
+                case 1: 
+                //let db = await DbClient.connect();
+                return [2 /*return*/, _a.sent()];
             }
         });
     });
@@ -88,14 +86,11 @@ function retrieveProfile(req, res) {
 exports.retrieveProfile = retrieveProfile;
 function login(res, form) {
     return __awaiter(this, void 0, void 0, function () {
-        var db, account;
+        var account;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 0: return [4 /*yield*/, app_1.usersCol.findOne({ name: form.name })];
                 case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").findOne({ name: form.name })];
-                case 2:
                     account = _a.sent();
                     if (account === null) {
                         res.render("profile/login", {
@@ -125,14 +120,13 @@ exports.login = login;
 // https://docs.mongodb.com/manual/reference/operator/update/push/
 function pushTag(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var db;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 0: 
+                //let db = await DbClient.connect();
+                return [4 /*yield*/, app_1.usersCol.updateOne({ name: req.cookies.username }, { $push: { tags: req.body.new } })];
                 case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $push: { tags: req.body.new } })];
-                case 2:
+                    //let db = await DbClient.connect();
                     _a.sent();
                     return [2 /*return*/];
             }
@@ -143,14 +137,13 @@ exports.pushTag = pushTag;
 // https://docs.mongodb.com/manual/reference/operator/update/pull/
 function pullTag(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var db;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 0: 
+                //let db = await DbClient.connect();
+                return [4 /*yield*/, app_1.usersCol.updateOne({ name: req.cookies.username }, { $pull: { tags: req.body.tag } })];
                 case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $pull: { tags: req.body.tag } })];
-                case 2:
+                    //let db = await DbClient.connect();
                     _a.sent();
                     return [2 /*return*/];
             }
@@ -161,14 +154,13 @@ exports.pullTag = pullTag;
 // https://docs.mongodb.com/manual/reference/operator/update/positional/
 function editEmail(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var db;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 0: 
+                //let db = await DbClient.connect();
+                return [4 /*yield*/, app_1.usersCol.updateOne({ name: req.cookies.username }, { $set: { email: req.body.email } })];
                 case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $set: { email: req.body.email } })];
-                case 2:
+                    //let db = await DbClient.connect();
                     _a.sent();
                     return [2 /*return*/];
             }
@@ -178,14 +170,13 @@ function editEmail(req, res) {
 exports.editEmail = editEmail;
 function editPassword(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var db;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 0: 
+                //let db = await DbClient.connect();
+                return [4 /*yield*/, app_1.usersCol.updateOne({ name: req.cookies.username }, { $set: { pw: req.body.password } })];
                 case 1:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").updateOne({ name: req.cookies.username }, { $set: { pw: req.body.password } })];
-                case 2:
+                    //let db = await DbClient.connect();
                     _a.sent();
                     return [2 /*return*/];
             }

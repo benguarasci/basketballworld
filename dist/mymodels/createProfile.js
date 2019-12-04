@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var app_1 = require("../app");
 var DbClient = require("../DbClient");
 var createProfileForm = /** @class */ (function () {
     function createProfileForm(req) {
@@ -47,7 +48,7 @@ var createProfileForm = /** @class */ (function () {
     }
     createProfileForm.prototype.isValidForm = function (res) {
         return __awaiter(this, void 0, void 0, function () {
-            var db, account;
+            var account;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -63,11 +64,8 @@ var createProfileForm = /** @class */ (function () {
                             });
                             return [2 /*return*/, false];
                         }
-                        return [4 /*yield*/, DbClient.connect()];
+                        return [4 /*yield*/, app_1.usersCol.findOne({ name: this.name })];
                     case 1:
-                        db = _a.sent();
-                        return [4 /*yield*/, db.collection("users").findOne({ name: this.name })];
-                    case 2:
                         account = _a.sent();
                         if (account !== null) {
                             res.render("profile/create", {

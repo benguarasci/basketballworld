@@ -1,4 +1,5 @@
 import {Request, Response} from "express";
+import {usersCol} from "../app";
 const DbClient = require("../DbClient");
 export default class createProfileForm {
     public name : string;
@@ -25,8 +26,8 @@ export default class createProfileForm {
             });
             return false;
         }
-        let db = await DbClient.connect();
-        let account = await db!.collection("users").findOne({name: this.name});
+        //let db = await DbClient.connect();
+        let account = await usersCol.findOne({name: this.name});
         if (account !== null) {
             res.render("profile/create", {
                 "message": "username taken"

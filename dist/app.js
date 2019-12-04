@@ -11,13 +11,24 @@ var profileRouter = require("./routes/profile");
 var threadsRouter = require("./routes/threads");
 var shoesRouter = require("./routes/shoes");
 var adminRouter = require("./routes/admin");
+var MongoClient = require('mongodb').MongoClient;
 var app = express();
-// heroku setup
-var port = process.env.PORT;
-if (port === null || port === "") {
-    port = "8000";
-}
-app.listen(port);
+// URI for our database connection
+var uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test";
+// Connects to the database once at app startup
+app.listen(8001, function () {
+    MongoClient.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true }, function (error, client) {
+        if (error) {
+            throw error;
+        }
+        exports.database = client.db("bbworld");
+        exports.threadsCol = exports.database.collection("threads");
+        exports.postsCol = exports.database.collection("posts");
+        exports.usersCol = exports.database.collection("users");
+        exports.shoesCol = exports.database.collection("shoes");
+        console.log("Connected to `" + "bbworld" + "`!");
+    });
+});
 // view engine setup
 app.set("../views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
