@@ -116,12 +116,17 @@ function dislike(res, req) {
     });
 }
 exports.dislike = dislike;
-/*export async function all(res: Response, req: Request, Player: any, Increment: any){
-    if (!isLoggedIn(req, res)) {
-        res.render("profile/login")
-    }else{
-        let db = await DbClient.connect();
-        let like = await db!.collection("data").findOne({"name": Player});
-        return await db!.collection("data").updateOne({_id: like._id}, {$inc: {Increment: 1}});
-    }
-}*/
+function sortShoes() {
+    return __awaiter(this, void 0, void 0, function () {
+        var db;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.sortShoes = sortShoes;

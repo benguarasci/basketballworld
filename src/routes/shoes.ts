@@ -21,17 +21,25 @@ router.get("/browse", (req, res, next) => {
     });
 
 router.get("/likes/:id", (req, res) =>{
-    like(res, req)
-        .then((conf:any)=>{
-            res.redirect("/shoes/browse");
-        })
+    if (!isLoggedIn_NoRender(req, res)) {
+        res.render("profile/login")
+        }else {
+        like(res, req)
+            .then((conf: any) => {
+                res.redirect("/shoes/browse");
+            })
+    }
 });
 
 router.get("/dislikes/:id", (req, res) =>{
-    dislike(res, req)
-        .then((conf:any)=>{
-            res.redirect("/shoes/browse");
-        })
+    if (!isLoggedIn_NoRender(req, res)) {
+        res.render("profile/login")
+    }else {
+        dislike(res, req)
+            .then((conf: any) => {
+                res.redirect("/shoes/browse");
+            })
+    }
 });
 /*
 router.get("/lebronlike", (req : Request, res: Response)=>{

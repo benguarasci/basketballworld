@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var DbClient = require("../DbClient");
 var shoe_1 = require("../managers/shoe");
+var profile_1 = require("../managers/profile");
 var router = express_1.Router();
 function listShoes() {
     return __awaiter(this, void 0, void 0, function () {
@@ -66,16 +67,26 @@ router.get("/browse", function (req, res, next) {
     });
 });
 router.get("/likes/:id", function (req, res) {
-    shoe_1.like(res, req)
-        .then(function (conf) {
-        res.redirect("/shoes/browse");
-    });
+    if (!profile_1.isLoggedIn_NoRender(req, res)) {
+        res.render("profile/login");
+    }
+    else {
+        shoe_1.like(res, req)
+            .then(function (conf) {
+            res.redirect("/shoes/browse");
+        });
+    }
 });
 router.get("/dislikes/:id", function (req, res) {
-    shoe_1.dislike(res, req)
-        .then(function (conf) {
-        res.redirect("/shoes/browse");
-    });
+    if (!profile_1.isLoggedIn_NoRender(req, res)) {
+        res.render("profile/login");
+    }
+    else {
+        shoe_1.dislike(res, req)
+            .then(function (conf) {
+            res.redirect("/shoes/browse");
+        });
+    }
 });
 /*
 router.get("/lebronlike", (req : Request, res: Response)=>{

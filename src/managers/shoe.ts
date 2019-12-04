@@ -31,13 +31,9 @@ export async function refresh (res: Response, req: Request) {
         let shoe = await db!.collection("shoes").findOne({_id: ID});
         return await db!.collection("shoes").updateOne({_id: shoe._id}, {$inc: {dislikes: 1}});
     }
-/*export async function all(res: Response, req: Request, Player: any, Increment: any){
-    if (!isLoggedIn(req, res)) {
-        res.render("profile/login")
-    }else{
+
+    export async function sortShoes(){
         let db = await DbClient.connect();
-        let like = await db!.collection("data").findOne({"name": Player});
-        return await db!.collection("data").updateOne({_id: like._id}, {$inc: {Increment: 1}});
+
     }
-}*/
 
