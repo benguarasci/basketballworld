@@ -78,11 +78,11 @@ router.get("/:thread", (req: Request, res: Response) => {
 });
 router.post("/:thread", (req: Request, res: Response) => {
     if (!("username" in req.cookies)) {
-        res.render("threads/view", {"message": "you are not logged in"});
+        res.render("index", {"message": "you are not logged in"});
         return;
     }
     if (req.body.content === "") {
-        res.render("threads/view", {"message": "you have to write something"});
+        res.render("index", {"message": "you have to write something"});
         return;
     }
     let content = req.body.content;

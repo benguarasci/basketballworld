@@ -142,11 +142,11 @@ router.get("/:thread", function (req, res) {
 });
 router.post("/:thread", function (req, res) {
     if (!("username" in req.cookies)) {
-        res.render("threads/view", { "message": "you are not logged in" });
+        res.render("index", { "message": "you are not logged in" });
         return;
     }
     if (req.body.content === "") {
-        res.render("threads/view", { "message": "you have to write something" });
+        res.render("index", { "message": "you have to write something" });
         return;
     }
     var content = req.body.content;
