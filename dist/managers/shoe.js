@@ -36,39 +36,63 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var profile_1 = require("./profile");
+var shoe_m_1 = require("../models/shoe_m");
 var DbClient = require("../DbClient");
 var ObjectId = require("mongodb").ObjectID;
-function refresh(res, req) {
+function insertShoe(image, model, player, price, description, likes, dislikes) {
     return __awaiter(this, void 0, void 0, function () {
-        var db, data;
+        var db, shoe, temp;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    return [4 /*yield*/, db.collection("data").find().toArray()];
+                    shoe = new shoe_m_1.Shoe(image, model, player, price, description, likes, dislikes);
+                    return [4 /*yield*/, db.collection("shoes").findOne(shoe)];
                 case 2:
-                    data = _a.sent();
-                    res.render('shoes/browse', { "user": req.cookies.username, lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
+                    temp = _a.sent();
+                    if (!(temp === null)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, db.collection('shoes').insertOne(shoe)];
+                case 3: return [2 /*return*/, _a.sent()];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.insertShoe = insertShoe;
+function refresh(res, req) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, shoes;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("shoes").find().toArray()];
+                case 2:
+                    shoes = _a.sent();
+                    res.render('shoes/browse', { "user": req.cookies.username, shoes: shoes[0], likes: shoes[1], dislikes: shoes[2] });
                     return [2 /*return*/];
             }
         });
     });
 }
 exports.refresh = refresh;
-function like(res, Player) {
+function like(res, req) {
     return __awaiter(this, void 0, void 0, function () {
-        var db, like;
+        var db, ID, shoe;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    return [4 /*yield*/, db.collection("data").findOne({ "name": Player })];
+                    ID = ObjectId(req.params.id);
+                    console.log("ID: " + ID);
+                    return [4 /*yield*/, db.collection("shoes").findOne({ _id: ID })];
                 case 2:
-                    like = _a.sent();
-                    return [4 /*yield*/, db.collection("data").updateOne({ _id: like._id }, { $inc: { likes: 1 } })];
+                    shoe = _a.sent();
+                    console.log("shoe: " + shoe);
+                    return [4 /*yield*/, db.collection("shoes").updateOne({ _id: shoe._id }, { $inc: { likes: 1 } })];
                 case 3: return [2 /*return*/, _a.sent()];
             }
         });
@@ -77,7 +101,7 @@ function like(res, Player) {
 exports.like = like;
 function dislike(res, Player) {
     return __awaiter(this, void 0, void 0, function () {
-        var db, like;
+        var db, shoe;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
@@ -85,34 +109,20 @@ function dislike(res, Player) {
                     db = _a.sent();
                     return [4 /*yield*/, db.collection("data").findOne({ "name": Player })];
                 case 2:
-                    like = _a.sent();
-                    return [4 /*yield*/, db.collection("data").updateOne({ _id: like._id }, { $inc: { dislikes: 1 } })];
+                    shoe = _a.sent();
+                    return [4 /*yield*/, db.collection("data").updateOne({ _id: shoe.dislikes._id }, { $inc: { dislikes: 1 } })];
                 case 3: return [2 /*return*/, _a.sent()];
             }
         });
     });
 }
 exports.dislike = dislike;
-function all(res, req, Player, Increment) {
-    return __awaiter(this, void 0, void 0, function () {
-        var db, like_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!!profile_1.isLoggedIn(req, res)) return [3 /*break*/, 1];
-                    res.render("profile/login");
-                    return [3 /*break*/, 5];
-                case 1: return [4 /*yield*/, DbClient.connect()];
-                case 2:
-                    db = _a.sent();
-                    return [4 /*yield*/, db.collection("data").findOne({ "name": Player })];
-                case 3:
-                    like_1 = _a.sent();
-                    return [4 /*yield*/, db.collection("data").updateOne({ _id: like_1._id }, { $inc: { Increment: 1 } })];
-                case 4: return [2 /*return*/, _a.sent()];
-                case 5: return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.all = all;
+/*export async function all(res: Response, req: Request, Player: any, Increment: any){
+    if (!isLoggedIn(req, res)) {
+        res.render("profile/login")
+    }else{
+        let db = await DbClient.connect();
+        let like = await db!.collection("data").findOne({"name": Player});
+        return await db!.collection("data").updateOne({_id: like._id}, {$inc: {Increment: 1}});
+    }
+}*/

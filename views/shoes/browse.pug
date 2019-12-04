@@ -2,47 +2,15 @@ extends ../layout
 
 block content
     h1(style='text-align: center') Shoes by player
-
     .row
-        .collumn
-            .card
-                img(src='/img/LBJ17.jpg' style='width:100%')
-                h1 Nike Lebron 17
-                p.price $170 US
-                p Player: Lebron James
-                a(href='/shoes/lebronlike' class='likebutton') Like
-                a(href='/shoes/lebrondislike' class='dislikebutton') Dislike
-                p
-                |Likes: #{lebronlikes} Dislikes: #{lebrondislikes}
-
-        .collumn
-            .card
-                img(src='/img/number2.jpg' style='width:100%')
-                h1 New Balance OMN1S
-                p.price $140 US
-                p Player: Kawhi Leonard
-                a(href='/shoes/kawhilike' class='likebutton') Like
-                a(href='/shoes/kawhidislike' class='dislikebutton') Dislike
-                p
-                |Likes: #{kawhilikes} Dislikes: #{kawhidislikes}
-
-        .collumn
-            .card
-                img(src='/img/greek.jpg' style='width:100%')
-                h1 Nike Zoom Freak 1
-                p.price $120 US
-                p Player: Giannis Antetokounmpo
-                a(href='/shoes/giannislike' class='likebutton') Like
-                a(href='/shoes/giannisdislike' class='dislikebutton') Dislike
-                p
-                | Likes: #{giannislikes} Dislikes: #{giannisdislikes}
-        .collumn
-            .card
-                img(src='/img/kd.jpg' style='width:100%')
-                h1 Nike Zoom KD12
-                p.price $150 US
-                p Player: Kevin Durant
-                a(href='/shoes/kdlike' class='likebutton') Like
-                a(href='/shoes/kddislike' class='dislikebutton') Dislike
-                p
-                | Likes: #{KDlikes} Dislikes: #{KDdislikes}
+        each shoe, i in shoes
+            .collumn
+                .card
+                    img(src=shoe.image style="width:100%")
+                    p #{shoe.model}
+                    p #{shoe.price}
+                    p Player: #{shoe.player}
+                    a(href=likes[i] class='likebutton') Like
+                    a(href=dislikes[i] class='dislikebutton') Dislike
+                    p
+                    |Likes: #{shoe.likes} Dislikes: #{shoe.dislikes}
