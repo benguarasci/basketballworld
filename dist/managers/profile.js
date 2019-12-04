@@ -50,6 +50,14 @@ function isLoggedIn(req, res) {
         return false;
 }
 exports.isLoggedIn = isLoggedIn;
+function isLoggedIn_NoRender(req, res) {
+    if ("username" in req.cookies) {
+        return true;
+    }
+    else
+        return false;
+}
+exports.isLoggedIn_NoRender = isLoggedIn_NoRender;
 function createNewProfile(form) {
     return __awaiter(this, void 0, void 0, function () {
         var db;
