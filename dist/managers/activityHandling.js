@@ -49,6 +49,8 @@ function isBanned(req, res) {
                 case 2:
                     user = _a.sent();
                     if (user.level == 0) {
+                        res.clearCookie("username");
+                        res.render("profile/login");
                         res.render("placeholders/homepage", { message: "You are banned" });
                     }
                     return [2 /*return*/];
@@ -56,6 +58,29 @@ function isBanned(req, res) {
         });
     });
 }
+exports.isBanned = isBanned;
+function isBannedBy_account(username, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, user;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("users").findOne({ "name": username })];
+                case 2:
+                    user = _a.sent();
+                    if (user.level == 0) {
+                        res.clearCookie("username");
+                        res.render("profile/login");
+                        res.render("placeholders/homepage", { message: "You are banned" });
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.isBannedBy_account = isBannedBy_account;
 function isAdmin(req) {
     return __awaiter(this, void 0, void 0, function () {
         var db, user;
@@ -72,6 +97,7 @@ function isAdmin(req) {
         });
     });
 }
+exports.isAdmin = isAdmin;
 function canModify(object, req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var bool;
@@ -83,3 +109,4 @@ function canModify(object, req, res) {
         });
     });
 }
+exports.canModify = canModify;

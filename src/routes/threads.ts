@@ -19,6 +19,7 @@ async function listThreads() {
     let links = threads.map((thread : any) => "/threads/"+thread._id.toString());
     return [threads, links];
 }
+
 router.get("/view", (req : Request, res : Response) => {
     listThreads()
         .then((threads:any) => {

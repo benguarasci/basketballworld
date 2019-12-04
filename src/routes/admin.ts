@@ -1,9 +1,7 @@
 import {Request, Response, Router} from "express";
-import {isLoggedIn} from "../managers/profile";
 const DbClient = require("../DbClient");
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
-import createThreadForm from "../mymodels/createThread";
 
 async function retrieveProfiles() {
     let db = await DbClient.connect();

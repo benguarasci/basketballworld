@@ -1,6 +1,7 @@
 import {Request, Response} from "express";
 const DbClient = require("../DbClient");
 import createProfileForm from "../mymodels/createProfile"
+import {isBanned, isBannedBy_account} from "./activityHandling"
 
 export function isLoggedIn (req : Request, res: Response) {
     if ("username" in req.cookies) {
@@ -14,7 +15,7 @@ export function isLoggedIn (req : Request, res: Response) {
 }
 export async function createNewProfile (form : any) {
     let db = await DbClient.connect();
-    await db!.collection("users").insertOne({name: form.name, email: form.email, pw: form.pw});
+    await db!.collection("users").insertOne({name: form.name, email: form.email, pw: form.pw, level: 1});
 }
 export async function retrieveProfile (req : Request, res: Response) {
     let db = await DbClient.connect();
@@ -34,8 +35,11 @@ export async function login (res: Response, form : any) {
             "message": "username or password is incorrect"
         });
     } else {
-        res.cookie("username", form.name);
-        res.redirect('/profile/home');
+        isBannedBy_account(form.name, res)
+            .then((conf : any)=>{
+                res.cookie("username", form.name);
+                res.redirect('/profile/home');
+            });
     }
 }
 // https://docs.mongodb.com/manual/reference/operator/update/push/

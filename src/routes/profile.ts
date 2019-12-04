@@ -2,6 +2,7 @@ import {Request, Response, Router} from "express";
 import {isLoggedIn, createNewProfile, retrieveProfile, login, pushTag, pullTag, editEmail, editPassword} from "../managers/profile";
 import {retrieveThreads, retrieveMyThreads} from "../managers/thread";
 import createProfileForm from "../mymodels/createProfile"
+import {isBanned, isBannedBy_account} from "../managers/activityHandling"
 const router = Router();
 
 router.get("/create", (req : Request, res: Response) => {
@@ -25,7 +26,8 @@ router.get("/login", (req : Request, res : Response) => {
 });
 router.post("/login", (req : Request, res : Response) => {
     let form = new createProfileForm(req);
-    if (!isLoggedIn(req, res) || !form.isLoginFormComplete(res)) login(res, form).then();
+    if (!isLoggedIn(req, res) || !form.isLoginFormComplete(res))
+        login(res, form).then();
 });
 router.get("/logout", (req : Request, res : Response) => {
     res.clearCookie("username");

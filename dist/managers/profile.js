@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
+var activityHandling_1 = require("./activityHandling");
 function isLoggedIn(req, res) {
     if ("username" in req.cookies) {
         res.render("index", {
@@ -57,7 +58,7 @@ function createNewProfile(form) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    return [4 /*yield*/, db.collection("users").insertOne({ name: form.name, email: form.email, pw: form.pw })];
+                    return [4 /*yield*/, db.collection("users").insertOne({ name: form.name, email: form.email, pw: form.pw, level: 1 })];
                 case 2:
                     _a.sent();
                     return [2 /*return*/];
@@ -105,8 +106,11 @@ function login(res, form) {
                         });
                     }
                     else {
-                        res.cookie("username", form.name);
-                        res.redirect('/profile/home');
+                        activityHandling_1.isBannedBy_account(form.name, res)
+                            .then(function (conf) {
+                            res.cookie("username", form.name);
+                            res.redirect('/profile/home');
+                        });
                     }
                     return [2 /*return*/];
             }
