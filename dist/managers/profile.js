@@ -39,12 +39,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
 function isLoggedIn(req, res) {
     if ("username" in req.cookies) {
+        res.render("index", {
+            "user": req.cookies.username,
+            "message": "you are already logged in"
+        });
         return true;
     }
     else
         return false;
 }
 exports.isLoggedIn = isLoggedIn;
+function isLoggedIn_NoRender(req, res) {
+    if ("username" in req.cookies) {
+        return true;
+    }
+    else
+        return false;
+}
+exports.isLoggedIn_NoRender = isLoggedIn_NoRender;
 function createNewProfile(form) {
     return __awaiter(this, void 0, void 0, function () {
         var db;

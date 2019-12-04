@@ -5,14 +5,7 @@ import createProfileForm from "../mymodels/createProfile"
 const router = Router();
 
 router.get("/create", (req : Request, res: Response) => {
-    if (!isLoggedIn(req, res)) {
-        res.render("profile/create")
-    }else{
-        res.render("index", {
-            "user": req.cookies.username,
-            "message" : "you are already logged in"
-        });
-    }
+    if (!isLoggedIn(req, res)) res.render("profile/create");
 });
 router.post("/create", (req : Request, res : Response) => {
     if (isLoggedIn(req, res)) return;
@@ -28,14 +21,7 @@ router.post("/create", (req : Request, res : Response) => {
         })
 });
 router.get("/login", (req : Request, res : Response) => {
-    if (!isLoggedIn(req, res)) {
-        res.render("profile/login")
-    }else{
-        res.render("index", {
-            "user": req.cookies.username,
-            "message" : "you are already logged in"
-        });
-    }
+    if (!isLoggedIn(req, res)) res.render("profile/login");
 });
 router.post("/login", (req : Request, res : Response) => {
     let form = new createProfileForm(req);

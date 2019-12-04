@@ -2,7 +2,7 @@ import {Request, Response, NextFunction, Router} from "express";
 import DbClient = require("../DbClient");
 
 import {refresh, like, dislike, all} from "../managers/shoe";
-import {isLoggedIn} from "../managers/profile";
+import {isLoggedIn, isLoggedIn_NoRender} from "../managers/profile";
 const router = Router();
 
 // sending create profile page to client
@@ -33,18 +33,18 @@ router.get("/browse", (req, res, next) => {
 });
 
 router.get("/lebronlike", (req : Request, res: Response)=>{
-    if (!isLoggedIn(req, res)) {
+    if (!isLoggedIn_NoRender(req, res)) {
         res.render("profile/login")
     }else{
     like(res, "Lebron")
         .then((confirm: any)=>refresh(res, req))
         .then((confirm:any)=>{});
     }
-  
+
 });
 
 router.get("/lebrondislike", (req : Request, res: Response)=>{
-    if (!isLoggedIn(req, res)) {
+    if (!isLoggedIn_NoRender(req, res)) {
         res.render("profile/login")
     }else {
         dislike(res, "Lebron")
@@ -54,7 +54,7 @@ router.get("/lebrondislike", (req : Request, res: Response)=>{
 });
 
 router.get("/kawhilike", (req : Request, res: Response)=>{
-    if (!isLoggedIn(req, res)) {
+    if (!isLoggedIn_NoRender(req, res)) {
         res.render("profile/login")
     }else {
         like(res, "Kawhi")
@@ -65,7 +65,7 @@ router.get("/kawhilike", (req : Request, res: Response)=>{
 });
 
 router.get("/kawhidislike", (req : Request, res: Response)=>{
-    if (!isLoggedIn(req, res)) {
+    if (!isLoggedIn_NoRender(req, res)) {
         res.render("profile/login")
     }else {
         dislike(res, "Kawhi")
@@ -76,7 +76,7 @@ router.get("/kawhidislike", (req : Request, res: Response)=>{
 });
 
 router.get("/giannislike", (req : Request, res: Response)=>{
-    if (!isLoggedIn(req, res)) {
+    if (!isLoggedIn_NoRender(req, res)) {
         res.render("profile/login")
     }else {
         like(res, "Giannis")
@@ -86,7 +86,7 @@ router.get("/giannislike", (req : Request, res: Response)=>{
     }
     });
 router.get("/giannisdislike", (req : Request, res: Response)=>{
-    if (!isLoggedIn(req, res)) {
+    if (!isLoggedIn_NoRender(req, res)) {
         res.render("profile/login")
     }else {
         dislike(res, "Giannis")
@@ -97,7 +97,7 @@ router.get("/giannisdislike", (req : Request, res: Response)=>{
 });
 
 router.get("/kdlike", (req : Request, res: Response)=>{
-    if (!isLoggedIn(req, res)) {
+    if (!isLoggedIn_NoRender(req, res)) {
         res.render("profile/login")
     }else {
         like(res, "KD")
@@ -107,7 +107,7 @@ router.get("/kdlike", (req : Request, res: Response)=>{
     }
 });
 router.get("/kddislike", (req : Request, res: Response)=>{
-    if (!isLoggedIn(req, res)) {
+    if (!isLoggedIn_NoRender(req, res)) {
         res.render("profile/login")
     }else {
         dislike(res, "KD")

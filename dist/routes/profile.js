@@ -45,15 +45,8 @@ var thread_1 = require("../managers/thread");
 var createProfile_1 = __importDefault(require("../mymodels/createProfile"));
 var router = express_1.Router();
 router.get("/create", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res)) {
+    if (!profile_1.isLoggedIn(req, res))
         res.render("profile/create");
-    }
-    else {
-        res.render("index", {
-            "user": req.cookies.username,
-            "message": "you are already logged in"
-        });
-    }
 });
 router.post("/create", function (req, res) {
     if (profile_1.isLoggedIn(req, res))
@@ -70,15 +63,8 @@ router.post("/create", function (req, res) {
     });
 });
 router.get("/login", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res)) {
+    if (!profile_1.isLoggedIn(req, res))
         res.render("profile/login");
-    }
-    else {
-        res.render("index", {
-            "user": req.cookies.username,
-            "message": "you are already logged in"
-        });
-    }
 });
 router.post("/login", function (req, res) {
     var form = new createProfile_1.default(req);

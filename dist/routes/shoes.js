@@ -29,7 +29,7 @@ router.get("/browse", function (req, res, next) {
     });
 });
 router.get("/lebronlike", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res)) {
+    if (!profile_1.isLoggedIn_NoRender(req, res)) {
         res.render("profile/login");
     }
     else {
@@ -37,12 +37,9 @@ router.get("/lebronlike", function (req, res) {
             .then(function (confirm) { return shoe_1.refresh(res, req); })
             .then(function (confirm) { });
     }
-    /* all(res, req, "Lebron", "likes")
-         .then((confirm: any) => {
-     });*/
 });
 router.get("/lebrondislike", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res)) {
+    if (!profile_1.isLoggedIn_NoRender(req, res)) {
         res.render("profile/login");
     }
     else {
@@ -52,7 +49,7 @@ router.get("/lebrondislike", function (req, res) {
     }
 });
 router.get("/kawhilike", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res)) {
+    if (!profile_1.isLoggedIn_NoRender(req, res)) {
         res.render("profile/login");
     }
     else {
@@ -63,7 +60,7 @@ router.get("/kawhilike", function (req, res) {
     }
 });
 router.get("/kawhidislike", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res)) {
+    if (!profile_1.isLoggedIn_NoRender(req, res)) {
         res.render("profile/login");
     }
     else {
@@ -74,7 +71,7 @@ router.get("/kawhidislike", function (req, res) {
     }
 });
 router.get("/giannislike", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res)) {
+    if (!profile_1.isLoggedIn_NoRender(req, res)) {
         res.render("profile/login");
     }
     else {
@@ -85,7 +82,7 @@ router.get("/giannislike", function (req, res) {
     }
 });
 router.get("/giannisdislike", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res)) {
+    if (!profile_1.isLoggedIn_NoRender(req, res)) {
         res.render("profile/login");
     }
     else {
@@ -96,7 +93,7 @@ router.get("/giannisdislike", function (req, res) {
     }
 });
 router.get("/kdlike", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res)) {
+    if (!profile_1.isLoggedIn_NoRender(req, res)) {
         res.render("profile/login");
     }
     else {
@@ -107,7 +104,7 @@ router.get("/kdlike", function (req, res) {
     }
 });
 router.get("/kddislike", function (req, res) {
-    if (!profile_1.isLoggedIn(req, res)) {
+    if (!profile_1.isLoggedIn_NoRender(req, res)) {
         res.render("profile/login");
     }
     else {
