@@ -36,9 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var profile_1 = require("./profile");
 var DbClient = require("../DbClient");
 var ObjectId = require("mongodb").ObjectID;
-function refresh(res) {
+function refresh(res, req) {
     return __awaiter(this, void 0, void 0, function () {
         var db, data;
         return __generator(this, function (_a) {
@@ -49,7 +50,7 @@ function refresh(res) {
                     return [4 /*yield*/, db.collection("data").find().toArray()];
                 case 2:
                     data = _a.sent();
-                    res.render('shoes/browse', { lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
+                    res.render('shoes/browse', { "user": req.cookies.username, lebronlikes: data[0].likes, lebrondislikes: data[0].dislikes, kawhilikes: data[1].likes, kawhidislikes: data[1].dislikes, giannislikes: data[2].likes, giannisdislikes: data[2].dislikes, KDlikes: data[3].likes, KDdislikes: data[3].dislikes });
                     return [2 /*return*/];
             }
         });
@@ -92,3 +93,26 @@ function dislike(res, Player) {
     });
 }
 exports.dislike = dislike;
+function all(res, req, Player, Increment) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, like_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!!profile_1.isLoggedIn(req, res)) return [3 /*break*/, 1];
+                    res.render("profile/login");
+                    return [3 /*break*/, 5];
+                case 1: return [4 /*yield*/, DbClient.connect()];
+                case 2:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("data").findOne({ "name": Player })];
+                case 3:
+                    like_1 = _a.sent();
+                    return [4 /*yield*/, db.collection("data").updateOne({ _id: like_1._id }, { $inc: { Increment: 1 } })];
+                case 4: return [2 /*return*/, _a.sent()];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.all = all;

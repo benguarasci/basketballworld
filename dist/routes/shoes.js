@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var DbClient = require("../DbClient");
 var shoe_1 = require("../managers/shoe");
+var profile_1 = require("../managers/profile");
 var router = express_1.Router();
 // sending create profile page to client
 router.get("/browse", function (req, res, next) {
@@ -22,49 +23,98 @@ router.get("/browse", function (req, res, next) {
                 });
             }
             else {
-                shoe_1.refresh(res).then(function (val) { });
+                shoe_1.refresh(res, req).then(function (val) { });
             }
         });
     });
 });
 router.get("/lebronlike", function (req, res) {
-    shoe_1.like(res, "Lebron")
-        .then(function (confirm) { return shoe_1.refresh(res); })
-        .then(function (confirm) { });
+    if (!profile_1.isLoggedIn(req, res)) {
+        res.render("profile/login");
+    }
+    else {
+        shoe_1.like(res, "Lebron")
+            .then(function (confirm) { return shoe_1.refresh(res, req); })
+            .then(function (confirm) { });
+    }
+    /* all(res, req, "Lebron", "likes")
+         .then((confirm: any) => {
+     });*/
 });
 router.get("/lebrondislike", function (req, res) {
-    shoe_1.dislike(res, "Lebron")
-        .then(function (confirm) { return shoe_1.refresh(res); })
-        .then(function (confirm) { });
+    if (!profile_1.isLoggedIn(req, res)) {
+        res.render("profile/login");
+    }
+    else {
+        shoe_1.dislike(res, "Lebron")
+            .then(function (confirm) { return shoe_1.refresh(res, req); })
+            .then(function (confirm) { });
+    }
 });
 router.get("/kawhilike", function (req, res) {
-    shoe_1.like(res, "Kawhi")
-        .then(function (confirm) { return shoe_1.refresh(res); })
-        .then(function (confirm) { });
+    if (!profile_1.isLoggedIn(req, res)) {
+        res.render("profile/login");
+    }
+    else {
+        shoe_1.like(res, "Kawhi")
+            .then(function (confirm) { return shoe_1.refresh(res, req); })
+            .then(function (confirm) {
+        });
+    }
 });
 router.get("/kawhidislike", function (req, res) {
-    shoe_1.dislike(res, "Kawhi")
-        .then(function (confirm) { return shoe_1.refresh(res); })
-        .then(function (confirm) { });
+    if (!profile_1.isLoggedIn(req, res)) {
+        res.render("profile/login");
+    }
+    else {
+        shoe_1.dislike(res, "Kawhi")
+            .then(function (confirm) { return shoe_1.refresh(res, req); })
+            .then(function (confirm) {
+        });
+    }
 });
 router.get("/giannislike", function (req, res) {
-    shoe_1.like(res, "Giannis")
-        .then(function (confirm) { return shoe_1.refresh(res); })
-        .then(function (confirm) { });
+    if (!profile_1.isLoggedIn(req, res)) {
+        res.render("profile/login");
+    }
+    else {
+        shoe_1.like(res, "Giannis")
+            .then(function (confirm) { return shoe_1.refresh(res, req); })
+            .then(function (confirm) {
+        });
+    }
 });
 router.get("/giannisdislike", function (req, res) {
-    shoe_1.dislike(res, "Giannis")
-        .then(function (confirm) { return shoe_1.refresh(res); })
-        .then(function (confirm) { });
+    if (!profile_1.isLoggedIn(req, res)) {
+        res.render("profile/login");
+    }
+    else {
+        shoe_1.dislike(res, "Giannis")
+            .then(function (confirm) { return shoe_1.refresh(res, req); })
+            .then(function (confirm) {
+        });
+    }
 });
 router.get("/kdlike", function (req, res) {
-    shoe_1.like(res, "KD")
-        .then(function (confirm) { return shoe_1.refresh(res); })
-        .then(function (confirm) { });
+    if (!profile_1.isLoggedIn(req, res)) {
+        res.render("profile/login");
+    }
+    else {
+        shoe_1.like(res, "KD")
+            .then(function (confirm) { return shoe_1.refresh(res, req); })
+            .then(function (confirm) {
+        });
+    }
 });
 router.get("/kddislike", function (req, res) {
-    shoe_1.dislike(res, "KD")
-        .then(function (confirm) { return shoe_1.refresh(res); })
-        .then(function (confirm) { });
+    if (!profile_1.isLoggedIn(req, res)) {
+        res.render("profile/login");
+    }
+    else {
+        shoe_1.dislike(res, "KD")
+            .then(function (confirm) { return shoe_1.refresh(res, req); })
+            .then(function (confirm) {
+        });
+    }
 });
 module.exports = router;

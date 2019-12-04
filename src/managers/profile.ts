@@ -4,10 +4,6 @@ import createProfileForm from "../mymodels/createProfile"
 
 export function isLoggedIn (req : Request, res: Response) {
     if ("username" in req.cookies) {
-        res.render("index", {
-            "user": req.cookies.username,
-            "message" : "you are already logged in"
-        });
         return true;
     }
     else return false;
