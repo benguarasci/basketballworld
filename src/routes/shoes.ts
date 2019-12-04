@@ -6,10 +6,7 @@ const router = Router();
 
 async function listShoes() {
     let db = await DbClient.connect();
-    console.log("listshoes:");
-
     let shoes = await db!.collection("shoes").find().toArray();
-    console.log(shoes);
     let likes = shoes.map((shoe: any) => "/shoes/likes/" + shoe._id.toString());
     let dislikes = shoes.map((shoe: any) => "/shoes/dislikes/" + shoe._id.toString());
     return [shoes, likes, dislikes];
@@ -17,26 +14,24 @@ async function listShoes() {
 
 // sending create profile page to client
 router.get("/browse", (req, res, next) => {
-        console.log("hello");
         listShoes()
             .then((shoes:any) => {
-                res.render("shoes/browse", {shoes: shoes[0], likes : shoes[1], dislikes: shoes[2]});
+                res.render("shoes/browse", {'user':req.cookies.username, shoes: shoes[0], likes : shoes[1], dislikes: shoes[2]});
             })
     });
 
 router.get("/likes/:id", (req, res) =>{
-    console.log("in route");
-    console.log("cheerios");
     like(res, req)
         .then((conf:any)=>{
-            console.log("put me");
             res.redirect("/shoes/browse");
         })
 });
 
-router.get("/shoes/dislikes/:id", (req, res) =>{
-
-
+router.get("/dislikes/:id", (req, res) =>{
+    dislike(res, req)
+        .then((conf:any)=>{
+            res.redirect("/shoes/browse");
+        })
 });
 /*
 router.get("/lebronlike", (req : Request, res: Response)=>{
@@ -52,14 +47,16 @@ router.get("/lebronlike", (req : Request, res: Response)=>{
 
 
 
-/*insertShoe("/img/LBJ17.jpg", "NIKE Lebron 17", "Lebron James", "$170 US", "An amazing shoe",0, 0)
+insertShoe("/img/LBJ17.jpg", "NIKE Lebron 17", "Lebron James", "$170 US", "An amazing shoe",0, 0)
 .then((confirm:any)=>{});
-*/
-insertShoe("/img/number2.jpg", "New Balance OMN1S", "Kawhi Leonard", "$140 US", "An amazing shoe",0, 0)
-    .then((confirm:any)=>{});
 
 insertShoe("/img/number2.jpg", "New Balance OMN1S", "Kawhi Leonard", "$140 US", "An amazing shoe",0, 0)
     .then((confirm:any)=>{});
 
+insertShoe("/img/greek.jpg", "NIKE Zoom Freak 1", "Giannis Antetekounmpo", "$120 US", "An amazing shoe",0, 0)
+    .then((confirm:any)=>{});
+
+insertShoe("/img/kd.jpg", "NIKE Zoom KD12", "Kevin Durant", "$150 US", "An amazing shoe",0, 0)
+    .then((confirm:any)=>{});
 
 module.exports = router;

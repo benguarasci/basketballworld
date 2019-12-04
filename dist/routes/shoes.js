@@ -48,11 +48,9 @@ function listShoes() {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    console.log("listshoes:");
                     return [4 /*yield*/, db.collection("shoes").find().toArray()];
                 case 2:
                     shoes = _a.sent();
-                    console.log(shoes);
                     likes = shoes.map(function (shoe) { return "/shoes/likes/" + shoe._id.toString(); });
                     dislikes = shoes.map(function (shoe) { return "/shoes/dislikes/" + shoe._id.toString(); });
                     return [2 /*return*/, [shoes, likes, dislikes]];
@@ -62,22 +60,22 @@ function listShoes() {
 }
 // sending create profile page to client
 router.get("/browse", function (req, res, next) {
-    console.log("hello");
     listShoes()
         .then(function (shoes) {
-        res.render("shoes/browse", { shoes: shoes[0], likes: shoes[1], dislikes: shoes[2] });
+        res.render("shoes/browse", { 'user': req.cookies.username, shoes: shoes[0], likes: shoes[1], dislikes: shoes[2] });
     });
 });
 router.get("/likes/:id", function (req, res) {
-    console.log("in route");
-    console.log("cheerios");
     shoe_1.like(res, req)
         .then(function (conf) {
-        console.log("put me");
         res.redirect("/shoes/browse");
     });
 });
-router.get("/shoes/dislikes/:id", function (req, res) {
+router.get("/dislikes/:id", function (req, res) {
+    shoe_1.dislike(res, req)
+        .then(function (conf) {
+        res.redirect("/shoes/browse");
+    });
 });
 /*
 router.get("/lebronlike", (req : Request, res: Response)=>{
@@ -89,11 +87,12 @@ router.get("/lebronlike", (req : Request, res: Response)=>{
         .then((confirm:any)=>{});
     }
 */
-/*insertShoe("/img/LBJ17.jpg", "NIKE Lebron 17", "Lebron James", "$170 US", "An amazing shoe",0, 0)
-.then((confirm:any)=>{});
-*/
-shoe_1.insertShoe("/img/number2.jpg", "New Balance OMN1S", "Kawhi Leonard", "$140 US", "An amazing shoe", 0, 0)
+shoe_1.insertShoe("/img/LBJ17.jpg", "NIKE Lebron 17", "Lebron James", "$170 US", "An amazing shoe", 0, 0)
     .then(function (confirm) { });
 shoe_1.insertShoe("/img/number2.jpg", "New Balance OMN1S", "Kawhi Leonard", "$140 US", "An amazing shoe", 0, 0)
+    .then(function (confirm) { });
+shoe_1.insertShoe("/img/greek.jpg", "NIKE Zoom Freak 1", "Giannis Antetekounmpo", "$120 US", "An amazing shoe", 0, 0)
+    .then(function (confirm) { });
+shoe_1.insertShoe("/img/kd.jpg", "NIKE Zoom KD12", "Kevin Durant", "$150 US", "An amazing shoe", 0, 0)
     .then(function (confirm) { });
 module.exports = router;

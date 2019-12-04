@@ -87,13 +87,9 @@ function like(res, req) {
                 case 1:
                     db = _a.sent();
                     ID = ObjectId(req.params.id);
-                    console.log("ID: " + ID);
                     return [4 /*yield*/, db.collection("shoes").findOne({ _id: ID })];
                 case 2:
                     shoe = _a.sent();
-                    console.log("here i am");
-                    console.log(shoe);
-                    console.log("shoe: " + shoe);
                     return [4 /*yield*/, db.collection("shoes").updateOne({ _id: shoe._id }, { $inc: { likes: 1 } })];
                 case 3: return [2 /*return*/, _a.sent()];
             }
@@ -101,18 +97,19 @@ function like(res, req) {
     });
 }
 exports.like = like;
-function dislike(res, Player) {
+function dislike(res, req) {
     return __awaiter(this, void 0, void 0, function () {
-        var db, shoe;
+        var db, ID, shoe;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    return [4 /*yield*/, db.collection("data").findOne({ "name": Player })];
+                    ID = ObjectId(req.params.id);
+                    return [4 /*yield*/, db.collection("shoes").findOne({ _id: ID })];
                 case 2:
                     shoe = _a.sent();
-                    return [4 /*yield*/, db.collection("data").updateOne({ _id: shoe.dislikes._id }, { $inc: { dislikes: 1 } })];
+                    return [4 /*yield*/, db.collection("shoes").updateOne({ _id: shoe._id }, { $inc: { dislikes: 1 } })];
                 case 3: return [2 /*return*/, _a.sent()];
             }
         });

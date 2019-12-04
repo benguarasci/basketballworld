@@ -21,20 +21,16 @@ export async function refresh (res: Response, req: Request) {
     export async function like(res: Response, req: Request) {
         let db = await DbClient.connect();
         let ID =  ObjectId(req.params.id);
-        console.log("ID: " + ID);
         let shoe = await db!.collection("shoes").findOne({_id: ID});
-        console.log("here i am");
-        console.log(shoe);
-        console.log("shoe: " + shoe);
         return await db!.collection("shoes").updateOne({_id: shoe._id}, {$inc: {likes: 1}});
     }
 
-    export async function dislike(res: Response, Player: any) {
+    export async function dislike(res: Response, req: Request) {
         let db = await DbClient.connect();
-        let shoe = await db!.collection("data").findOne({"name": Player});
-        return await db!.collection("data").updateOne({_id: shoe.dislikes._id}, {$inc: {dislikes: 1}});
+        let ID = ObjectId(req.params.id);
+        let shoe = await db!.collection("shoes").findOne({_id: ID});
+        return await db!.collection("shoes").updateOne({_id: shoe._id}, {$inc: {dislikes: 1}});
     }
-
 /*export async function all(res: Response, req: Request, Player: any, Increment: any){
     if (!isLoggedIn(req, res)) {
         res.render("profile/login")
