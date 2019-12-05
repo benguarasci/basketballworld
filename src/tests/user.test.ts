@@ -26,22 +26,16 @@ const mockProfileRequest = (name: any, email: any, password: any, cookies: any) 
 // };
 
 // Tests to see if the mockUser can be inserted into the 'users' collection
-test("Insert User DB test", async () => {
-
-    const mockForm = (name: any, email: any, pw: any) => ({
-        name: mockUser.name,
-        email: mockUser.email,
-        pw: mockUser.pw,
-
-    });
-
-    await createNewProfile(mockForm);
-
-    const addedUser = await retrieveProfile(mockProfileRequest);
-
-    expect(mockUser).toEqual(addedUser);
-
-});
+// test("Insert User DB test", async () => {
+//    const mockForm = (name: any, email: any, pw: any) => ({
+//        name: mockUser.name,
+//        email: mockUser.email,
+//        pw: mockUser.pw,
+//    });
+//    await createNewProfile(mockForm);
+//    const addedUser = await retrieveProfile(mockProfileRequest);
+//    expect(mockUser).toEqual(addedUser);
+// });
 
 // Tests to see if the mockUser module 'isValid' validates that the fields have been filled
 // test("Tests profileRetriever function", async () => {
