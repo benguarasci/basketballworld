@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "tests/user.test.js"
+    "test": "./dist/tests/user.test.js"
   },
   "dependencies": {
     "@shelf/jest-mongodb": "^1.1.3",
