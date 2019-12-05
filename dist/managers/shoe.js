@@ -48,7 +48,7 @@ function insertShoe(image, model, player, price, description, likes, dislikes) {
                 case 1:
                     db = _a.sent();
                     shoe = new shoe_m_1.Shoe(image, model, player, price, description, likes, dislikes);
-                    return [4 /*yield*/, db.collection("shoes").findOne(shoe)];
+                    return [4 /*yield*/, db.collection("shoes").findOne({ "model": model })];
                 case 2:
                     temp = _a.sent();
                     if (!(temp === null)) return [3 /*break*/, 4];
@@ -60,6 +60,24 @@ function insertShoe(image, model, player, price, description, likes, dislikes) {
     });
 }
 exports.insertShoe = insertShoe;
+function deleteShoe(player) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, shoe;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("shoes").findOne({ "player": player })];
+                case 2:
+                    shoe = _a.sent();
+                    return [4 /*yield*/, db.collection('shoes').deleteOne(shoe)];
+                case 3: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
+exports.deleteShoe = deleteShoe;
 function refresh(res, req) {
     return __awaiter(this, void 0, void 0, function () {
         var db, shoes;
@@ -118,13 +136,19 @@ function dislike(res, req) {
 exports.dislike = dislike;
 function sortShoes() {
     return __awaiter(this, void 0, void 0, function () {
-        var db;
+        var db, order, shoes, likes, dislikes;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    return [2 /*return*/];
+                    order = { likes: -1 };
+                    return [4 /*yield*/, db.collection("shoes").find().sort(order).toArray()];
+                case 2:
+                    shoes = _a.sent();
+                    likes = shoes.map(function (shoe) { return "/shoes/likes/" + shoe._id.toString(); });
+                    dislikes = shoes.map(function (shoe) { return "/shoes/dislikes/" + shoe._id.toString(); });
+                    return [2 /*return*/, [shoes, likes, dislikes]];
             }
         });
     });

@@ -99,6 +99,27 @@ router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); });
+router.get("/discover", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, _b, _c, _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
+            case 0:
+                _b = (_a = res).render;
+                _c = ["profile/discover"];
+                _d = {
+                    'user': req.cookies.username
+                };
+                return [4 /*yield*/, profile_1.retrieveProfile(req, res).catch(function (e) { return console.log(e); })];
+            case 1:
+                _d.profile = _e.sent();
+                return [4 /*yield*/, profile_1.allTags(req, res).catch(function (e) { return console.log(e); })];
+            case 2:
+                _b.apply(_a, _c.concat([(_d.allTags = _e.sent(),
+                        _d)]));
+                return [2 /*return*/];
+        }
+    });
+}); });
 router.post("/pushtag", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {

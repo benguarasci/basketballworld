@@ -2,9 +2,10 @@ extends ../layout
 
 block content
     h1(style='text-align: center') Shoes by player
-    .row
+
+
+    .cards(id="shoes")
         each shoe, i in shoes
-            .collumn
                 .card
                     img(src=shoe.image style="width:100%")
                     p #{shoe.model}
@@ -14,3 +15,4 @@ block content
                     a(href=dislikes[i] class='dislikebutton') Dislike
                     p
                     |Likes: #{shoe.likes} Dislikes: #{shoe.dislikes}
+                    p Rank: #{i + 1}

@@ -7,10 +7,18 @@ const ObjectId = require("mongodb").ObjectID;
 export async function insertShoe (image: any, model: string, player: string, price: string, description: string, likes: number, dislikes: number){
     let db = await DbClient.connect();
     let shoe = new Shoe(image, model, player, price, description, likes, dislikes);
-    let temp = await db!.collection("shoes").findOne(shoe);
+    let temp = await db!.collection("shoes").findOne({"model": model});
     if(temp === null){
         return await db!.collection('shoes').insertOne(shoe);
+    }else{
+        return
     }
+}
+
+export async function deleteShoe (player: string){
+    let db = await DbClient.connect();
+    let shoe = await db!.collection("shoes").findOne({"player": player});
+        return await db!.collection('shoes').deleteOne(shoe);
 }
 
 export async function refresh (res: Response, req: Request) {
@@ -34,6 +42,10 @@ export async function refresh (res: Response, req: Request) {
 
     export async function sortShoes(){
         let db = await DbClient.connect();
+        let order = {likes: -1};
+        let shoes = await db!.collection("shoes").find().sort(order).toArray();
+        let likes = shoes.map((shoe: any) => "/shoes/likes/" + shoe._id.toString());
+        let dislikes = shoes.map((shoe: any) => "/shoes/dislikes/" + shoe._id.toString());
+        return [shoes, likes, dislikes];
 
     }
-

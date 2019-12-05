@@ -184,3 +184,46 @@ function editPassword(req, res) {
     });
 }
 exports.editPassword = editPassword;
+function allTags(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var tags, count, aggregate, users, _i, users_1, user, _loop_1, _a, _b, tag;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    tags = [];
+                    count = [];
+                    aggregate = [];
+                    return [4 /*yield*/, app_1.usersCol.find().toArray()];
+                case 1:
+                    users = _c.sent();
+                    for (_i = 0, users_1 = users; _i < users_1.length; _i++) {
+                        user = users_1[_i];
+                        if (user.tags) {
+                            _loop_1 = function (tag) {
+                                var flag = 0;
+                                tags.forEach(function (item, index) {
+                                    if (item == tag) {
+                                        count[index] += 1;
+                                        flag = 1;
+                                    }
+                                });
+                                if (flag === 0) {
+                                    tags.push(tag);
+                                    count.push(1);
+                                }
+                            };
+                            for (_a = 0, _b = user.tags; _a < _b.length; _a++) {
+                                tag = _b[_a];
+                                _loop_1(tag);
+                            }
+                        }
+                    }
+                    tags.forEach(function (item, index) {
+                        aggregate.push({ count: count[index], tags: tags[index] });
+                    });
+                    return [2 /*return*/, aggregate.sort(function (a, b) { return (a.count < b.count) ? 1 : -1; })];
+            }
+        });
+    });
+}
+exports.allTags = allTags;
