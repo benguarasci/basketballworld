@@ -1,6 +1,10 @@
 // https://mochajs.org/#getting-started
 
-import {usersCol} from "../app";
+import {database, usersCol} from "../app";
+
+beforeEach(async function() {
+    await database();
+});
 
 describe('#FindOneUser', function() {
     it('Check if at least one user exists in the database.', async function() {
