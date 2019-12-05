@@ -3,7 +3,7 @@
 import {database, usersCol} from "../app";
 
 beforeEach(async function() {
-    await database();
+    while(database == null) { }
 });
 
 describe('#FindOneUser', function() {
