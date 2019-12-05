@@ -1,5 +1,15 @@
 import {Request, Response, Router} from "express";
-import {isLoggedIn, createNewProfile, retrieveProfile, login, pushTag, pullTag, editEmail, editPassword} from "../managers/profile";
+import {
+    isLoggedIn,
+    createNewProfile,
+    retrieveProfile,
+    login,
+    pushTag,
+    pullTag,
+    editEmail,
+    editPassword,
+    allTags
+} from "../managers/profile";
 import {retrieveThreads, retrieveMyThreads} from "../managers/thread";
 import createProfileForm from "../mymodels/createProfile"
 import {isBanned, isBannedBy_account} from "../managers/activityHandling"
@@ -39,6 +49,13 @@ router.get("/home", async (req : Request, res : Response) => {
         profile: await retrieveProfile(req, res).catch((e: any) => console.log(e)),
         threads: await retrieveThreads(req, res).catch((e: any) => console.log(e)),
         myThreads: await retrieveMyThreads(req, res).catch((e: any) => console.log(e))
+    });
+});
+router.get("/discover", async (req : Request, res : Response) => {
+    res.render("profile/discover", {
+        'user':req.cookies.username,
+        profile: await retrieveProfile(req, res).catch((e: any) => console.log(e)),
+        allTags: await allTags(req, res).catch((e: any) => console.log(e))
     });
 });
 router.post("/pushtag", async (req : Request, res : Response) => {

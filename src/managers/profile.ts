@@ -68,3 +68,30 @@ export async function editPassword (req:Request, res:Response) {
     //let db = await DbClient.connect();
     await usersCol.updateOne({name: req.cookies.username}, { $set: { pw: req.body.password } });
 }
+export async function allTags (req:Request, res:Response) {
+    let tags: string[] = [];
+    let count: number[] = [];
+    let aggregate: any[] = [];
+    let users = await usersCol.find().toArray();
+    for (let user of users) {
+        if(user.tags) {
+            for (let tag of user.tags ) {
+                let flag = 0;
+                tags.forEach((item, index) => {
+                    if (item == tag) {
+                        count[index] += 1;
+                        flag = 1;
+                    }
+                });
+                if(flag === 0) {
+                    tags.push(tag);
+                    count.push(1);
+                }
+            }
+        }
+    }
+    tags.forEach((item, index) => {
+        aggregate.push({count:count[index], tags:tags[index]})
+    });
+    return aggregate.sort((a, b) => (a.count < b.count) ? 1:-1);
+}
