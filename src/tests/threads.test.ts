@@ -4,3 +4,5 @@ const { Thread } = require("../models/thread_m");
 //    const test = true;
 //    expect(test).toBe(true);
 // });
+
+process.exit();

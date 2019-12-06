@@ -49,3 +49,5 @@ const mockProfileRequest = (name: any, email: any, password: any, cookies: any) 
 //
 //
 // });
+
+process.exit();
