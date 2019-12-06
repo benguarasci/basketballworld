@@ -7,24 +7,17 @@ import {postsCol} from "../app";
 import createPostForm from "../mymodels/createPost";
 import {isBanned, isAdmin, isBannedBy_account, canModify, canModify_Thread, canModify_Post} from "../managers/activityHandling";
 import {
+    listThreads,
     createThread,
     deleteThread,
-    retrieveThread,
     editThread,
-    retrieveThreads,
-    retrieveMyThreads
+    retrieveTaggedThreads,
+    retrieveMyThreads,
+    findAllPosts,
+    getThread
 } from "../managers/thread";
 import {threadsCol} from "../app";
-
-
-
-async function listThreads() {
-    //let db = await DbClient.connect();
-    let threads = await threadsCol.find().toArray();
-    //let threads = await db!.collection("threads").find().toArray();
-    let links = threads.map((thread : any) => "/threads/"+thread._id.toString());
-    return [threads, links];
-}
+import moment = require("moment");
 
 router.get("/view", (req : Request, res : Response) => {
     listThreads()
@@ -53,10 +46,12 @@ router.post("/delete/:id", async (req: Request, res: Response) => {
 });
 
 router.post("/edit/:id", async (req: Request, res: Response) => {
+    let threadID = new ObjectId(req.params.id);
+
     if (await canModify_Thread(ObjectId(req.params.id), req, res))
         res.render("threads/edit", {
             'user':req.cookies.username,
-            thread: await retrieveThread(req, res).catch((e: any) => console.log(e))
+            thread: await getThread(threadID).catch((err: any) => console.log(err))
         });
 });
 
@@ -66,19 +61,6 @@ router.post("/confirm", async (req: Request, res: Response) => {
     res.redirect('/profile/home');
 });
 
-async function findAllPosts(par : string) {
-    let ID = ObjectId(par);
-    let posts;
-    let arr = await postsCol.find({parentThread: ID}).toArray();
-    if (arr.length === 0) posts = [];
-    else posts = arr;
-    return posts;
-}
-
-async function getThread(thread_id : string) {
-    console.log(thread_id);
-    return await threadsCol.findOne({_id:ObjectId(thread_id)});
-}
 router.get("/editPost/:id", (req: Request, res: Response) => {
     postsCol.findOne({_id:ObjectId(req.params.id)})
         .then((post : any)=>{
