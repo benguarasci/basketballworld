@@ -33,22 +33,23 @@ router.get("/dislikes/:id", function (req, res) {
         });
     }
 });
+//Inserts each shoe into the database.
 shoe_1.insertShoe("/img/LBJ17.jpg", "NIKE Lebron 17", "Lebron James", "$170 US", "An amazing shoe", 0, 0)
-    .then(function (confirm) { console.log("number23"); });
+    .then(function (confirm) { });
 shoe_1.insertShoe("/img/number2.jpg", "New Balance OMN1S", "Kawhi Leonard", "$140 US", "An amazing shoe", 0, 0)
-    .then(function (confirm) { console.log("number2"); });
+    .then(function (confirm) { });
 shoe_1.insertShoe("/img/greek.jpg", "NIKE Zoom Freak 1", "Giannis Antetekounmpo", "$120 US", "An amazing shoe", 0, 0)
-    .then(function (confirm) { console.log("number34"); });
+    .then(function (confirm) { });
 shoe_1.insertShoe("/img/kd.jpg", "NIKE Zoom KD12", "Kevin Durant", "$150 US", "An amazing shoe", 0, 0)
-    .then(function (confirm) { console.log("KD"); });
+    .then(function (confirm) { });
 shoe_1.insertShoe("/img/jordan.jpg", "Jordan Why Not Zer0.2", "Michael Jordan", "$125 US", "an amazing shoe", 0, 0)
-    .then(function (confirm) { console.log("MJ"); });
+    .then(function (confirm) { });
 shoe_1.insertShoe("/img/jordan2.jpg", "Air Jordan 34", "Michael Jordan", "$180 US", "an amazing shoe", 0, 0)
-    .then(function (confirm) { console.log("MJ"); });
+    .then(function (confirm) { });
 shoe_1.insertShoe("/img/harden.jpg", "Adidas Harden Vol.4", "James Harden", "$130 US", "an amazing shoe", 0, 0)
-    .then(function (confirm) { console.log("Harden"); });
+    .then(function (confirm) { });
 shoe_1.insertShoe("/img/kobe.jpg", "NIKE Kobe AD NXT FF", "Kobe Bryant", "$200 US", "an amazing shoe", 0, 0)
-    .then(function (confirm) { console.log("KOBE!"); });
+    .then(function (confirm) { });
 shoe_1.insertShoe("/img/dom.jpg", "Adidas D.O.N. Issue 1", "Donavan Mitchell", "$100 US", "an amazing shoe", 0, 0)
-    .then(function (confirm) { console.log("DON"); });
+    .then(function (confirm) { });
 module.exports = router;
