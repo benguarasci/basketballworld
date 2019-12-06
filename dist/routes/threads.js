@@ -35,19 +35,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
+var profile_1 = require("../managers/profile");
 var DbClient = require("../DbClient");
 var router = express_1.Router();
 var ObjectId = require("mongodb").ObjectID;
-var thread_1 = require("../managers/thread");
 var app_1 = require("../app");
+var createPost_1 = __importDefault(require("../mymodels/createPost"));
+var activityHandling_1 = require("../managers/activityHandling");
+var thread_1 = require("../managers/thread");
+var app_2 = require("../app");
 function listThreads() {
     return __awaiter(this, void 0, void 0, function () {
         var threads, links;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, app_1.threadsCol.find().toArray()];
+                case 0: return [4 /*yield*/, app_2.threadsCol.find().toArray()];
                 case 1:
                     threads = _a.sent();
                     links = threads.map(function (thread) { return "/threads/" + thread._id.toString(); });
@@ -63,17 +70,23 @@ router.get("/view", function (req, res) {
     });
 });
 router.get("/create", function (req, res) {
-    res.render("threads/create", { 'user': req.cookies.username });
+    activityHandling_1.isBanned(req, res)
+        .then(function (bool) {
+        if (!bool)
+            res.render("threads/create", { 'user': req.cookies.username });
+    });
 });
 router.post("/create", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, thread_1.createThread(req, res).then(function (id) {
-                    return res.redirect("/threads/" + id.insertedId.toString());
-                })];
+            case 0: return [4 /*yield*/, activityHandling_1.isBanned(req, res)];
             case 1:
+                if (!!(_a.sent())) return [3 /*break*/, 3];
+                return [4 /*yield*/, thread_1.createThread(req, res).then(function (id) { res.redirect("/threads/" + id.insertedId.toString()); })];
+            case 2:
                 _a.sent();
-                return [2 /*return*/];
+                _a.label = 3;
+            case 3: return [2 /*return*/];
         }
     });
 }); });
@@ -82,8 +95,8 @@ router.post("/delete/:id", function (req, res) { return __awaiter(void 0, void 0
         switch (_a.label) {
             case 0: return [4 /*yield*/, thread_1.deleteThread(req, res)];
             case 1:
-                _a.sent();
-                res.redirect('/profile/home');
+                if (_a.sent())
+                    res.redirect('/profile/home');
                 return [2 /*return*/];
         }
     });
@@ -92,17 +105,20 @@ router.post("/edit/:id", function (req, res) { return __awaiter(void 0, void 0, 
     var _a, _b, _c, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
-            case 0:
+            case 0: return [4 /*yield*/, activityHandling_1.canModify_Thread(ObjectId(req.params.id), req, res)];
+            case 1:
+                if (!_e.sent()) return [3 /*break*/, 3];
                 _b = (_a = res).render;
                 _c = ["threads/edit"];
                 _d = {
                     'user': req.cookies.username
                 };
                 return [4 /*yield*/, thread_1.retrieveThread(req, res).catch(function (e) { return console.log(e); })];
-            case 1:
+            case 2:
                 _b.apply(_a, _c.concat([(_d.thread = _e.sent(),
                         _d)]));
-                return [2 /*return*/];
+                _e.label = 3;
+            case 3: return [2 /*return*/];
         }
     });
 }); });
@@ -117,55 +133,130 @@ router.post("/confirm", function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); });
+function findAllPosts(par) {
+    return __awaiter(this, void 0, void 0, function () {
+        var ID, posts, arr;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    ID = ObjectId(par);
+                    return [4 /*yield*/, app_1.postsCol.find({ parentThread: ID }).toArray()];
+                case 1:
+                    arr = _a.sent();
+                    if (arr.length === 0)
+                        posts = [];
+                    else
+                        posts = arr;
+                    return [2 /*return*/, posts];
+            }
+        });
+    });
+}
+function getThread(thread_id) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log(thread_id);
+                    return [4 /*yield*/, app_2.threadsCol.findOne({ _id: ObjectId(thread_id) })];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
+router.get("/editPost/:id", function (req, res) {
+    app_1.postsCol.findOne({ _id: ObjectId(req.params.id) })
+        .then(function (post) {
+        if (post === null) {
+            res.render("index", {
+                "message": "post does not exist",
+                "user": req.cookies.username
+            });
+            return;
+        }
+        activityHandling_1.canModify(post, req, res)
+            .then(function (bool) {
+            if (bool) {
+                res.render("threads/editPost", { "user": req.cookies.username, post: post });
+            }
+        });
+    });
+});
+router.post("/editPost/:parent/:id", function (req, res) {
+    activityHandling_1.canModify_Post(ObjectId(req.params.id), req, res)
+        .then(function (bool) {
+        if (bool)
+            app_1.postsCol.updateOne({ _id: ObjectId(req.params.id) }, { $set: { content: req.body.content } })
+                .then(function () { res.redirect("/threads/" + req.params.parent); });
+    });
+});
+router.get("/editThread/:id", function (req, res) {
+    console.log(req.params.id);
+    console.log("lilypad");
+    activityHandling_1.canModify_Thread(req.params.id, req, res)
+        .then(function (bool) {
+        console.log("tree people");
+        if (bool) {
+            console.log("johny depp");
+            console.log(req.params.id);
+            app_2.threadsCol.findOne({ _id: ObjectId(req.params.id) })
+                .then(function (thread) {
+                if (thread === null)
+                    res.render("index", {
+                        "message": "thread does not exist",
+                        "user": req.cookies.username
+                    });
+                res.render("threads/edit", { "user": req.cookies.username, thread: thread });
+            });
+        }
+        else {
+            console.log("baby pie");
+        }
+    });
+});
 router.get("/:thread", function (req, res) {
-    var threadID = new ObjectId(req.params.thread);
-    var thisDB;
-    DbClient.connect()
-        .then(function (db) {
-        thisDB = db;
-        return db.collection("threads").findOne({ _id: threadID });
-    }).then(function (thread) {
+    getThread(req.params.thread)
+        .then(function (thread) {
         if (thread === null)
             res.render("index", { "message": "couldn't find page, sorry" });
         else {
-            thisDB.collection("posts").find({ parentThread: threadID }).toArray()
-                .then(function (arr) {
-                var posts;
-                if (arr.length === 0)
-                    posts = [];
-                else
-                    posts = arr;
-                res.render("threads/thread", { user: req.cookies.username, thread: thread, posts: posts, target: "/threads/" + req.params.thread });
-            }).catch(function (err) { console.log(err.message); });
+            activityHandling_1.isAdmin(req)
+                .then(function (amAdmin) {
+                var thisIsMine;
+                thisIsMine = amAdmin || req.cookies.username === thread.author;
+                findAllPosts(req.params.thread)
+                    .then(function (posts) {
+                    var isMine;
+                    if (!amAdmin)
+                        isMine = posts.map(function (post) { return (post.author == req.cookies.username); });
+                    else
+                        isMine = posts.map(function (post) { return true; });
+                    res.render("threads/thread", { user: req.cookies.username,
+                        thread: thread,
+                        posts: posts,
+                        target: "/threads/" + req.params.thread,
+                        isMine: isMine,
+                        thisIsMine: thisIsMine
+                    });
+                });
+            });
         }
-    }).catch(function (err) { console.log(err.message); });
+    });
 });
 router.post("/:thread", function (req, res) {
-    if (!("username" in req.cookies)) {
-        res.render("index", { "message": "you are not logged in" });
-        return;
-    }
-    if (req.body.content === "") {
-        res.render("index", { "message": "you have to write something" });
-        return;
-    }
-    var content = req.body.content;
-    var threadID = new ObjectId(req.params.thread);
-    var author = req.cookies.username;
-    var d = new Date();
-    var date = d.toString();
-    var ms = d.getTime();
-    DbClient.connect()
-        .then(function (db) {
-        db.collection("posts").insertOne({ content: content, author: author, parentThread: threadID, date: date, ms: ms })
-            .then(function (id) {
-            res.redirect("/threads/" + req.params.thread);
-        }).catch(function (err) {
-            console.log(err.message);
-        });
-    })
-        .catch(function (err) {
-        console.log(err.message);
+    activityHandling_1.isBanned(req, res)
+        .then(function (bool) {
+        if (!bool) {
+            if (!profile_1.isLoggedIn_NoRender(req, res))
+                return;
+            var new_post = new createPost_1.default(req);
+            if (new_post.isFormComplete(res)) {
+                app_1.postsCol.insertOne({ content: new_post.content, author: new_post.author, parentThread: new_post.parentThread, date: new_post.date, ms: new_post.ms })
+                    .then(function () {
+                    res.redirect("/threads/" + req.params.thread);
+                });
+            }
+        }
     });
 });
 module.exports = router;

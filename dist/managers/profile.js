@@ -37,7 +37,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
-var activityHandling_1 = require("./activityHandling");
 var app_1 = require("../app");
 function isLoggedIn(req, res) {
     if ("username" in req.cookies) {
@@ -52,7 +51,15 @@ function isLoggedIn(req, res) {
 }
 exports.isLoggedIn = isLoggedIn;
 function isLoggedIn_NoRender(req, res) {
-    return "username" in req.cookies;
+    if (!("username" in req.cookies)) {
+        res.render("index", {
+            "user": req.cookies.username,
+            "message": "you are not logged in"
+        });
+        return false;
+    }
+    else
+        return true;
 }
 exports.isLoggedIn_NoRender = isLoggedIn_NoRender;
 function createNewProfile(form) {
@@ -105,11 +112,11 @@ function login(res, form) {
                         });
                     }
                     else {
-                        activityHandling_1.isBannedBy_account(form.name, res)
-                            .then(function (conf) {
-                            res.cookie("username", form.name);
-                            res.redirect('/profile/home');
-                        });
+                        // isBannedBy_account(form.name, res)
+                        //     .then((conf : any)=>{
+                        res.cookie("username", form.name);
+                        res.redirect('/profile/home');
+                        // });
                     }
                     return [2 /*return*/];
             }

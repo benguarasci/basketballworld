@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var profile_1 = require("./profile");
 var createThread_1 = __importDefault(require("../mymodels/createThread"));
 var app_1 = require("../app");
+var activityHandling_1 = require("./activityHandling");
 var DbClient = require("../DbClient");
 var ObjectId = require("mongodb").ObjectID;
 // https://docs.mongodb.com/manual/reference/operator/query/in/
@@ -68,7 +69,7 @@ function retrieveMyThreads(req, res) {
                 case 0: return [4 /*yield*/, profile_1.retrieveProfile(req, res)];
                 case 1:
                     profile = _a.sent();
-                    return [4 /*yield*/, app_1.threadsCol.find({ owner: profile.name }).toArray()];
+                    return [4 /*yield*/, app_1.threadsCol.find({ author: profile.name }).toArray()];
                 case 2: return [2 /*return*/, _a.sent()];
             }
         });
@@ -98,16 +99,20 @@ function deleteThread(req, res) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
+                    _a.trys.push([0, 4, , 5]);
                     threadID = new ObjectId(req.params.id);
-                    return [4 /*yield*/, app_1.threadsCol.deleteOne({ _id: threadID })];
+                    return [4 /*yield*/, activityHandling_1.canModify_Thread(threadID, req, res)];
                 case 1:
-                    _a.sent();
-                    return [3 /*break*/, 3];
+                    if (!_a.sent()) return [3 /*break*/, 3];
+                    return [4 /*yield*/, app_1.threadsCol.deleteOne({ _id: threadID })];
                 case 2:
+                    _a.sent();
+                    return [2 /*return*/, true];
+                case 3: return [2 /*return*/, false];
+                case 4:
                     Exception_1 = _a.sent();
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });
@@ -120,19 +125,22 @@ function editThread(req, res) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 3, , 4]);
+                    _a.trys.push([0, 4, , 5]);
                     threadID = new ObjectId(req.body._id);
-                    thread = new createThread_1.default(req);
-                    if (!thread.isFormComplete(res)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, app_1.threadsCol.replaceOne({ _id: threadID }, thread)];
+                    return [4 /*yield*/, activityHandling_1.canModify_Thread(threadID, req, res)];
                 case 1:
+                    if (!_a.sent()) return [3 /*break*/, 3];
+                    thread = new createThread_1.default(req);
+                    if (!thread.isFormComplete(res)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, app_1.threadsCol.replaceOne({ _id: threadID }, thread)];
+                case 2:
                     _a.sent();
-                    _a.label = 2;
-                case 2: return [3 /*break*/, 4];
-                case 3:
+                    _a.label = 3;
+                case 3: return [3 /*break*/, 5];
+                case 4:
                     Exception_2 = _a.sent();
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });

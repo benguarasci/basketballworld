@@ -16,7 +16,14 @@ export function isLoggedIn (req : Request, res: Response) {
 }
 
 export function isLoggedIn_NoRender (req : Request, res: Response) {
-    return "username" in req.cookies;
+    if (!("username" in req.cookies)) {
+        res.render("index", {
+            "user": req.cookies.username,
+            "message" : "you are not logged in"
+        });
+        return false;
+    }
+    else return true;
 }
 
 export async function createNewProfile (form : any) {
@@ -41,11 +48,11 @@ export async function login (res: Response, form : any) {
             "message": "username or password is incorrect"
         });
     } else {
-        isBannedBy_account(form.name, res)
-            .then((conf : any)=>{
+        // isBannedBy_account(form.name, res)
+        //     .then((conf : any)=>{
                 res.cookie("username", form.name);
                 res.redirect('/profile/home');
-            });
+            // });
     }
 }
 // https://docs.mongodb.com/manual/reference/operator/update/push/

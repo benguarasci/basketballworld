@@ -2,9 +2,9 @@ import {Request, Response} from "express";
 import {retrieveProfile} from "./profile";
 import createThreadForm from "../mymodels/createThread";
 import {threadsCol} from "../app";
+import {canModify, canModify_Thread} from "./activityHandling";
 const DbClient = require("../DbClient");
 const ObjectId = require("mongodb").ObjectID;
-
 
 
 // https://docs.mongodb.com/manual/reference/operator/query/in/
@@ -16,7 +16,7 @@ export async function retrieveThreads (req : Request, res: Response) {
 export async function retrieveMyThreads (req : Request, res: Response) {
     //let db = await DbClient.connect();
     let profile = await retrieveProfile(req, res);
-    return await threadsCol.find({owner: profile.name}).toArray();
+    return await threadsCol.find({author: profile.name}).toArray();
 }
 export async function createThread (req : Request, res: Response) {
     //let db = await DbClient.connect();
@@ -30,7 +30,11 @@ export async function deleteThread (req: Request, res: Response) {
     try {
         //let db = await DbClient.connect();
         let threadID = new ObjectId(req.params.id);
-        await threadsCol.deleteOne({_id: threadID});
+        if (await canModify_Thread(threadID, req, res)){
+            await threadsCol.deleteOne({_id: threadID});
+            return true;
+        }
+        return false;
     } catch(Exception) {
         // console.log("unable to delete thread. Error: " + Exception);
     }
@@ -40,9 +44,11 @@ export async function editThread (req: Request, res: Response) {
     try {
         //let db = await DbClient.connect();
         let threadID = new ObjectId(req.body._id);
-        let thread = new createThreadForm(req);
-        if(thread.isFormComplete(res)) {
-            await threadsCol.replaceOne({_id: threadID}, thread);
+        if (await canModify_Thread(threadID, req, res))
+        {
+            let thread = new createThreadForm(req);
+            if(thread.isFormComplete(res))
+                await threadsCol.replaceOne({_id: threadID}, thread);
         }
     } catch(Exception) {
         // console.log("unable to delete thread. Error: " + Exception);

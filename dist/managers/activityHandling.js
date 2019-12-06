@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var DbClient = require("../DbClient");
+var app_1 = require("../app");
 function isBanned(req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var db, user;
@@ -49,11 +50,10 @@ function isBanned(req, res) {
                 case 2:
                     user = _a.sent();
                     if (user.level == 0) {
-                        res.clearCookie("username");
-                        res.render("profile/login");
-                        res.render("placeholders/homepage", { message: "You are banned" });
+                        res.render("index", { message: "You are banned" });
+                        return [2 /*return*/, true];
                     }
-                    return [2 /*return*/];
+                    return [2 /*return*/, false];
             }
         });
     });
@@ -71,9 +71,7 @@ function isBannedBy_account(username, res) {
                 case 2:
                     user = _a.sent();
                     if (user.level == 0) {
-                        res.clearCookie("username");
-                        res.render("profile/login");
-                        res.render("placeholders/homepage", { message: "You are banned" });
+                        res.render("index", { message: "You are banned" });
                     }
                     return [2 /*return*/];
             }
@@ -92,21 +90,103 @@ function isAdmin(req) {
                     return [4 /*yield*/, db.collection("users").findOne({ "name": req.cookies.username })];
                 case 2:
                     user = _a.sent();
-                    return [2 /*return*/, (user.level == 2)];
+                    return [2 /*return*/, (user.level >= 2)];
             }
         });
     });
 }
 exports.isAdmin = isAdmin;
+function isAdmin_byName(name) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, user;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("users").findOne({ "name": name })];
+                case 2:
+                    user = _a.sent();
+                    return [2 /*return*/, (user.level >= 2)];
+            }
+        });
+    });
+}
+exports.isAdmin_byName = isAdmin_byName;
+function isAdmin_render(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var db, user;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 1:
+                    db = _a.sent();
+                    return [4 /*yield*/, db.collection("users").findOne({ "name": req.cookies.username })];
+                case 2:
+                    user = _a.sent();
+                    if (user === null || user.level !== 2) {
+                        res.render("index", { 'message': 'you are not an admin', 'user': req.cookies.username, });
+                        return [2 /*return*/, false];
+                    }
+                    else
+                        return [2 /*return*/, true];
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.isAdmin_render = isAdmin_render;
 function canModify(object, req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var bool;
+        var imAuthor, imAdmin;
         return __generator(this, function (_a) {
-            bool = object.name === req.cookies.name;
-            isAdmin(req)
-                .then(function (confirm) { return bool || confirm; });
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0:
+                    console.log("turf wars");
+                    return [4 /*yield*/, isBanned(req, res)];
+                case 1:
+                    if ((_a.sent()))
+                        return [2 /*return*/, false];
+                    imAuthor = object.author === req.cookies.name;
+                    return [4 /*yield*/, isAdmin(req)];
+                case 2:
+                    imAdmin = _a.sent();
+                    console.log(imAuthor);
+                    console.log(imAdmin);
+                    if (imAuthor || imAdmin)
+                        return [2 /*return*/, true];
+                    res.render("index", { user: req.cookies.username, message: "you don't have modifying rights to this object " });
+                    return [2 /*return*/, false];
+            }
         });
     });
 }
 exports.canModify = canModify;
+function canModify_Thread(id, req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var thread;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    thread = app_1.threadsCol.findOne({ _id: id });
+                    return [4 /*yield*/, canModify(thread, req, res)];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
+exports.canModify_Thread = canModify_Thread;
+function canModify_Post(id, req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var thread;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    thread = app_1.postsCol.findOne({ _id: id });
+                    return [4 /*yield*/, canModify(thread, req, res)];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
+exports.canModify_Post = canModify_Post;

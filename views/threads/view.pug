@@ -6,7 +6,7 @@ block content
     each thread, i in threads
         a(href=links[i])
             h2=thread.title
-        p created by #{thread.owner} at #{thread.date}
+        p created by #{thread.author} at #{thread.date}
         //p posts: #{thread.count}
         //p last post by #{thread.by} at #{thread.date}
             // If the thread was created by the logged in user

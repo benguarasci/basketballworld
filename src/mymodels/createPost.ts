@@ -1,8 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var ObjectId = require("mongodb").ObjectID;
-var createThreadForm = /** @class */ (function () {
-    function createThreadForm(req) {
+import {Request, Response} from "express";
+const ObjectId = require("mongodb").ObjectID;
+export default class createThreadForm {
+    public content: String;
+    public author: String;
+    public d: any;
+    public date: String;
+    public ms: String;
+    public parentThread : any;
+
+    constructor(req: Request) {
         this.content = req.body.content;
         this.author = req.cookies.username;
         this.d = new Date();
@@ -11,15 +17,14 @@ var createThreadForm = /** @class */ (function () {
         this.parentThread = ObjectId(req.params.thread);
         console.log(this.parentThread);
     }
+
     // Checks to see if the form is complete and not empty
-    createThreadForm.prototype.isFormComplete = function (res) {
+    isFormComplete(res: Response) {
         if (this.content === "") {
-            res.render("threads/create", { 'user': this.author, "message": "please complete all inputs" });
+            res.render("threads/create", {'user': this.author, "message": "please complete all inputs"});
             return false;
         }
         // Ensures the form is clean
         return true;
-    };
-    return createThreadForm;
-}());
-exports.default = createThreadForm;
+    }
+}

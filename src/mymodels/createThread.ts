@@ -46,7 +46,7 @@ const curseWords = ["4r5e", "5h1t", "5hit", "a55", "anal", "anus", "ar5e", "arrs
 export default class createThreadForm {
     public title : String;
     public description : String;
-    public owner : String;
+    public author : String;
     public d : any;
     public date : String;
     public ms : String;
@@ -55,7 +55,7 @@ export default class createThreadForm {
     constructor (req : Request) {
         this.title = req.body.title;
         this.description = req.body.description;
-        this.owner = req.cookies.username;
+        this.author = req.cookies.username;
         this.d = new Date();
         this.date = this.d.toString();
         this.ms = this.d.getTime();
@@ -66,7 +66,7 @@ export default class createThreadForm {
     // Checks to see if the form is complete and not empty
     isFormComplete(res : Response) {
         if (this.title === "" || this.description == "") {
-            res.render("threads/create", {'user':this.owner, "message": "please complete all inputs"});
+            res.render("threads/create", {'user':this.author, "message": "please complete all inputs"});
             return false;
         }
         // Ensures the form is clean

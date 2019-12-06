@@ -47,7 +47,7 @@ var createThreadForm = /** @class */ (function () {
     function createThreadForm(req) {
         this.title = req.body.title;
         this.description = req.body.description;
-        this.owner = req.cookies.username;
+        this.author = req.cookies.username;
         this.d = new Date();
         this.date = this.d.toString();
         this.ms = this.d.getTime();
@@ -57,7 +57,7 @@ var createThreadForm = /** @class */ (function () {
     // Checks to see if the form is complete and not empty
     createThreadForm.prototype.isFormComplete = function (res) {
         if (this.title === "" || this.description == "") {
-            res.render("threads/create", { 'user': this.owner, "message": "please complete all inputs" });
+            res.render("threads/create", { 'user': this.author, "message": "please complete all inputs" });
             return false;
         }
         // Ensures the form is clean
