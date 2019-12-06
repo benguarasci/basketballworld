@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -37,7 +38,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var profile_1 = require("../managers/profile");
@@ -76,7 +76,7 @@ router.get("/create", function (req, res) {
             res.render("threads/create", { 'user': req.cookies.username });
     });
 });
-router.post("/create", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.post("/create", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, activityHandling_1.isBanned(req, res)];
@@ -90,7 +90,7 @@ router.post("/create", function (req, res) { return __awaiter(_this, void 0, voi
         }
     });
 }); });
-router.post("/delete/:id", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.post("/delete/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, thread_1.deleteThread(req, res)];
@@ -101,7 +101,7 @@ router.post("/delete/:id", function (req, res) { return __awaiter(_this, void 0,
         }
     });
 }); });
-router.post("/edit/:id", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.post("/edit/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, _b, _c, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
@@ -122,7 +122,7 @@ router.post("/edit/:id", function (req, res) { return __awaiter(_this, void 0, v
         }
     });
 }); });
-router.post("/confirm", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.post("/confirm", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, thread_1.editThread(req, res)];

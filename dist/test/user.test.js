@@ -1,4 +1,7 @@
 "use strict";
+// https://mochajs.org/#getting-started
+// https://www.chaijs.com/api/assert/
+// https://stackoverflow.com/a/47450902
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,56 +39,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var app_1 = require("../app");
-var DbClient = require("../DbClient");
-var createProfileForm = /** @class */ (function () {
-    function createProfileForm(req) {
-        this.name = req.body.name;
-        this.email = req.body.email;
-        this.pw = req.body.password;
-        this.pw2 = req.body.confirmpassword;
-        this.level = 1;
-    }
-    createProfileForm.prototype.isValidForm = function (res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var account;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (this.name === "" || this.email === "" || this.pw === "" || this.pw2 === "") {
-                            res.render("profile/create", {
-                                "message": "missing input"
-                            });
-                            return [2 /*return*/, false];
-                        }
-                        else if (this.pw !== this.pw2) { //ensuring passwords match
-                            res.render("profile/create", {
-                                "message": "passwords do not match"
-                            });
-                            return [2 /*return*/, false];
-                        }
-                        return [4 /*yield*/, app_1.usersCol.findOne({ name: this.name })];
-                    case 1:
-                        account = _a.sent();
-                        if (account !== null) {
-                            res.render("profile/create", {
-                                "message": "username taken"
-                            });
-                            return [2 /*return*/, false];
-                        }
-                        return [2 /*return*/, true];
-                }
-            });
-        });
-    };
-    createProfileForm.prototype.isLoginFormComplete = function (res) {
-        if (this.name === "" || this.pw === "") {
-            res.render("profile/login", { "message": "empty input" });
-            return false;
+var mongodb_1 = require("mongodb");
+var chai_1 = require("chai");
+var database;
+var usersCol;
+var uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test";
+before(function (done) {
+    mongodb_1.MongoClient.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true }, function (error, client) {
+        if (error) {
+            throw error;
         }
-        else
-            return true;
-    };
-    return createProfileForm;
-}());
-exports.default = createProfileForm;
+        database = client.db("bbworld_test");
+        usersCol = database.collection("users");
+        done();
+    });
+});
+describe('USER TEST SUITE', function async() {
+    var _this = this;
+    it("findOne() user", function () { return __awaiter(_this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, usersCol.findOne()];
+                case 1:
+                    result = _a.sent();
+                    chai_1.assert.equal(result._id, "5de9c6071c9d4400002f9667");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});
+after(function () {
+    process.exit();
+});
