@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -38,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var profile_1 = require("../managers/profile");
@@ -75,7 +75,7 @@ router.get("/logout", function (req, res) {
     res.clearCookie("username");
     res.render("profile/login");
 });
-router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.get("/home", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var _a, _b, _c, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
@@ -99,7 +99,7 @@ router.get("/home", function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); });
-router.get("/discover", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.get("/discover", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var _a, _b, _c, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
@@ -120,7 +120,7 @@ router.get("/discover", function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); });
-router.post("/pushtag", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/pushtag", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, profile_1.pushTag(req, res)];
@@ -131,7 +131,7 @@ router.post("/pushtag", function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); });
-router.post("/pulltag", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/pulltag", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, profile_1.pullTag(req, res)];
@@ -142,7 +142,7 @@ router.post("/pulltag", function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); });
-router.post("/editemail", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/editemail", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, profile_1.editEmail(req, res)];
@@ -153,7 +153,7 @@ router.post("/editemail", function (req, res) { return __awaiter(void 0, void 0,
         }
     });
 }); });
-router.post("/editpassword", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/editpassword", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, profile_1.editPassword(req, res)];

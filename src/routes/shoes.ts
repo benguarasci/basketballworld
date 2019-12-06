@@ -35,30 +35,32 @@ router.get("/dislikes/:id", (req, res) =>{
     }
 });
 
+//Inserts each shoe into the database.
+
 insertShoe("/img/LBJ17.jpg", "NIKE Lebron 17", "Lebron James", "$170 US", "An amazing shoe",0, 0)
-.then((confirm:any)=>{console.log("number23")});
+.then((confirm:any)=>{});
 
 insertShoe("/img/number2.jpg", "New Balance OMN1S", "Kawhi Leonard", "$140 US", "An amazing shoe",0, 0)
-    .then((confirm:any)=>{console.log("number2")});
+    .then((confirm:any)=>{});
 
 insertShoe("/img/greek.jpg", "NIKE Zoom Freak 1", "Giannis Antetekounmpo", "$120 US", "An amazing shoe",0, 0)
-    .then((confirm:any)=>{console.log("number34")});
+    .then((confirm:any)=>{});
 
 insertShoe("/img/kd.jpg", "NIKE Zoom KD12", "Kevin Durant", "$150 US", "An amazing shoe",0, 0)
-    .then((confirm:any)=>{console.log("KD")});
+    .then((confirm:any)=>{});
 
 insertShoe("/img/jordan.jpg", "Jordan Why Not Zer0.2", "Michael Jordan", "$125 US", "an amazing shoe", 0, 0)
-    .then((confirm:any)=>{console.log("MJ")});
+    .then((confirm:any)=>{});
 
 insertShoe("/img/jordan2.jpg", "Air Jordan 34", "Michael Jordan", "$180 US", "an amazing shoe", 0, 0)
-    .then((confirm:any)=>{console.log("MJ")});
+    .then((confirm:any)=>{});
 
 insertShoe("/img/harden.jpg", "Adidas Harden Vol.4", "James Harden", "$130 US", "an amazing shoe", 0, 0)
-    .then((confirm:any)=>{console.log("Harden")});
+    .then((confirm:any)=>{});
 
 insertShoe("/img/kobe.jpg", "NIKE Kobe AD NXT FF", "Kobe Bryant", "$200 US", "an amazing shoe", 0, 0)
-    .then((confirm:any)=>{console.log("KOBE!")});
+    .then((confirm:any)=>{});
 
 insertShoe("/img/dom.jpg", "Adidas D.O.N. Issue 1", "Donavan Mitchell", "$100 US", "an amazing shoe", 0, 0)
-    .then((confirm:any)=>{console.log("DON")});
+    .then((confirm:any)=>{});
 module.exports = router;
