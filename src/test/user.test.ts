@@ -27,7 +27,7 @@ describe('USER TEST SUITE', function async () {
     });
 });
 
-afterAll(function() {
+after(function() {
     process.exit();
 });
 
