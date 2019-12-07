@@ -1,10 +1,9 @@
 import {Request, Response, NextFunction, Router} from "express";
 import DbClient = require("../DbClient");
-import {refresh, like, dislike, sortShoes, deleteShoe} from "../managers/shoe";
+import {like, dislike, sortShoes, deleteShoe} from "../managers/shoe";
 import {isLoggedIn, isLoggedIn_NoRender} from "../managers/profile";
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
-
 
 // sorts and renders shoes page.
 router.get("/browse", (req, res, next) => {
@@ -14,9 +13,7 @@ router.get("/browse", (req, res, next) => {
             })
     });
 
-//filter href
-
-//like button href
+// like button route for each object of class shoe. user must be logged in to like anything
 router.get("/likes/:id", (req, res) =>{
     if (!isLoggedIn_NoRender(req, res)) {
         res.render("profile/login")
@@ -29,7 +26,7 @@ router.get("/likes/:id", (req, res) =>{
     }
 });
 
-//dislike button href
+// dislike button route for each object of class shoe. user must be logged in to dislike anything
 router.get("/dislikes/:id", (req, res) =>{
     if (!isLoggedIn_NoRender(req, res)) {
         res.render("profile/login")
@@ -42,6 +39,7 @@ router.get("/dislikes/:id", (req, res) =>{
     }
 });
 
+// drop down menu route that sorts all shoes based on likes
 router.get("/browse/popular", (req, res) =>{
     sortShoes({likes: -1})
         .then((conf: any) => {
@@ -49,6 +47,15 @@ router.get("/browse/popular", (req, res) =>{
         })
 });
 
+// drop down menu route that sorts all shoes based on dislikes
+router.get("/browse/notpopular", (req, res) =>{
+    sortShoes({dislikes: -1})
+        .then((shoes: any) => {
+            res.render("shoes/browse", {'user':req.cookies.username, shoes: shoes[0], likes : shoes[1], dislikes: shoes[2]});
+        })
+});
+
+// drop down menu route that sorts all shoes based on price low to high
 router.get("/browse/pricelth", (req, res) =>{
     sortShoes({price: 1})
         .then((shoes:any) => {
@@ -56,6 +63,7 @@ router.get("/browse/pricelth", (req, res) =>{
         })
 });
 
+// drop down menu route that sorts all shoes based on price high to low
 router.get("/browse/pricehtl", (req, res) =>{
     sortShoes({price: -1})
         .then((shoes:any) => {
@@ -64,7 +72,8 @@ router.get("/browse/pricehtl", (req, res) =>{
 });
 
 
-// //Inserts each shoe into the database.
+// was used to insert shoes into the database. was very useful whenever changes were made tot the shoes class. allowed us to quickly reset the database
+
 // insertShoe("/img/LBJ17.jpg", "NIKE Lebron 17", "Lebron James", 170, "An amazing shoe",0, 0)
 // .then((confirm:any)=>{});
 //
