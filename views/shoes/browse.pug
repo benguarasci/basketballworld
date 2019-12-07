@@ -2,14 +2,19 @@ extends ../layout
 
 block content
     h1(style='text-align: center') Shoes by player
-
+    .dropdown
+        button.dropbtn Filter Shoes
+        .dropdown-content
+            a(href='/shoes/browse/popular') Popular
+            a(href='/shoes/browse/pricelth') Price: Low - High
+            a(href='/shoes/browse/pricehtl') Price: High - Low
 
     .cards(id="shoes")
         each shoe, i in shoes
                 .card
                     img(src=shoe.image style="width:100%")
                     p #{shoe.model}
-                    p #{shoe.price}
+                    p $#{shoe.price} US
                     p Player: #{shoe.player}
                     a(href=likes[i] class='likebutton') Like
                     a(href=dislikes[i] class='dislikebutton') Dislike

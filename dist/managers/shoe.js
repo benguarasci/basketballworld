@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var shoe_m_1 = require("../models/shoe_m");
 var DbClient = require("../DbClient");
-var ObjectId = require("mongodb").ObjectID;
+//inserts shoe object into the database if its not already present.
 function insertShoe(image, model, player, price, description, likes, dislikes) {
     return __awaiter(this, void 0, void 0, function () {
         var db, shoe, temp;
@@ -59,6 +59,7 @@ function insertShoe(image, model, player, price, description, likes, dislikes) {
     });
 }
 exports.insertShoe = insertShoe;
+//removes shoe from data base (used this before i was connected to mongo atlas)
 function deleteShoe(player) {
     return __awaiter(this, void 0, void 0, function () {
         var db, shoe;
@@ -77,6 +78,7 @@ function deleteShoe(player) {
     });
 }
 exports.deleteShoe = deleteShoe;
+//r
 function refresh(res, req) {
     return __awaiter(this, void 0, void 0, function () {
         var db, shoes;
@@ -95,15 +97,15 @@ function refresh(res, req) {
     });
 }
 exports.refresh = refresh;
-function like(res, req) {
+//increments "likes" number based on shoe ID
+function like(ID) {
     return __awaiter(this, void 0, void 0, function () {
-        var db, ID, shoe;
+        var db, shoe;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    ID = ObjectId(req.params.id);
                     return [4 /*yield*/, db.collection("shoes").findOne({ _id: ID })];
                 case 2:
                     shoe = _a.sent();
@@ -114,15 +116,15 @@ function like(res, req) {
     });
 }
 exports.like = like;
-function dislike(res, req) {
+//increments "dislikes" number based on shoe ID
+function dislike(ID) {
     return __awaiter(this, void 0, void 0, function () {
-        var db, ID, shoe;
+        var db, shoe;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    ID = ObjectId(req.params.id);
                     return [4 /*yield*/, db.collection("shoes").findOne({ _id: ID })];
                 case 2:
                     shoe = _a.sent();
@@ -133,15 +135,15 @@ function dislike(res, req) {
     });
 }
 exports.dislike = dislike;
-function sortShoes() {
+//sorts shoe order based on parameters
+function sortShoes(order) {
     return __awaiter(this, void 0, void 0, function () {
-        var db, order, shoes, likes, dislikes;
+        var db, shoes, likes, dislikes;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
-                    order = { likes: -1 };
                     return [4 /*yield*/, db.collection("shoes").find().sort(order).toArray()];
                 case 2:
                     shoes = _a.sent();
@@ -153,3 +155,33 @@ function sortShoes() {
     });
 }
 exports.sortShoes = sortShoes;
+/*
+    export async function getShoes(){
+        let db = await DbClient.connect();
+        let shoes = await db!.collection("shoes").find().toArray();
+        let likes = shoes.map((shoe: any) => "/shoes/likes/" + shoe._id.toString());
+        let dislikes = shoes.map((shoe: any) => "/shoes/dislikes/" + shoe._id.toString());
+        return [shoes, likes, dislikes];
+
+    }
+*/
+function filter(order) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            if (order === 0) {
+                return [2 /*return*/, { likes: -1 }];
+            }
+            else if (order === 1) {
+                return [2 /*return*/, { price: 1 }];
+            }
+            else if (order === 2) {
+                return [2 /*return*/, { price: -1 }];
+            }
+            else {
+                return [2 /*return*/, { likes: -1 }];
+            }
+            return [2 /*return*/];
+        });
+    });
+}
+exports.filter = filter;
