@@ -9,28 +9,13 @@ const profileRouter = require("./routes/profile");
 const threadsRouter = require("./routes/threads");
 const shoesRouter = require("./routes/shoes");
 const adminRouter = require("./routes/admin");
-const MongoClient = require('mongodb').MongoClient;
 
 const app = express();
 
-// Database connection exports
-export let database: any, threadsCol: any, usersCol: any, shoesCol: any, postsCol: any;
-// URI for our database connection
-const uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test";
-
+const DbClient = require("./DbClient");
 // Connects to the database once at app startup
-app.listen(8001, () => {
-    MongoClient.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true }, (error: any, client: any) => {
-        if(error) {
-            throw error;
-        }
-        database = client.db("bbworld");
-        threadsCol = database.collection("threads");
-        postsCol = database.collection("posts");
-        usersCol = database.collection("users");
-        shoesCol = database.collection("shoes");
-        console.log("Connected to `" + "bbworld" + "`!");
-    });
+app.listen(8001,  async ()  => {
+    await DbClient.connect("bbworld");
 });
 
 // view engine setup

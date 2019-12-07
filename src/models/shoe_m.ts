@@ -13,7 +13,7 @@ export class Shoe {
         this.player = player;
         this.price = price;
         this.description = description;
-        this.likes = likes
+        this.likes = likes;
         this.dislikes = dislikes;
     }
 

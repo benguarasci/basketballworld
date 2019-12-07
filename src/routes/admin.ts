@@ -1,16 +1,16 @@
 import {Request, Response, Router} from "express";
 import {isAdmin, isAdmin_render} from "../managers/activityHandling";
-import {usersCol} from "../app";
+//import {usersCol} from "../app";
 const DbClient = require("../DbClient");
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
 
 async function retrieveProfiles() {
-    return await usersCol.find({}).toArray();
+    return await DbClient.usersCol.find({}).toArray();
 }
 async function deleteProfileByID(id : string) {
     id = ObjectId(id);
-    return await usersCol.deleteOne({"_id": ObjectId(id)});
+    return await DbClient.usersCol.deleteOne({"_id": ObjectId(id)});
 }
 router.get("/", (req : Request, res : Response) => {
     isAdmin_render(req, res)
@@ -49,13 +49,13 @@ router.get("/delete/:id", (req: Request, res: Response) => {
 });
 async function makeUserAdmin(user_id : any) {
 
-    await usersCol.updateOne({_id:ObjectId(user_id)}, {$set: {level : 2}});
+    await DbClient.usersCol.updateOne({_id:ObjectId(user_id)}, {$set: {level : 2}});
 }
 async function makeUserBan(user_id: any) {
-    await usersCol.updateOne({_id:ObjectId(user_id)}, {$set: {level : 0}});
+    await DbClient.usersCol.updateOne({_id:ObjectId(user_id)}, {$set: {level : 0}});
 }
 async function makeUserNormal(user_id: any) {
-    await usersCol.updateOne({_id:ObjectId(user_id)}, {$set: {level : 1}});
+    await DbClient.usersCol.updateOne({_id:ObjectId(user_id)}, {$set: {level : 1}});
 }
 router.get("/makeAdmin/:id", (req:Request, res:Response) => {
    isAdmin_render(req, res)
@@ -91,14 +91,14 @@ router.get("/ban/:id", (req:Request, res:Response) => {
         })
 });
 async function createRoot() {
-    let root = await usersCol.findOne({name: "root"});
+    let root = await DbClient.usersCol.findOne({name: "root"});
     if (root == null) {
         //await usersCol.insertOne({name: "root", email:"notreal@uvic.ca", pw: "root", level: 3})
-        await usersCol.insertOne({name: "root", email: "email@email.com", pw: "root", level: 2});
+        await DbClient.usersCol.insertOne({name: "root", email: "email@email.com", pw: "root", level: 2});
     } else if (root.level != 2) {
-        await usersCol.updateOne({name: "root"}, {$set: {level : 2}})
+        await DbClient.usersCol.updateOne({name: "root"}, {$set: {level : 2}})
     }
-    let accounts = await usersCol.find().toArray();
+    let accounts = await DbClient.usersCol.find().toArray();
     return;
 }
 router.get("/createRoot", (req:Request, res:Response)=>{
