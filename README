@@ -8,6 +8,28 @@ BasketballWorld - a forum for basketball related discussion
 Run - [npx jest] to run the unit tests
 Run - [tslint "src/**/*.ts?(x)"] to run the static code analysis
 
+***M4***
+ All user stories have been fulfilled.
+ Research Shoes:
+ Users can now research shoes by accessing the "shoes" page. They are presented with the top fan rated shoes (most liked). They also have the option to filter shoes based on price.
+ Moderator Powers:
+ Once a user is granted level 2 access status they are considered an administrator. As an admin the user has the ability to remove threads, comments and ban users. There is also a dictionary of curse words to keep the general convorsations in good taste.
+ Create an Account:
+ A user can create an account with a username and password of their choice. We dont require much personal information to uphold the privacy quality attribute.
+ Reply to a post:
+ A user can reply to any post that is under a thread
+ Create a Thread:
+ A user can create a thread. They first need a title and a description
+ Filter Threads: 
+ A user can filter threads using the tags feature through the profile page. 
+ Finding Player Shoes:
+ On the shoes page, shoes are presented with their respective player. A user can browse the shoes and easily see which shoe their favorite player wears. 
+ 
+ Our implementation followed the M2 design milestone. 
+ 
+ Our automated unit tests are run using npm test. We created a seperate database to run all of our tests called bbworld_test.
+ We test the 'rsearch shoes', 'create a thread' and 'moderator powers' user stories.
+ 
 ***M3.5***
 BasketballWorld is now connected to MongoDB Atlas cloud database.
 A user can now login, logout, make posts, make threads, and research shoes.
