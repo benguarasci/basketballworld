@@ -44,15 +44,16 @@ const curseWords = ["4r5e", "5h1t", "5hit", "a55", "anal", "anus", "ar5e", "arrs
     "willy", "xrated", "xxx"];
 
 export default class createThreadForm {
-    public title : String;
-    public description : String;
-    public author : String;
-    public d : any;
-    public date : String;
-    public ms : String;
-    public count : Number;
-    public tags : string[];
-    constructor (req : Request) {
+    public title: string;
+    public description: string;
+    public author: string;
+    public d: any;
+    public date: string;
+    public ms: string;
+    public count: number;
+    public tags: string[];
+
+    constructor(req: Request) {
         this.title = req.body.title;
         this.description = req.body.description;
         this.author = req.cookies.username;
@@ -64,9 +65,9 @@ export default class createThreadForm {
     }
 
     // Checks to see if the form is complete and not empty
-    isFormComplete(res : Response) {
-        if (this.title === "" || this.description == "") {
-            res.render("threads/create", {'user':this.author, "message": "please complete all inputs"});
+    public isFormComplete(res: Response) {
+        if (this.title === "" || this.description === "") {
+            res.render("threads/create", {user: this.author, message: "please complete all inputs"});
             return false;
         }
         // Ensures the form is clean
@@ -75,30 +76,31 @@ export default class createThreadForm {
     }
 
     // Cleans the form of any swear words
-    cleanForm() {
+    private cleanForm() {
         // Split into arrays
-        let titleSplit = this.title.split(" ");
-        let descSplit = this.description.split(" ");
+        const titleSplit = this.title.split(" ");
+        const descSplit = this.description.split(" ");
         // For each curse word in the array
-        for(let i in curseWords) {
+        for (const i in curseWords) {
             // For each word in the title
-            for(let k in titleSplit) {
+            for (const k in titleSplit) {
                 // Remove punctuation for that word
                 titleSplit[k] = titleSplit[k].replace(/[~`!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g, "");
                 // Check if the word is a curse word
-                if(titleSplit[k] === curseWords[i]) {
+                if (titleSplit[k] === curseWords[i]) {
                     // Replace the curse word with stars to censor it
                     this.title = this.title.replace(curseWords[i], "****");
                 }
             }
-            for(let k in descSplit) {
+            for (const k in descSplit) {
                 descSplit[k] = descSplit[k].replace(/[~`!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g, "");
 
-                if(descSplit[k] === curseWords[i]) {
+                if (descSplit[k] === curseWords[i]) {
                     // Replace the curse word with stars to censor it
                     this.description = this.description.replace(curseWords[i], "****");
                 }
             }
         }
     }
+
 }

@@ -1,12 +1,12 @@
 import {Request, Response} from "express";
 const ObjectId = require("mongodb").ObjectID;
 export default class createThreadForm {
-    public content: String;
-    public author: String;
+    public content: string;
+    public author: string;
     public d: any;
-    public date: String;
-    public ms: String;
-    public parentThread : any;
+    public date: string;
+    public ms: string;
+    public parentThread: any;
 
     constructor(req: Request) {
         this.content = req.body.content;
@@ -15,13 +15,12 @@ export default class createThreadForm {
         this.date = this.d.toString();
         this.ms = this.d.getTime();
         this.parentThread = ObjectId(req.params.thread);
-        console.log(this.parentThread);
     }
 
     // Checks to see if the form is complete and not empty
-    isFormComplete(res: Response) {
+    public isFormComplete(res: Response) {
         if (this.content === "") {
-            res.render("threads/create", {'user': this.author, "message": "please complete all inputs"});
+            res.render("threads/create", {user: this.author, message: "please complete all inputs"});
             return false;
         }
         // Ensures the form is clean
