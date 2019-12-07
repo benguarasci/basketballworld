@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 const DbClient = require("../DbClient");
 import createProfileForm from "../mymodels/createProfile"
 import {isBanned, isBannedBy_account} from "./activityHandling"
-import {usersCol} from "../app";
+//import {usersCol} from "../app";
 
 export function isLoggedIn (req : any, res: any) {
     if ("username" in req.cookies) {
@@ -28,15 +28,15 @@ export function isLoggedIn_NoRender (req : any, res: any) {
 
 export async function createNewProfile (form : any) {
     //let db = await DbClient.connect();
-    await usersCol.insertOne({name: form.name, email: form.email, pw: form.pw, level: 1});
+    await DbClient.usersCol.insertOne({name: form.name, email: form.email, pw: form.pw, level: 1});
 }
 export async function retrieveProfile (req : any, res: any) {
     //let db = await DbClient.connect();
-    return await usersCol.findOne({name: req.cookies.username});
+    return await DbClient.usersCol.findOne({name: req.cookies.username});
 }
 export async function login (res: Response, form : any) {
     //let db = await DbClient.connect();
-    let account = await usersCol.findOne({name: form.name});
+    let account = await DbClient.usersCol.findOne({name: form.name});
     if (account === null) {
         res.render("profile/login", {
             "message": "can't find account, sorry"
@@ -58,28 +58,28 @@ export async function login (res: Response, form : any) {
 // https://docs.mongodb.com/manual/reference/operator/update/push/
 export async function pushTag (req:any, res:any) {
     //let db = await DbClient.connect();
-    await usersCol.updateOne({name: req.cookies.username}, { $push: { tags: req.body.new } });
+    await DbClient.usersCol.updateOne({name: req.cookies.username}, { $push: { tags: req.body.new } });
 }
 // https://docs.mongodb.com/manual/reference/operator/update/pull/
 export async function pullTag (req:any, res:any) {
     //let db = await DbClient.connect();
-    await usersCol.updateOne({name: req.cookies.username}, { $pull: { tags: req.body.tag} });
+    await DbClient.usersCol.updateOne({name: req.cookies.username}, { $pull: { tags: req.body.tag} });
 
 }
 // https://docs.mongodb.com/manual/reference/operator/update/positional/
 export async function editEmail (req:any, res:any) {
     //let db = await DbClient.connect();
-    await usersCol.updateOne({name: req.cookies.username}, { $set: { email: req.body.email } });
+    await DbClient.usersCol.updateOne({name: req.cookies.username}, { $set: { email: req.body.email } });
 }
 export async function editPassword (req:any, res:any) {
     //let db = await DbClient.connect();
-    await usersCol.updateOne({name: req.cookies.username}, { $set: { pw: req.body.password } });
+    await DbClient.usersCol.updateOne({name: req.cookies.username}, { $set: { pw: req.body.password } });
 }
 export async function allTags (req:any, res:any) {
     let tags: string[] = [];
     let count: number[] = [];
     let aggregate: any[] = [];
-    let users = await usersCol.find().toArray();
+    let users = await DbClient.usersCol.find().toArray();
     for (let user of users) {
         if(user.tags) {
             for (let tag of user.tags ) {

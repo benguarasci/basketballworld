@@ -3,7 +3,7 @@ import {isLoggedIn, isLoggedIn_NoRender, pushTag, retrieveProfile} from "../mana
 const DbClient = require("../DbClient");
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
-import {postsCol} from "../app";
+//import {postsCol} from "../app";
 import createPostForm from "../mymodels/createPost";
 import {isBanned, isAdmin, isBannedBy_account, canModify, canModify_Thread, canModify_Post} from "../managers/activityHandling";
 import {
@@ -16,8 +16,6 @@ import {
     findAllPosts,
     getThread
 } from "../managers/thread";
-import {threadsCol} from "../app";
-import moment = require("moment");
 
 router.get("/view", (req : Request, res : Response) => {
     listThreads()
@@ -62,7 +60,7 @@ router.post("/confirm", async (req: Request, res: Response) => {
 });
 
 router.get("/editPost/:id", (req: Request, res: Response) => {
-    postsCol.findOne({_id:ObjectId(req.params.id)})
+    DbClient.postsCol.findOne({_id:ObjectId(req.params.id)})
         .then((post : any)=>{
             if (post === null) {
                 res.render("index", {
@@ -83,7 +81,7 @@ router.post("/editPost/:parent/:id", (req: Request, res: Response) => {
     canModify_Post(ObjectId(req.params.id), req, res)
         .then((bool: boolean) => {
             if (bool)
-                postsCol.updateOne({_id: ObjectId(req.params.id)}, {$set: {content: req.body.content}})
+                DbClient.postsCol.updateOne({_id: ObjectId(req.params.id)}, {$set: {content: req.body.content}})
                     .then(()=>{res.redirect("/threads/"+req.params.parent)})
         })
 });
@@ -96,12 +94,12 @@ router.get("/editThread/:id", (req: Request, res: Response) => {
             if (bool) {
                 console.log("johny depp");
                 console.log(req.params.id);
-                threadsCol.findOne({_id: ObjectId(req.params.id)})
+                DbClient.threadsCol.findOne({_id: ObjectId(req.params.id)})
                     .then((thread: any) => {
                         if (thread === null) res.render("index", {
                             "message": "thread does not exist",
                             "user": req.cookies.username
-                        })
+                        });
                         res.render("threads/edit", {"user": req.cookies.username, thread: thread})
                     })
             } else {
@@ -137,14 +135,14 @@ router.get("/:thread", (req: Request, res: Response) => {
         })
 });
 
-router.post("/:thread", (req: Request, res: Response) => {
+router.post("/:thread",  (req: Request, res: Response) => {
     isBanned(req, res)
         .then((bool:boolean)=>{
             if (!bool) {
                 if (!isLoggedIn_NoRender(req, res)) return;
                 let new_post = new createPostForm(req);
                 if (new_post.isFormComplete(res)) {
-                    postsCol.insertOne({content:new_post.content, author:new_post.author,parentThread:new_post.parentThread, date:new_post.date, ms:new_post.ms})
+                    DbClient.postsCol.insertOne({content:new_post.content, author:new_post.author,parentThread:new_post.parentThread, date:new_post.date, ms:new_post.ms})
                         .then(()=>{
                             res.redirect("/threads/"+req.params.thread);
                         })

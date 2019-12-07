@@ -1,20 +1,20 @@
 import {Request, Response} from "express";
+import {Db} from "mongodb";
 const DbClient = require("../DbClient");
-import {threadsCol, postsCol} from "../app";
 
 export async function isBanned (req : any, res: any) {
     if (!("username" in req.cookies)) return false;
-    let db = await DbClient.connect();
-    let user = await db!.collection("users").findOne({"name":req.cookies.username});
+    //let db = await DbClient.connect();
+    let user = await DbClient.usersCol.findOne({"name":req.cookies.username});
     if (user.level == 0) {
         res.render("index", {message: "You are banned"});
         return true;
     }
     return false;
 }
-export async function isBannedBy_account (username:string, res: any) {
-    let db = await DbClient.connect();
-    let user = await db!.collection("users").findOne({"name":username});
+export async function isBannedBy_account (username:string, res: Response) {
+    //let db = await DbClient.connect();
+    let user = await DbClient.usersCol.findOne({"name":username});
     if (user.level == 0) {
         res.render("index", {message: "You are banned"});
         return true;
@@ -23,13 +23,18 @@ export async function isBannedBy_account (username:string, res: any) {
 }
 export async function isAdmin (req : any) {
     if (!("username" in req.cookies)) return false;
-    let db = await DbClient.connect();
-    let user = await db!.collection("users").findOne({"name":req.cookies.username});
+    //let db = await DbClient.connect();
+    let user = await DbClient.usersCol.findOne({"name":req.cookies.username});
     return (user.level >= 2);
 }
-export async function isAdmin_render (req : any, res:any) {
-    let db = await DbClient.connect();
-    let user = await db!.collection("users").findOne({"name":req.cookies.username});
+export async function isAdmin_byName (name: string) {
+    //let db = await DbClient.connect();
+    let user = await DbClient.usersCol.findOne({"name":name});
+    return (user.level >= 2);
+}
+export async function isAdmin_render (req : Request, res:Response) {
+    //let db = await DbClient.connect();
+    let user = await DbClient.usersCol.findOne({"name":req.cookies.username});
     if (user === null || user.level !== 2) {
         res.render("index", {'message':'you are not an admin', 'user':req.cookies.username,})
         return false;
@@ -47,10 +52,10 @@ export async function canModify (object: any, req : any, res: any) {
 }
 export async function canModify_Thread(id: any, req : any, res: any) {
     //console.log("waterfall");
-    let thread = threadsCol.findOne({_id: id});
+    let thread = await DbClient.threadsCol.findOne({_id: id});
     return await canModify(thread, req, res);
 }
-export async function canModify_Post(id: any, req : any, res: any) {
-    let thread = postsCol.findOne({_id: id});
+export async function canModify_Post(id: any, req : Request, res: Response) {
+    let thread = await DbClient.postsCol.findOne({_id: id});
     return await canModify(thread, req, res);
 }

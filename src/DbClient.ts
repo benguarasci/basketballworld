@@ -1,20 +1,28 @@
 import { Db } from "mongodb";
 
 class DbClient {
-    private db!: Db;
-    //public database: any;
+    public database!: Db;
+    public threadsCol: any;
+    public postsCol: any;
+    public shoesCol: any;
+    public usersCol: any;
 
-    public async connect() {
+
+    public async connect(databaseName: string) {
         // setup cloud database
         try {
             const MongoClient = require('mongodb').MongoClient;
             const uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test";
             const client = await MongoClient(uri, { useUnifiedTopology: true, useNewUrlParser: true }).connect();
-            this.db = client.db("bbworld");
-            return this.db;
+            this.database = client.db(databaseName);
+            this.threadsCol = this.database.collection("threads");
+            this.postsCol = this.database.collection("posts");
+            this.usersCol = this.database.collection("users");
+            this.shoesCol = this.database.collection("shoes");
+            //return this.database;
         }
         catch( error ) {
-            return;
+            //return;
         }
     }
 }
