@@ -20,10 +20,6 @@ mockThread.user = "JohnSmith";
 before(async() => {
     await DbClient.connect("bbworld_test");
     console.log("Connected to bbworld_test");
-    //const aThread = await DbClient.threadsCol.findOne();
-    //console.log(aThread._id);
-    //const result = await getThread(mockThread._id);
-    //assert.equal(result._id, "5deaec121c9d4400009a59ec");
 });
 
 describe('THREAD TEST SUITE', function async () {

@@ -16,8 +16,6 @@ import {
     findAllPosts,
     getThread
 } from "../managers/thread";
-//import {threadsCol} from "../app";
-import moment = require("moment");
 
 router.get("/view", (req : Request, res : Response) => {
     listThreads()
