@@ -1,8 +1,7 @@
 const DbClient = require("../DbClient");
 
-before(async() => {
+before(async () => {
     await DbClient.connect("bbworld_test");
-    console.log("Connected to database: 'bbworld_test'\n");
 });
 
 export class MockReq {
@@ -14,31 +13,33 @@ export class MockReq {
         this.cookies = null;
         this.params = null;
     }
-    setUserName(name: string) {
-        this.cookies = { username: name }
+    public setUserName(name: string) {
+        this.cookies = {
+            username: {name},
+        };
     }
-    setThreadID(id: string) {
+    public setThreadID(id: string) {
         this.params = {
-            id: id
-        }
+            id: {id},
+        };
     }
-    setThreadAspects(title: string, desc: string, tag0: string, tag1: string, tag2: string) {
+    public setThreadAspects(title: string, desc: string, tag0: string, tag1: string, tag2: string) {
         this.body = {
-            title: title,
-            description: desc,
-            tag0: tag0,
-            tag1: tag1,
-            tag2: tag2
-        }
+            description: {desc},
+            tag0: {tag0},
+            tag1: {tag1},
+            tag2: {tag2},
+            title: {title},
+        };
     }
 
 }
 export class MockRes {
-    public options : any;
+    public options: any;
     constructor() {
         this.options = null;
     }
-    render( pug : string, options : any) {
+    public render(pug: string, options: any) {
         this.options = options;
     }
 }

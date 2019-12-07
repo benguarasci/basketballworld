@@ -1,12 +1,12 @@
-import { assert } from 'chai';
+import { assert } from "chai";
 import { MockReq } from "./helper.test";
 import { MockRes } from "./helper.test";
-import {getThread, createThread, findAllPosts, deleteThread} from "../managers/thread";
+import { createThread, deleteThread, getThread, findAllPosts } from "../managers/thread";
 const DbClient = require("../DbClient");
 const { Thread } = require("../models/thread_m");
 
 // A mock user created from the User model
-const mockThread = new Thread;
+const mockThread = new Thread();
 mockThread._id = "5deb29571c9d4400009a59f9";
 mockThread.title = "Test title for a thread";
 mockThread.content = "Test content for a thread";
@@ -14,7 +14,7 @@ mockThread.tags = ["test tag", "other tag"];
 mockThread.user = "JohnSmith";
 
 // The test suite for threads
-describe("THREAD TEST SUITE", function async () {
+describe("THREAD TEST SUITE", function async() {
 
     it("getThread(string) function test", async () => {
         const result = await getThread(mockThread._id);
@@ -26,8 +26,8 @@ describe("THREAD TEST SUITE", function async () {
 
     it("createThread(req, res) function test", async () => {
         // Used to mock response and requests
-        let req = new MockReq();
-        let res = new MockRes();
+        const req = new MockReq();
+        const res = new MockRes();
         req.setThreadAspects("Test title", "Test description", "tag0", "tag1", "tag2");
         req.setUserName("admin");
         const result = await createThread(req, res);
@@ -38,8 +38,8 @@ describe("THREAD TEST SUITE", function async () {
 
     it("deleteThread(req, res) function test", async () => {
         // Must be an admin user to call deleteThread
-        let req = new MockReq();
-        let res = new MockRes();
+        const req = new MockReq();
+        const res = new MockRes();
         req.setUserName("admin");
         req.setThreadID(newThreadID);
         await deleteThread(req, res);
@@ -51,6 +51,5 @@ describe("THREAD TEST SUITE", function async () {
         // If the post ID is the same as the one returned from findAllPosts then pass
         assert.equal(result[0]._id, postID);
     });
-
 
 });
