@@ -58,3 +58,12 @@ export async function canModify_Post(id: any, req : Request, res: Response) {
     let thread = await DbClient.postsCol.findOne({_id: id});
     return await canModify(thread, req, res);
 }
+// creates a root account with admin privileges
+export async function createRoot() {
+    let root = await DbClient.usersCol.findOne({name: "root"});
+    if (root == null)
+        await DbClient.usersCol.insertOne({name: "root", email: "email@email.com", pw: "root", level: 2});
+    else if (root.level != 2)
+        await DbClient.usersCol.updateOne({name: "root"}, {$set: {level : 2}})
+    return;
+}

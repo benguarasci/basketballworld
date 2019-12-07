@@ -1,4 +1,3 @@
-import {MongoClient} from "mongodb";
 import {assert} from 'chai';
 const DbClient = require("../DbClient");
 import {isBanned, isBannedBy_account, isAdmin, isAdmin_render, canModify, canModify_Thread} from "../managers/activityHandling";

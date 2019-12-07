@@ -1,5 +1,6 @@
 import {Response} from "express";
 const DbClient = require("../DbClient");
+const ObjectId = require("mongodb").ObjectID;
 // given a request, renders a message if user is not logged in
 export function isLoggedIn (req : any, res: any) {
     if ("username" in req.cookies) {
@@ -91,4 +92,13 @@ export async function allTags (req:any, res:any) {
         aggregate.push({count:count[index], tags:tags[index]})
     });
     return aggregate.sort((a, b) => (a.count < b.count) ? 1:-1);
+}
+// retrieve array of all profiles
+export async function retrieveProfiles() {
+    return await DbClient.usersCol.find({}).toArray();
+}
+// delete a profile given its ID
+export async function deleteProfileByID(id : string) {
+    id = ObjectId(id);
+    return await DbClient.usersCol.deleteOne({"_id": ObjectId(id)});
 }
