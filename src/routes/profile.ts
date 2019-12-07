@@ -10,7 +10,7 @@ import {
     editPassword,
     allTags
 } from "../managers/profile";
-import {retrieveThreads, retrieveMyThreads} from "../managers/thread";
+import {retrieveTaggedThreads, retrieveMyThreads} from "../managers/thread";
 import createProfileForm from "../mymodels/createProfile"
 import {isBanned, isBannedBy_account} from "../managers/activityHandling"
 const router = Router();
@@ -47,7 +47,7 @@ router.get("/home", async (req : Request, res : Response) => {
     res.render("profile/home", {
         'user':req.cookies.username,
         profile: await retrieveProfile(req, res).catch((e: any) => console.log(e)),
-        threads: await retrieveThreads(req, res).catch((e: any) => console.log(e)),
+        threads: await retrieveTaggedThreads(req, res).catch((e: any) => console.log(e)),
         myThreads: await retrieveMyThreads(req, res).catch((e: any) => console.log(e))
     });
 });
