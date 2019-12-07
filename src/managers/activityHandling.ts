@@ -1,9 +1,9 @@
 import {Request, Response} from "express";
 const DbClient = require("../DbClient");
-import createProfileForm from "../mymodels/createProfile"
 import {threadsCol, postsCol} from "../app";
 
 export async function isBanned (req : Request, res: Response) {
+    if (!("username" in req.cookies)) return false;
     let db = await DbClient.connect();
     let user = await db!.collection("users").findOne({"name":req.cookies.username});
     if (user.level == 0) {
@@ -20,6 +20,7 @@ export async function isBannedBy_account (username:string, res: Response) {
     }
 }
 export async function isAdmin (req : Request) {
+    if (!("username" in req.cookies)) return false;
     let db = await DbClient.connect();
     let user = await db!.collection("users").findOne({"name":req.cookies.username});
     return (user.level >= 2);

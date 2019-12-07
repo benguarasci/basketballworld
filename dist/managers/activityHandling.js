@@ -43,7 +43,10 @@ function isBanned(req, res) {
         var db, user;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 0:
+                    if (!("username" in req.cookies))
+                        return [2 /*return*/, false];
+                    return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
                     return [4 /*yield*/, db.collection("users").findOne({ "name": req.cookies.username })];
@@ -84,7 +87,10 @@ function isAdmin(req) {
         var db, user;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, DbClient.connect()];
+                case 0:
+                    if (!("username" in req.cookies))
+                        return [2 /*return*/, false];
+                    return [4 /*yield*/, DbClient.connect()];
                 case 1:
                     db = _a.sent();
                     return [4 /*yield*/, db.collection("users").findOne({ "name": req.cookies.username })];

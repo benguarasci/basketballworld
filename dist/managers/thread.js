@@ -43,10 +43,24 @@ var profile_1 = require("./profile");
 var createThread_1 = __importDefault(require("../mymodels/createThread"));
 var app_1 = require("../app");
 var activityHandling_1 = require("./activityHandling");
-var DbClient = require("../DbClient");
 var ObjectId = require("mongodb").ObjectID;
-// https://docs.mongodb.com/manual/reference/operator/query/in/
-function retrieveThreads(req, res) {
+// Lists all of the threads
+function listThreads() {
+    return __awaiter(this, void 0, void 0, function () {
+        var threads, links;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, app_1.threadsCol.find().toArray()];
+                case 1:
+                    threads = _a.sent();
+                    links = threads.map(function (thread) { return "/threads/" + thread._id.toString(); });
+                    return [2 /*return*/, [threads, links]];
+            }
+        });
+    });
+}
+exports.listThreads = listThreads;
+function retrieveTaggedThreads(req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var profile;
         return __generator(this, function (_a) {
@@ -60,7 +74,7 @@ function retrieveThreads(req, res) {
         });
     });
 }
-exports.retrieveThreads = retrieveThreads;
+exports.retrieveTaggedThreads = retrieveTaggedThreads;
 function retrieveMyThreads(req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var profile;
@@ -95,7 +109,7 @@ exports.createThread = createThread;
 // Deletes a thread based on the _id input
 function deleteThread(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var threadID, Exception_1;
+        var threadID, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -110,7 +124,7 @@ function deleteThread(req, res) {
                     return [2 /*return*/, true];
                 case 3: return [2 /*return*/, false];
                 case 4:
-                    Exception_1 = _a.sent();
+                    err_1 = _a.sent();
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }
@@ -121,7 +135,7 @@ exports.deleteThread = deleteThread;
 // Edits a thread based on the _id input
 function editThread(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var threadID, thread, Exception_2;
+        var threadID, thread, err_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -138,7 +152,7 @@ function editThread(req, res) {
                     _a.label = 3;
                 case 3: return [3 /*break*/, 5];
                 case 4:
-                    Exception_2 = _a.sent();
+                    err_2 = _a.sent();
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }
@@ -146,23 +160,41 @@ function editThread(req, res) {
     });
 }
 exports.editThread = editThread;
-// Gets a thread based on the _id input
-function retrieveThread(req, res) {
+function findAllPosts(par) {
     return __awaiter(this, void 0, void 0, function () {
-        var threadID, Exception_3;
+        var ID, posts, arr;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    ID = ObjectId(par);
+                    return [4 /*yield*/, app_1.postsCol.find({ parentThread: ID }).toArray()];
+                case 1:
+                    arr = _a.sent();
+                    if (arr.length === 0)
+                        posts = [];
+                    else
+                        posts = arr;
+                    return [2 /*return*/, posts];
+            }
+        });
+    });
+}
+exports.findAllPosts = findAllPosts;
+function getThread(threadID) {
+    return __awaiter(this, void 0, void 0, function () {
+        var err_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    threadID = new ObjectId(req.params.id);
-                    return [4 /*yield*/, app_1.threadsCol.findOne({ _id: threadID })];
+                    return [4 /*yield*/, app_1.threadsCol.findOne({ _id: ObjectId(threadID) })];
                 case 1: return [2 /*return*/, _a.sent()];
                 case 2:
-                    Exception_3 = _a.sent();
+                    err_3 = _a.sent();
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
         });
     });
 }
-exports.retrieveThread = retrieveThread;
+exports.getThread = getThread;

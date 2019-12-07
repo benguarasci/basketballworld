@@ -49,22 +49,8 @@ var createPost_1 = __importDefault(require("../mymodels/createPost"));
 var activityHandling_1 = require("../managers/activityHandling");
 var thread_1 = require("../managers/thread");
 var app_2 = require("../app");
-function listThreads() {
-    return __awaiter(this, void 0, void 0, function () {
-        var threads, links;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, app_2.threadsCol.find().toArray()];
-                case 1:
-                    threads = _a.sent();
-                    links = threads.map(function (thread) { return "/threads/" + thread._id.toString(); });
-                    return [2 /*return*/, [threads, links]];
-            }
-        });
-    });
-}
 router.get("/view", function (req, res) {
-    listThreads()
+    thread_1.listThreads()
         .then(function (threads) {
         res.render("threads/view", { 'user': req.cookies.username, threads: threads[0], links: threads[1] });
     });
@@ -102,10 +88,12 @@ router.post("/delete/:id", function (req, res) { return __awaiter(void 0, void 0
     });
 }); });
 router.post("/edit/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, _b, _c, _d;
+    var threadID, _a, _b, _c, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
-            case 0: return [4 /*yield*/, activityHandling_1.canModify_Thread(ObjectId(req.params.id), req, res)];
+            case 0:
+                threadID = new ObjectId(req.params.id);
+                return [4 /*yield*/, activityHandling_1.canModify_Thread(ObjectId(req.params.id), req, res)];
             case 1:
                 if (!_e.sent()) return [3 /*break*/, 3];
                 _b = (_a = res).render;
@@ -113,7 +101,7 @@ router.post("/edit/:id", function (req, res) { return __awaiter(void 0, void 0, 
                 _d = {
                     'user': req.cookies.username
                 };
-                return [4 /*yield*/, thread_1.retrieveThread(req, res).catch(function (e) { return console.log(e); })];
+                return [4 /*yield*/, thread_1.getThread(threadID).catch(function (err) { return console.log(err); })];
             case 2:
                 _b.apply(_a, _c.concat([(_d.thread = _e.sent(),
                         _d)]));
@@ -133,37 +121,6 @@ router.post("/confirm", function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); });
-function findAllPosts(par) {
-    return __awaiter(this, void 0, void 0, function () {
-        var ID, posts, arr;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    ID = ObjectId(par);
-                    return [4 /*yield*/, app_1.postsCol.find({ parentThread: ID }).toArray()];
-                case 1:
-                    arr = _a.sent();
-                    if (arr.length === 0)
-                        posts = [];
-                    else
-                        posts = arr;
-                    return [2 /*return*/, posts];
-            }
-        });
-    });
-}
-function getThread(thread_id) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    console.log(thread_id);
-                    return [4 /*yield*/, app_2.threadsCol.findOne({ _id: ObjectId(thread_id) })];
-                case 1: return [2 /*return*/, _a.sent()];
-            }
-        });
-    });
-}
 router.get("/editPost/:id", function (req, res) {
     app_1.postsCol.findOne({ _id: ObjectId(req.params.id) })
         .then(function (post) {
@@ -215,7 +172,7 @@ router.get("/editThread/:id", function (req, res) {
     });
 });
 router.get("/:thread", function (req, res) {
-    getThread(req.params.thread)
+    thread_1.getThread(req.params.thread)
         .then(function (thread) {
         if (thread === null)
             res.render("index", { "message": "couldn't find page, sorry" });
@@ -224,7 +181,7 @@ router.get("/:thread", function (req, res) {
                 .then(function (amAdmin) {
                 var thisIsMine;
                 thisIsMine = amAdmin || req.cookies.username === thread.author;
-                findAllPosts(req.params.thread)
+                thread_1.findAllPosts(req.params.thread)
                     .then(function (posts) {
                     var isMine;
                     if (!amAdmin)
