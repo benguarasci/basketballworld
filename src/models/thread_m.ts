@@ -2,11 +2,11 @@ const ObjectId = require("mongodb").ObjectID;
 
 export class Thread {
 
-    _id: any;
-    user: string;
-    title: string;
-    content: string;
-    tags: string[];
+    public _id: any;
+    public user: string;
+    public title: string;
+    public content: string;
+    public tags: string[];
 
     constructor(_id: string, user: string, title: string, content: string, tags: string[]) {
         this._id = ObjectId(_id);
@@ -16,7 +16,7 @@ export class Thread {
         this.tags = tags;
     }
 
-    isValid() {
-        return(this.title != "" && this.content != "");
+    public isValid() {
+        return(this.title !== "" && this.content !== "");
     }
 }

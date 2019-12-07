@@ -1,11 +1,11 @@
 import {Shoe} from "./shoe_m";
 export class Profile {
 
-    name: string;
-    email: string;
-    pw: string;
-    tags: string[];
-    shoes: Shoe[];
+    public name: string;
+    public email: string;
+    public pw: string;
+    public tags: string[];
+    public shoes: Shoe[];
 
     constructor(name: string, email: string, pw: string, tags: string[], shoes: Shoe[]) {
         this.name = name;
@@ -15,11 +15,11 @@ export class Profile {
         this.shoes = shoes;
     }
 
-    isValid() {
-        return(this.name != "" && this.email != "" && this.pw != "");
+    public isValid() {
+        return(this.name !== "" && this.email !== "" && this.pw !== "");
     }
 
-    verify(pw: string) {
+    public verify(pw: string) {
         return(this.pw === pw);
     }
 }

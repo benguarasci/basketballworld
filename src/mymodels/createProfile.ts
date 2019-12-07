@@ -22,13 +22,13 @@ export default class createProfileForm {
                 message: "missing input",
             });
             return false;
-        } else if (this.pw !== this.pw2) {//ensuring passwords match
+        } else if (this.pw !== this.pw2) { // ensuring passwords match
             res.render("profile/create", {
                 message: "passwords do not match",
             });
             return false;
         }
-        let account = await DbClient.usersCol.findOne({name: this.name});
+        const account = await DbClient.usersCol.findOne({name: this.name});
         if (account !== null) {
             res.render("profile/create", {
                 message: "username taken",
