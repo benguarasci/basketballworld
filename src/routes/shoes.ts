@@ -1,5 +1,4 @@
 import {Request, Response, NextFunction, Router} from "express";
-import DbClient = require("../DbClient");
 import {like, dislike, sortShoes, deleteShoe} from "../managers/shoe";
 import {isLoggedIn, isLoggedIn_NoRender} from "../managers/profile";
 const router = Router();
@@ -7,70 +6,69 @@ const ObjectId = require("mongodb").ObjectID;
 
 // sorts and renders shoes page.
 router.get("/browse", (req, res, next) => {
-        sortShoes({likes: -1})
-            .then((shoes:any) => {
-                res.render("shoes/browse", {'user':req.cookies.username, shoes: shoes[0], likes : shoes[1], dislikes: shoes[2]});
-            })
-    });
+    sortShoes({likes: -1})
+        .then((shoes: any) => {
+            res.render("shoes/browse", {user: req.cookies.username, shoes: shoes[0], likes : shoes[1], dislikes: shoes[2]});
+        });
+});
 
 // like button route for each object of class shoe. user must be logged in to like anything
-router.get("/likes/:id", (req, res) =>{
+router.get("/likes/:id", (req, res) => {
     if (!isLoggedIn_NoRender(req, res)) {
-        res.render("profile/login")
-        }else {
-        let ID = ObjectId(req.params.id);
+        res.render("profile/login");
+    } else {
+        const ID = ObjectId(req.params.id);
         like(ID)
             .then((conf: any) => {
                 res.redirect("/shoes/browse");
-            })
+            });
     }
 });
 
 // dislike button route for each object of class shoe. user must be logged in to dislike anything
-router.get("/dislikes/:id", (req, res) =>{
+router.get("/dislikes/:id", (req, res) => {
     if (!isLoggedIn_NoRender(req, res)) {
-        res.render("profile/login")
-    }else {
-        let ID = ObjectId(req.params.id);
+        res.render("profile/login");
+    } else {
+        const ID = ObjectId(req.params.id);
         dislike(ID)
             .then((conf: any) => {
                 res.redirect("/shoes/browse");
-            })
+            });
     }
 });
 
 // drop down menu route that sorts all shoes based on likes
-router.get("/browse/popular", (req, res) =>{
+router.get("/browse/popular", (req, res) => {
     sortShoes({likes: -1})
         .then((conf: any) => {
             res.redirect("/shoes/browse");
-        })
+        });
 });
 
 // drop down menu route that sorts all shoes based on dislikes
-router.get("/browse/notpopular", (req, res) =>{
+router.get("/browse/notpopular", (req, res) => {
     sortShoes({dislikes: -1})
         .then((shoes: any) => {
-            res.render("shoes/browse", {'user':req.cookies.username, shoes: shoes[0], likes : shoes[1], dislikes: shoes[2]});
-        })
+            res.render("shoes/browse", {user: req.cookies.username, shoes: shoes[0], likes: shoes[1], dislikes: shoes[2]});
+        });
 });
 
 // drop down menu route that sorts all shoes based on price low to high
-router.get("/browse/pricelth", (req, res) =>{
+router.get("/browse/pricelth", (req, res) => {
     sortShoes({price: 1})
-        .then((shoes:any) => {
-            res.render("shoes/browse", {'user':req.cookies.username, shoes: shoes[0], likes : shoes[1], dislikes: shoes[2]});
-        })
+        .then((shoes: any) => {
+            res.render("shoes/browse", {user: req.cookies.username, shoes: shoes[0], likes: shoes[1], dislikes: shoes[2]});
+        });
 });
 
 // drop down menu route that sorts all shoes based on price high to low
-router.get("/browse/pricehtl", (req, res) =>{
+router.get("/browse/pricehtl", (req, res) => {
     sortShoes({price: -1})
-        .then((shoes:any) => {
-            res.render("shoes/browse", {'user':req.cookies.username, shoes: shoes[0], likes : shoes[1], dislikes: shoes[2]});
-        })
+        .then((shoes: any) => {
+            res.render("shoes/browse", {user: req.cookies.username, shoes: shoes[0], likes: shoes[1], dislikes: shoes[2]});
+        });
 });
-
 
 // was used to insert shoes into the database. was very useful whenever changes were made tot the shoes class. allowed us to quickly reset the database
 
