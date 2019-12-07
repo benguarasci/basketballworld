@@ -1,13 +1,25 @@
+class userMap{
+    name: string;
+    status: number;
+
+    constructor(name: string, status: number, ){
+        this.name = name;
+        this.status = status;
+    }
+}
+
 export class Shoe {
 
     image: any;
     model: string;
     player: string;
-    price: string;
+    price: number;
     description: string;
     likes: number;
     dislikes: number;
-    constructor(image: any, model: string, player: string, price: string, description: string, likes: number, dislikes: number) {
+    users: userMap[];
+
+    constructor(image: any, model: string, player: string, price: number, description: string, likes: number, dislikes: number) {
         this.image = image;
         this.model = model;
         this.player = player;
@@ -15,6 +27,8 @@ export class Shoe {
         this.description = description;
         this.likes = likes;
         this.dislikes = dislikes;
+        this.users = [];
+            //this.users.push(new userMap("", 1));
     }
 
     isValid() {

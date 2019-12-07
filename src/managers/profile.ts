@@ -4,7 +4,7 @@ import createProfileForm from "../mymodels/createProfile"
 import {isBanned, isBannedBy_account} from "./activityHandling"
 //import {usersCol} from "../app";
 
-export function isLoggedIn (req : Request, res: Response) {
+export function isLoggedIn (req : any, res: any) {
     if ("username" in req.cookies) {
        res.render("index", {
             "user": req.cookies.username,
@@ -15,7 +15,7 @@ export function isLoggedIn (req : Request, res: Response) {
     else return false;
 }
 
-export function isLoggedIn_NoRender (req : Request, res: Response) {
+export function isLoggedIn_NoRender (req : any, res: any) {
     if (!("username" in req.cookies)) {
         res.render("index", {
             "user": req.cookies.username,
@@ -30,7 +30,7 @@ export async function createNewProfile (form : any) {
     //let db = await DbClient.connect();
     await DbClient.usersCol.insertOne({name: form.name, email: form.email, pw: form.pw, level: 1});
 }
-export async function retrieveProfile (req : Request, res: Response) {
+export async function retrieveProfile (req : any, res: any) {
     //let db = await DbClient.connect();
     return await DbClient.usersCol.findOne({name: req.cookies.username});
 }
@@ -56,26 +56,26 @@ export async function login (res: Response, form : any) {
     }
 }
 // https://docs.mongodb.com/manual/reference/operator/update/push/
-export async function pushTag (req:Request, res:Response) {
+export async function pushTag (req:any, res:any) {
     //let db = await DbClient.connect();
     await DbClient.usersCol.updateOne({name: req.cookies.username}, { $push: { tags: req.body.new } });
 }
 // https://docs.mongodb.com/manual/reference/operator/update/pull/
-export async function pullTag (req:Request, res:Response) {
+export async function pullTag (req:any, res:any) {
     //let db = await DbClient.connect();
     await DbClient.usersCol.updateOne({name: req.cookies.username}, { $pull: { tags: req.body.tag} });
 
 }
 // https://docs.mongodb.com/manual/reference/operator/update/positional/
-export async function editEmail (req:Request, res:Response) {
+export async function editEmail (req:any, res:any) {
     //let db = await DbClient.connect();
     await DbClient.usersCol.updateOne({name: req.cookies.username}, { $set: { email: req.body.email } });
 }
-export async function editPassword (req:Request, res:Response) {
+export async function editPassword (req:any, res:any) {
     //let db = await DbClient.connect();
     await DbClient.usersCol.updateOne({name: req.cookies.username}, { $set: { pw: req.body.password } });
 }
-export async function allTags (req:Request, res:Response) {
+export async function allTags (req:any, res:any) {
     let tags: string[] = [];
     let count: number[] = [];
     let aggregate: any[] = [];

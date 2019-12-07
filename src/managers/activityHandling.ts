@@ -1,11 +1,20 @@
 import {Request, Response} from "express";
 const DbClient = require("../DbClient");
+<<<<<<< HEAD
 import createProfileForm from "../mymodels/createProfile"
 //import {threadsCol, postsCol} from "../app";
 
 export async function isBanned (req : Request, res: Response) {
     //let db = await DbClient.connect();
     let user = await DbClient.usersCol.findOne({"name":req.cookies.username});
+=======
+import {threadsCol, postsCol} from "../app";
+
+export async function isBanned (req : Request, res: Response) {
+    if (!("username" in req.cookies)) return false;
+    let db = await DbClient.connect();
+    let user = await db!.collection("users").findOne({"name":req.cookies.username});
+>>>>>>> d9aca0f22dc6cbccf0e94c0f92346b571881052e
     if (user.level == 0) {
         res.render("index", {message: "You are banned"});
         return true;
@@ -20,8 +29,14 @@ export async function isBannedBy_account (username:string, res: Response) {
     }
 }
 export async function isAdmin (req : Request) {
+<<<<<<< HEAD
     //let db = await DbClient.connect();
     let user = await DbClient.usersCol.findOne({"name":req.cookies.username});
+=======
+    if (!("username" in req.cookies)) return false;
+    let db = await DbClient.connect();
+    let user = await db!.collection("users").findOne({"name":req.cookies.username});
+>>>>>>> d9aca0f22dc6cbccf0e94c0f92346b571881052e
     return (user.level >= 2);
 }export async function isAdmin_byName (name: string) {
     //let db = await DbClient.connect();
