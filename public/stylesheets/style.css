@@ -219,6 +219,11 @@ body {
 
 }
 
+.model{
+  font-family: Helvetica Neue,Arial ,sans-serif;
+  font-weight: bolder;
+}
+
 /* Dropdown Button */
 .dropbtn {
   background-color: #1d428a;

@@ -13,7 +13,7 @@ block content
         each shoe, i in shoes
                 .card
                     img(src=shoe.image style="width:100%")
-                    p #{shoe.model}
+                    p.model #{shoe.model}
                     p $#{shoe.price} US
                     p Player: #{shoe.player}
                     a(href=likes[i] class='likebutton') Like

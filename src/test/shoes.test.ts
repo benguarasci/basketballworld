@@ -17,41 +17,37 @@ testshoe.likes = 0;
 testshoe.dislikes = 0;
 */
 
+before(async() => {
+    await DbClient.connect("bbworld_test");
+    console.log("Connected to bbworld_test");
+});
 
 
 describe("Testing Shoes", ()=>{
     it('tests insertShoe()', async () => {
-        let db = await DbClient.connect();
         await insertShoe(testshoe.image, testshoe.model, testshoe.player, testshoe.price, testshoe.description, testshoe.likes, testshoe.likes);
-        let test = await db!.collection("shoes").findOne({"player": testshoe.player});
+        let test = await DbClient.shoesCol.findOne({"player": testshoe.player});
         assert(test.player === "dak prescott");
         });
 
     it('like()', async () => {
-        let db = await DbClient.connect();
-        let test = await db!.collection("shoes").findOne({"player": testshoe.player});
+        let test = await DbClient.shoesCol.findOne({"player": testshoe.player});
         let likenumber = test.likes;
         let ID = test._id;
         await like(ID);
-        let test2 = await db!.collection("shoes").findOne({"player": testshoe.player});
+        let test2 = await DbClient.shoesCol.findOne({"player": testshoe.player});
         let likenumber2 = test2.likes;
         assert(likenumber2 === likenumber + 1);
     });
 
     it('dislike()', async () => {
-        let db = await DbClient.connect();
-        let test = await db!.collection("shoes").findOne({"player": testshoe.player});
+        let test = await DbClient.shoesCol.findOne({"player": testshoe.player});
         let dislikenumber = test.dislikes;
         let ID = test._id;
         await dislike(ID);
-        let test2 = await db!.collection("shoes").findOne({"player": testshoe.player});
+        let test2 = await DbClient.shoesCol.findOne({"player": testshoe.player});
         let dislikenumber2 = test2.dislikes;
         assert(dislikenumber2 === dislikenumber + 1);
-    });
-
-    it('sortShoes', async () => {
-        let db = await DbClient.connect();
-
     });
 
     /*

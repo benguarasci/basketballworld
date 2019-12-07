@@ -3,25 +3,23 @@ import {isLoggedIn, retrieveProfile} from "./profile";
 import {Shoe} from "../models/shoe_m"
 const DbClient = require("../DbClient");
 
-// export async function insertShoe (image: any, model: string, player: string, price: string, description: string, likes: number, dislikes: number){
-//     //let db = await DbClient.connect();
-//     let shoe = new Shoe(image, model, player, price, description, likes, dislikes);
-//     let temp = await DbClient.shoesCol.findOne({"model": model});
-//     if(temp === null){
-//         return await DbClient.shoesCol.insertOne(shoe);
-//     }else{
-//         return
-//     }
-// }
+ export async function insertShoe (image: any, model: string, player: string, price: number, description: string, likes: number, dislikes: number){
+
+     let shoe = new Shoe(image, model, player, price, description, likes, dislikes);
+     let temp = await DbClient.shoesCol.findOne({"model": model});
+     if(temp === null){
+         return await DbClient.shoesCol.insertOne(shoe);
+     }else{
+         return
+     }
+ }
 
 //removes shoe from data base (used this before i was connected to mongo atlas)
 export async function deleteShoe (player: string){
-    //let db = await DbClient.connect();
     let shoe = await DbClient.shoesCol.findOne({"player": player});
         return await DbClient.shoesCol.deleteOne(shoe);
 }
 
-//r
 export async function refresh (res: Response, req: Request) {
     //let db = await DbClient.connect();
     let shoes = await DbClient.shoesCol.find().toArray();
