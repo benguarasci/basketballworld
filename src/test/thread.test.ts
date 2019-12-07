@@ -1,26 +1,56 @@
-// https://mochajs.org/#getting-started
-// https://www.chaijs.com/api/assert/
-
-import { MongoClient } from "mongodb";
 import { assert } from 'chai';
-
+import { MockReq } from "./helper.test";
+import { MockRes } from "./helper.test";
+import {getThread, createThread, findAllPosts, deleteThread} from "../managers/thread";
 const DbClient = require("../DbClient");
-//const Profile  = require("../models/profile_m");
 const { Thread } = require("../models/thread_m");
-import { getThread } from "../managers/thread";
 
 // A mock user created from the User model
 const mockThread = new Thread;
-mockThread._id = "5deaec121c9d4400009a59ec";
+mockThread._id = "5deb29571c9d4400009a59f9";
 mockThread.title = "Test title for a thread";
 mockThread.content = "Test content for a thread";
 mockThread.tags = ["test tag", "other tag"];
 mockThread.user = "JohnSmith";
 
-describe('THREAD TEST SUITE', function async () {
-    it("getThread(theadID) function test", async () => {
+// The test suite for threads
+describe("THREAD TEST SUITE", function async () {
+
+    it("getThread(string) function test", async () => {
         const result = await getThread(mockThread._id);
-        assert.equal(result._id, "5deaec121c9d4400009a59ec");
+        // If the mock thread called by getThread is the same as the result then pass
+        assert.equal(result._id, mockThread._id);
     });
+
+    let newThreadID: any;
+
+    it("createThread(req, res) function test", async () => {
+        // Used to mock response and requests
+        let req = new MockReq();
+        let res = new MockRes();
+        req.setThreadAspects("Test title", "Test description", "tag0", "tag1", "tag2");
+        req.setUserName("admin");
+        const result = await createThread(req, res);
+        newThreadID = DbClient.threadsCol.find({_id: result._id})._id;
+        // If the created thread id matches the returned result then pass
+        assert.equal(result._id, newThreadID);
+    });
+
+    it("deleteThread(req, res) function test", async () => {
+        // Must be an admin user to call deleteThread
+        let req = new MockReq();
+        let res = new MockRes();
+        req.setUserName("admin");
+        req.setThreadID(newThreadID);
+        await deleteThread(req, res);
+    });
+
+    it("findAllPosts(string) function test", async () => {
+        const result = await findAllPosts(mockThread._id);
+        const postID = "5deb2d1b3c2df100002ba653";
+        // If the post ID is the same as the one returned from findAllPosts then pass
+        assert.equal(result[0]._id, postID);
+    });
+
 
 });
