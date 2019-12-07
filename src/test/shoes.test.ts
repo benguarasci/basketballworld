@@ -5,13 +5,13 @@ import {like, dislike, insertShoe} from "../managers/shoe";
 
 import {Shoe} from "../models/shoe_m"
 
-const testshoe =  new Shoe("/img/LBJ17", "test model", "dak prescott", 12, "jeez leweez", 0, 0);
+const testshoe =  new Shoe("/img/LBJ17", "test model", "dak prescott", 12, 0, 0);
 
 
 describe("SHOES TEST SUITE", ()=>{
     //tests insertshoe() functionality
     it("insertShoe()", async () => {
-        await insertShoe(testshoe.image, testshoe.model, testshoe.player, testshoe.price, testshoe.description, testshoe.likes, testshoe.likes);
+        await insertShoe(testshoe.image, testshoe.model, testshoe.player, testshoe.price, testshoe.likes, testshoe.likes);
         let test = await DbClient.shoesCol.findOne({"player": testshoe.player});
         assert(test.player === "dak prescott");
         });
