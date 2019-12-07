@@ -28,9 +28,7 @@ const uri = "mongodb+srv://admin:m39dDRPEHac6UCWj@3-2-fjpaq.gcp.mongodb.net/test
 
 before((done) => {
     MongoClient.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true }, (error: any, client: any) => {
-        if(error) {
-            throw error;
-        }
+        if(error) throw error;
         database = client.db("bbworld_test");
         usersCol = database.collection("users");
         done();
@@ -43,8 +41,6 @@ describe('USER TEST SUITE', function async () {
         assert.equal(result._id, "5de9c6071c9d4400002f9667");
     });
 });
-
-
 
 after(function() {
     process.exit();

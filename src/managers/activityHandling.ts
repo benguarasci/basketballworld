@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 const DbClient = require("../DbClient");
 import {threadsCol, postsCol} from "../app";
 
-export async function isBanned (req : Request, res: Response) {
+export async function isBanned (req : any, res: any) {
     if (!("username" in req.cookies)) return false;
     let db = await DbClient.connect();
     let user = await db!.collection("users").findOne({"name":req.cookies.username});
@@ -12,24 +12,22 @@ export async function isBanned (req : Request, res: Response) {
     }
     return false;
 }
-export async function isBannedBy_account (username:string, res: Response) {
+export async function isBannedBy_account (username:string, res: any) {
     let db = await DbClient.connect();
     let user = await db!.collection("users").findOne({"name":username});
     if (user.level == 0) {
         res.render("index", {message: "You are banned"});
+        return true;
     }
+    return false;
 }
-export async function isAdmin (req : Request) {
+export async function isAdmin (req : any) {
     if (!("username" in req.cookies)) return false;
     let db = await DbClient.connect();
     let user = await db!.collection("users").findOne({"name":req.cookies.username});
     return (user.level >= 2);
-}export async function isAdmin_byName (name: string) {
-    let db = await DbClient.connect();
-    let user = await db!.collection("users").findOne({"name":name});
-    return (user.level >= 2);
 }
-export async function isAdmin_render (req : Request, res:Response) {
+export async function isAdmin_render (req : any, res:any) {
     let db = await DbClient.connect();
     let user = await db!.collection("users").findOne({"name":req.cookies.username});
     if (user === null || user.level !== 2) {
@@ -37,8 +35,7 @@ export async function isAdmin_render (req : Request, res:Response) {
         return false;
     } else return true;
 }
-export async function canModify (object: any, req : Request, res: Response) {
-    console.log("turf wars");
+export async function canModify (object: any, req : any, res: any) {
     if ((await isBanned(req, res))) return false;
     let imAuthor = object.author === req.cookies.name;
     let imAdmin = await isAdmin(req);
@@ -47,15 +44,13 @@ export async function canModify (object: any, req : Request, res: Response) {
     if (imAuthor || imAdmin) return true;
     res.render("index", {user:req.cookies.username, message: "you don't have modifying rights to this object "});
     return false;
-    // isAdmin(req)
-    //     .then((confirm : boolean)=> {bool || confirm})
 }
-export async function canModify_Thread(id: any, req : Request, res: Response) {
+export async function canModify_Thread(id: any, req : any, res: any) {
     //console.log("waterfall");
     let thread = threadsCol.findOne({_id: id});
     return await canModify(thread, req, res);
 }
-export async function canModify_Post(id: any, req : Request, res: Response) {
+export async function canModify_Post(id: any, req : any, res: any) {
     let thread = postsCol.findOne({_id: id});
     return await canModify(thread, req, res);
 }
