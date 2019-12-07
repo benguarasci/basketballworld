@@ -45,8 +45,8 @@ router.get("/dislikes/:id", (req, res) =>{
 
 router.get("/browse/popular", (req, res) =>{
     sortShoes({likes: -1})
-        .then((shoes:any) => {
-            res.render("shoes/browse", {'user':req.cookies.username, shoes: shoes[0], likes : shoes[1], dislikes: shoes[2]});
+        .then((conf: any) => {
+            res.redirect("/shoes/browse");
         })
 });
 
