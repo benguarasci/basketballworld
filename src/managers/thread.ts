@@ -1,26 +1,26 @@
-import {Request, Response} from "express";
 import {retrieveProfile} from "./profile";
 import createThreadForm from "../mymodels/createThread";
-//import {postsCol, threadsCol} from "../app";
-import {canModify, canModify_Thread} from "./activityHandling";
+import {canModify_Thread} from "./activityHandling";
 const ObjectId = require("mongodb").ObjectID;
 const DbClient = require("../DbClient");
 
-// Lists all of the threads
+// returns array of threads and links to their view page
 export async function listThreads() {
     let threads = await DbClient.threadsCol.find().toArray();
     let links = threads.map((thread: any) => "/threads/"+thread._id.toString());
     return [threads, links];
 }
-
+// only used for profile page, used to find threads given user's interests
 export async function retrieveTaggedThreads (req: any, res: any) {
     let profile = await retrieveProfile(req, res);
     return await DbClient.threadsCol.find({tags: {$in: profile.tags}}).toArray();
 }
+// only used for profile page, lists threats authored by user
 export async function retrieveMyThreads (req: any, res: any) {
     let profile = await retrieveProfile(req, res);
     return await DbClient.threadsCol.find({author: profile.name}).toArray();
 }
+// turns request into create a thread form, which is inserted into database
 export async function createThread (req: any, res: any) {
     let thread = new createThreadForm(req);
     if(thread.isFormComplete(res)) {
@@ -37,7 +37,6 @@ export async function deleteThread (req: any, res: any) {
         }
         return false;
     } catch(err) {
-        // console.log("Unable to delete thread. Error: " + err);
     }
 }
 // Edits a thread based on the _id input
@@ -51,10 +50,9 @@ export async function editThread (req: any, res: any) {
                 await DbClient.threadsCol.replaceOne({_id: threadID}, thread);
         }
     } catch(err) {
-        // console.log("unable to edit thread. Error: " + err);
     }
 }
-
+// lists all of a threads children posts
 export async function findAllPosts(par : string) {
     let ID = ObjectId(par);
     let posts;
@@ -63,11 +61,10 @@ export async function findAllPosts(par : string) {
     else posts = arr;
     return posts;
 }
-
+// returns a thread given it's ID
 export async function getThread(threadID : string) {
     try {
         return await DbClient.threadsCol.findOne({_id: ObjectId(threadID)});
     } catch(err) {
-        // console.log("Unable to get thread. Error: " + err);
     }
 }

@@ -1,17 +1,10 @@
 import {Request, Response, Router} from "express";
-import {isAdmin, isAdmin_render} from "../managers/activityHandling";
-//import {usersCol} from "../app";
+import {isAdmin_render, createRoot} from "../managers/activityHandling";
+import {retrieveProfiles, deleteProfileByID} from "../managers/profile";
 const DbClient = require("../DbClient");
 const router = Router();
 const ObjectId = require("mongodb").ObjectID;
 
-async function retrieveProfiles() {
-    return await DbClient.usersCol.find({}).toArray();
-}
-async function deleteProfileByID(id : string) {
-    id = ObjectId(id);
-    return await DbClient.usersCol.deleteOne({"_id": ObjectId(id)});
-}
 router.get("/", (req : Request, res : Response) => {
     isAdmin_render(req, res)
         .then((bool : boolean)=>{
@@ -90,17 +83,6 @@ router.get("/ban/:id", (req:Request, res:Response) => {
             }
         })
 });
-async function createRoot() {
-    let root = await DbClient.usersCol.findOne({name: "root"});
-    if (root == null) {
-        //await usersCol.insertOne({name: "root", email:"notreal@uvic.ca", pw: "root", level: 3})
-        await DbClient.usersCol.insertOne({name: "root", email: "email@email.com", pw: "root", level: 2});
-    } else if (root.level != 2) {
-        await DbClient.usersCol.updateOne({name: "root"}, {$set: {level : 2}})
-    }
-    let accounts = await DbClient.usersCol.find().toArray();
-    return;
-}
 router.get("/createRoot", (req:Request, res:Response)=>{
     createRoot()
         .then(()=>{
