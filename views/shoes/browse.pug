@@ -3,7 +3,7 @@ extends ../layout
 block content
     h1(style='text-align: center') Shoes by player
 
-    //Drop down filter menu
+    // Drop down filter menu
     .dropdown
         button.dropbtn Filter Shoes
         .dropdown-content
@@ -12,7 +12,7 @@ block content
             a(href='/shoes/browse/pricelth') Price: Low - High
             a(href='/shoes/browse/pricehtl') Price: High - Low
 
-    //renders each shoe in shoe
+    // renders each shoe in shoe
     .cards(id="shoes")
         each shoe, i in shoes
                 .card

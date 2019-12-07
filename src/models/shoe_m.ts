@@ -20,7 +20,7 @@ export class Shoe {
     dislikes: number;
     users: userMap[];
 
-//constructs shoe
+// constructs shoe
     constructor(image: any, model: string, player: string, price: number, likes: number, dislikes: number) {
         this.image = image;
         this.model = model;
