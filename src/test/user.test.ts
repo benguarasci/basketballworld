@@ -7,11 +7,6 @@ import {assert} from 'chai';
 
 const DbClient = require("../DbClient");
 
-before(async() => {
-    await DbClient.connect("bbworld_test");
-    console.log("Connected to bbworld_test");
-});
-
 describe('USER TEST SUITE', function async () {
     it("findOne() user", async () => {
         const result = await DbClient.usersCol.findOne();

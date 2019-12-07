@@ -12,7 +12,7 @@ export async function isBanned (req : any, res: any) {
     }
     return false;
 }
-export async function isBannedBy_account (username:string, res: Response) {
+export async function isBannedBy_account (username:string, res: any) {
     //let db = await DbClient.connect();
     let user = await DbClient.usersCol.findOne({"name":username});
     if (user.level == 0) {
@@ -32,7 +32,7 @@ export async function isAdmin_byName (name: string) {
     let user = await DbClient.usersCol.findOne({"name":name});
     return (user.level >= 2);
 }
-export async function isAdmin_render (req : Request, res:Response) {
+export async function isAdmin_render (req : any, res: any) {
     //let db = await DbClient.connect();
     let user = await DbClient.usersCol.findOne({"name":req.cookies.username});
     if (user === null || user.level !== 2) {

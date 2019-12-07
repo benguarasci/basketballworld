@@ -1,6 +1,6 @@
 import {MongoClient} from "mongodb";
 import {assert} from 'chai';
-import DbClient = require("../DbClient");
+const DbClient = require("../DbClient");
 import {isBanned, isBannedBy_account, isAdmin, isAdmin_render, canModify, canModify_Thread} from "../managers/activityHandling";
 
 class Request {
@@ -28,7 +28,7 @@ class Response {
 describe("Activity Handling Tests", ()=>{
     it ("user is not banned", async ()=>{
         let req = new Request();
-        let res = new Request();
+        let res = new Response();
         req.setUserName("root");
         //console.log("is Banned:" + await isBanned(req, res));
         assert(await isBanned(req, res) === false);
@@ -37,8 +37,8 @@ describe("Activity Handling Tests", ()=>{
         assert(await isAdmin_render(req, res) === true);
     });
     it ("user is banned", async ()=>{
-        let db = await DbClient.connect();
-        let feedback = await db!.collection("users").insertOne({name:"jerry", email:"jerry's email", pw:"jerry's password", level:0});
+        //let db = await DbClient.connect();
+        let feedback = await DbClient.usersCol.insertOne({name:"jerry", email:"jerry's email", pw:"jerry's password", level:0});
         let req = new Request();
         let res = new Response();
         req.setUserName("jerry");
@@ -46,16 +46,15 @@ describe("Activity Handling Tests", ()=>{
         assert((await isBannedBy_account("jerry", res)) === true);
         assert(await isAdmin(req) === false);
 
-        await db!.collection("users").deleteOne({_id : feedback.insertedId});
+        await DbClient.usersCol.deleteOne({_id : feedback.insertedId});
     });
     it ("testing modifying rights", async () =>{
-        let db = await DbClient.connect();
-        let feedback = await db!.collection("threads").insertOne({author:"root"});
+        let feedback = await DbClient.threadsCol.insertOne({author:"root"});
         let req = new Request();
         let res = new Response();
         req.setUserName("root");
         let bool = await canModify_Thread(feedback.insertedId, req, res)
         assert(bool);
-        await db!.collection("threads").deleteOne({_id:feedback.insertedId});
+        await DbClient.threadsCol.deleteOne({_id:feedback.insertedId});
     })
 });

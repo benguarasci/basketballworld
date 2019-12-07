@@ -17,13 +17,7 @@ mockThread.content = "Test content for a thread";
 mockThread.tags = ["test tag", "other tag"];
 mockThread.user = "JohnSmith";
 
-before(async() => {
-    await DbClient.connect("bbworld_test");
-    console.log("Connected to bbworld_test");
-});
-
 describe('THREAD TEST SUITE', function async () {
-
     it("getThread(theadID) function test", async () => {
         const result = await getThread(mockThread._id);
         assert.equal(result._id, "5deaec121c9d4400009a59ec");
